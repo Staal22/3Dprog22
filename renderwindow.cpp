@@ -38,17 +38,6 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
-
-    //triangle 1
-    mVertices.push_back(Vertex0{0, 0, 0, 1, 0, 0});
-    mVertices.push_back(Vertex0{0, 1, 0, 1, 0, 0});
-    mVertices.push_back(Vertex0{1, 0, 0, 1, 0, 0});
-
-    //triangle 2
-    mVertices.push_back(Vertex0{0, 0, 0, 0, 1, 0});
-    mVertices.push_back(Vertex0{0, 0, -1, 0, 1, 0});
-    mVertices.push_back(Vertex0{1, 0, 0, 0, 1, 0});
-
 }
 
 RenderWindow::~RenderWindow()
@@ -139,6 +128,8 @@ void RenderWindow::init()
     glGenBuffers( 1, &mVBO );
     glBindBuffer( GL_ARRAY_BUFFER, mVBO );
 
+    xyz.init(mVAO, mVBO);
+
     //this sends the vertex data to the GPU:
 //    glBufferData( GL_ARRAY_BUFFER,      //what buffer type
 //                  sizeof( vertices ),   //how big buffer do we need
@@ -146,27 +137,13 @@ void RenderWindow::init()
 //                  GL_STATIC_DRAW        //should the buffer be updated on the GPU
 //                  );
 
-    glBufferData( GL_ARRAY_BUFFER,      //what buffer type
-                  mVertices.size() * sizeof(Vertex0),   //how big buffer do we need
-                  mVertices.data(),             //the actual vertices
-                  GL_STATIC_DRAW        //should the buffer be updated on the GPU
-                  );
+//    glBufferData( GL_ARRAY_BUFFER,      //what buffer type
+//                  xyz.mVertices.size() * sizeof(Vertex),   //how big buffer do we need
+//                  xyz.mVertices.data(),             //the actual vertices
+//                  GL_STATIC_DRAW        //should the buffer be updated on the GPU
+//                  );
 
-    // 1st attribute buffer : vertices
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(
-                0,                  // attribute. No particular reason for 0, but must match layout(location = 0) in the vertex shader.
-                3,                  // size / number of elements of data type
-                GL_FLOAT,           // data type
-                GL_FALSE,           // normalize data
-                6 * sizeof(GLfloat),  // stride
-                (GLvoid*)0  );          // array buffer offset
-    glEnableVertexAttribArray(0);
 
-    // 2nd attribute buffer : colors
-    // Same parameter list as above but attribute and offset is adjusted accoringly
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  6 * sizeof(GLfloat),  (GLvoid*)(3 * sizeof(GLfloat)) );
-    glEnableVertexAttribArray(1);
 
     // Get the matrixUniform location from the shader
     // This has to match the "matrix" variable name in the vertex shader
@@ -203,7 +180,7 @@ void RenderWindow::render()
     //the actual draw call
     glDrawArrays(GL_TRIANGLES,      //draw mode
                  0,                 //position of first vertex to draw (in the VBO inside the VAO!)
-                 mVertices.size());                //how many vertices should be drawn - 3 for the triangle
+                 xyz.mVertices.size());                //how many vertices should be drawn - 3 for the triangle
 
     //Calculate framerate before
     // checkForGLerrors() because that call takes a long time

@@ -17,7 +17,7 @@ HEADERS += \
     mainwindow.h \
     renderwindow.h \
     shader.h \
-    vertex0.h \
+    vertex.h \
     xyz.h
 
 FORMS += \
