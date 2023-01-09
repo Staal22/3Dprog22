@@ -59,18 +59,18 @@ RenderWindow::~RenderWindow()
 }
 
 //Simple global for vertices of a triangle - should belong to a class!
-static GLfloat vertices[] =
-{
-    // Positions         // Colors
-    -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // Bottom Left
-    0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  // Bottom Right
-    0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f   // Top
+//static GLfloat vertices[] =
+//{
+//    // Positions         // Colors
+//    -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // Bottom Left
+//    0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  // Bottom Right
+//    0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f   // Top
 
-    //Triangle 2
-    -0.25f, -0.25f, 0.25f,  0.25f, 0.5f, 0.25f,  // Bottom Left
-    0.25f, -0.25f, 0.0f,   0.5f, 0.0f, 0.0f,  // Bottom Right
-    0.0f,  0.25f, 0.0f,   0.0f, 0.0f, 5.0f   // Top
-};
+//    //Triangle 2
+//    -0.25f, -0.25f, 0.25f,  0.25f, 0.5f, 0.25f,  // Bottom Left
+//    0.25f, -0.25f, 0.0f,   0.5f, 0.0f, 0.0f,  // Bottom Right
+//    0.0f,  0.25f, 0.0f,   0.0f, 0.0f, 5.0f   // Top
+//};
 
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
 void RenderWindow::init()
