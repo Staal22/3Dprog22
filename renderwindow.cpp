@@ -178,9 +178,10 @@ void RenderWindow::render()
                         mMVPmatrix->constData());   //the data of the matrix
 
     //the actual draw call
-    glDrawArrays(GL_TRIANGLES,      //draw mode
-                 0,                 //position of first vertex to draw (in the VBO inside the VAO!)
-                 xyz.mVertices.size());                //how many vertices should be drawn - 3 for the triangle
+//    glDrawArrays(GL_TRIANGLES,      //draw mode
+//                 0,                 //position of first vertex to draw (in the VBO inside the VAO!)
+//                 xyz.mVertices.size());                //how many vertices should be drawn - 3 for the triangle
+    xyz.draw();
 
     //Calculate framerate before
     // checkForGLerrors() because that call takes a long time
