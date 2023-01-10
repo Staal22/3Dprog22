@@ -2,15 +2,26 @@
 
 XYZ::XYZ()
 {
-    //triangle 1
-    mVertices.push_back(Vertex{0, 0, 0, 1, 0, 0});
-    mVertices.push_back(Vertex{0, 1, 0, 1, 0, 0});
-    mVertices.push_back(Vertex{1, 0, 0, 1, 0, 0});
+    noseLength = 0.5f;
+    //face
+    mVertices.push_back(Vertex{0, 0, 0, 1, 1, 0});
+    mVertices.push_back(Vertex{1, 0, 0, 1, 1, 0});
+    mVertices.push_back(Vertex{0.5f, 1, 0, 1, 1, 0});
 
-    //triangle 2
-    mVertices.push_back(Vertex{0, 0, 0, 0, 1, 0});
-    mVertices.push_back(Vertex{0, 0, -1, 0, 1, 0});
+    //side 1
+    mVertices.push_back(Vertex{0, 0, 0, 1, 0, 0});
+    mVertices.push_back(Vertex{0.5f, 1, 0, 1, 0, 0});
+    mVertices.push_back(Vertex{0.5f, 0.5f, noseLength, 1, 0, 0});
+
+    //side 2
+    mVertices.push_back(Vertex{0.5f, 1, 0, 0, 1, 0});
     mVertices.push_back(Vertex{1, 0, 0, 0, 1, 0});
+    mVertices.push_back(Vertex{0.5f, 0.5f, noseLength, 0, 1, 0});
+
+    //side 3
+    mVertices.push_back(Vertex{1, 0, 0, 0, 0, 1});
+    mVertices.push_back(Vertex{0, 0, 0, 0, 0, 1});
+    mVertices.push_back(Vertex{0.5f, 0.5f, noseLength, 0, 0, 1});
 }
 
 void XYZ::init(GLuint mVAO, GLuint mVBO)
@@ -35,5 +46,5 @@ void XYZ::draw()
 {
    //actual draw call
    //setContext(context);
-   glDrawArrays(GL_LINES, 0, mVertices.size());
+   glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
 }

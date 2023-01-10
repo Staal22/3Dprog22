@@ -10,6 +10,7 @@ class XYZ : protected QOpenGLFunctions_4_1_Core
 public:
     XYZ();
 
+    float noseLength;
     std::vector<Vertex> mVertices;
     //void setContext(QOpenGLContext *context);
     void init(GLuint mVAO, GLuint mVBO);
