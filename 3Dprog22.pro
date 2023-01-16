@@ -10,6 +10,8 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     renderwindow.cpp \
     shader.cpp \
+    triangle.cpp \
+    trianglesurface.cpp \
     vertex.cpp \
     visualobject.cpp \
     xyz.cpp
@@ -19,6 +21,8 @@ HEADERS += \
     mainwindow.h \
     renderwindow.h \
     shader.h \
+    triangle.h \
+    trianglesurface.h \
     vertex.h \
     visualobject.h \
     xyz.h

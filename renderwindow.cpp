@@ -12,6 +12,7 @@
 #include "mainwindow.h"
 #include "logger.h"
 #include "xyz.h"
+#include "triangle.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow) : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
 {
@@ -38,6 +39,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mRenderTimer = new QTimer(this);
 
     mObjects.push_back(new XYZ());
+    mObjects.push_back(new Triangle());
 }
 
 RenderWindow::~RenderWindow()

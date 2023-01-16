@@ -1,21 +1,18 @@
-#include "xyz.h"
+#include "triangle.h"
 
-XYZ::XYZ()
+Triangle::Triangle()
 {
-    mVertices.push_back(Vertex{0,0,0,1,0,0});
-    mVertices.push_back(Vertex{1,0,0,1,0,0});
-    mVertices.push_back(Vertex{0,0,0,0,1,0});
-    mVertices.push_back(Vertex{0,1,0,0,1,0});
-    mVertices.push_back(Vertex{0,0,0,0,0,1});
-    mVertices.push_back(Vertex{0,0,1,0,0,1});
+    mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f});
+    mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f});
+    mVertices.push_back(Vertex{0.0f, 0.5f, 0.0f,  0.0f, 0.0f, 1.0f});
 }
 
-XYZ::~XYZ()
+Triangle::~Triangle()
 {
 
 }
 
-void XYZ::init(GLint matrixUniform)
+void Triangle::init(GLint matrixUniform)
 {
     mMatrixUniform = matrixUniform;
 
@@ -63,10 +60,9 @@ void XYZ::init(GLint matrixUniform)
 
     //release vertex array bind(0) = release lol
     glBindVertexArray(0);
-
 }
 
-void XYZ::draw()
+void Triangle::draw()
 {
     //what object to draw
     glBindVertexArray(mVAO);
@@ -77,7 +73,7 @@ void XYZ::draw()
                        GL_FALSE,                //transpose the matrix before sending it?
                        mMatrix.constData());    //the data of the matrix
     //DRAW CALL MOMENT
-    glDrawArrays(GL_LINES,
+    glDrawArrays(GL_TRIANGLES,
                  0,
                  mVertices.size());
 }
