@@ -9,7 +9,6 @@ TriangleSurface::TriangleSurface()
     Vertex v3{0.0,0.0,0.0, 0,0,1};    mVertices.push_back(v3);
     Vertex v4{0.5,0.5,0.0, 0,1,0};    mVertices.push_back(v4);
     Vertex v5{0.0,0.5,0.0, 1,0,0};    mVertices.push_back(v5);
-
     mMatrix.setToIdentity();
 }
 
