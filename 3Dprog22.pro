@@ -10,6 +10,8 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     renderwindow.cpp \
     shader.cpp \
+    vertex.cpp \
+    visualobject.cpp \
     xyz.cpp
 
 HEADERS += \
@@ -18,6 +20,7 @@ HEADERS += \
     renderwindow.h \
     shader.h \
     vertex.h \
+    visualobject.h \
     xyz.h
 
 FORMS += \

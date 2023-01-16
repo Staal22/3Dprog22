@@ -1,20 +1,15 @@
 #ifndef XYZ_H
 #define XYZ_H
 
-#include <QOpenGLFunctions_4_1_Core>
-#include <vector>
-#include "vertex.h"
+#include "visualobject.h"
 
-class XYZ : protected QOpenGLFunctions_4_1_Core
+class XYZ : public VisualObject
 {
 public:
     XYZ();
-
-    float noseLength;
-    std::vector<Vertex> mVertices;
-    //void setContext(QOpenGLContext *context);
-    void init(GLuint mVAO, GLuint mVBO);
-    void draw();
+    ~XYZ() override;
+    void init(GLint matrixUniform) override;
+    void draw() override;
 };
 
 #endif // XYZ_H

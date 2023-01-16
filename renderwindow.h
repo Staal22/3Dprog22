@@ -1,13 +1,13 @@
-//#ifndef RENDERWINDOW_H
-//#define RENDERWINDOW_H
-#pragma once
+#ifndef RENDERWINDOW_H
+#define RENDERWINDOW_H
+//#pragma once
 
 #include <QWindow>
 #include <QOpenGLFunctions_4_1_Core>
 #include <QTimer>
 #include <QElapsedTimer>
 #include <vector>
-#include "xyz.h"
+#include "visualobject.h"
 
 class QOpenGLContext;
 class Shader;
@@ -36,7 +36,8 @@ private slots:
 private:
     void init();            //initialize things we need before rendering
 
-    XYZ xyz;
+    std::vector<VisualObject*> mObjects;
+//    XYZ xyz;
 
     QOpenGLContext *mContext{nullptr};  //Our OpenGL context
     bool mInitialized{false};
@@ -78,4 +79,4 @@ protected:
     //    void wheelEvent(QWheelEvent *event) override{}
 };
 
-//#endif // RENDERWINDOW_H
+#endif // RENDERWINDOW_H

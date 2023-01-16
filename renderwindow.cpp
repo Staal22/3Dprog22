@@ -7,16 +7,13 @@
 #include <QKeyEvent>
 #include <QStatusBar>
 #include <QDebug>
-
 #include <string>
-
 #include "shader.h"
 #include "mainwindow.h"
 #include "logger.h"
+#include "xyz.h"
 
-RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
-    : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
-
+RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow) : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
 {
     //This is sent to QWindow:
     setSurfaceType(QWindow::OpenGLSurface);
@@ -25,7 +22,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mContext = new QOpenGLContext(this);
     //Give the context the wanted OpenGL format (v4.1 Core)
     mContext->setFormat(requestedFormat());
-    if (!mContext->create()) {
+    if (!mContext->create())
+    {
         delete mContext;
         mContext = nullptr;
         qDebug() << "Context could not be made - quitting this application";
@@ -38,6 +36,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
+
+    mObjects.push_back(new XYZ());
 }
 
 RenderWindow::~RenderWindow()
@@ -116,39 +116,19 @@ void RenderWindow::init()
     // (out of the build-folder) and then up into the project folder.
     mShaderProgram = new Shader("../3Dprog22/plainshader.vert", "../3Dprog22/plainshader.frag");
 
-    //********************** Making the object to be drawn **********************
-
-    //Making and using the Vertex Array Object - VAO
-    //VAO is a containter that holds VBOs
-    glGenVertexArrays( 1, &mVAO );
-    glBindVertexArray( mVAO );
-
-    //Making and using the Vertex Buffer Object to hold vertices - VBO
-    //Since the mVAO is bound, this VBO will belong to that VAO
-    glGenBuffers( 1, &mVBO );
-    glBindBuffer( GL_ARRAY_BUFFER, mVBO );
-
-    xyz.init(mVAO, mVBO);
-
-    //this sends the vertex data to the GPU:
-//    glBufferData( GL_ARRAY_BUFFER,      //what buffer type
-//                  sizeof( vertices ),   //how big buffer do we need
-//                  vertices,             //the actual vertices
-//                  GL_STATIC_DRAW        //should the buffer be updated on the GPU
-//                  );
-
-//    glBufferData( GL_ARRAY_BUFFER,      //what buffer type
-//                  xyz.mVertices.size() * sizeof(Vertex),   //how big buffer do we need
-//                  xyz.mVertices.data(),             //the actual vertices
-//                  GL_STATIC_DRAW        //should the buffer be updated on the GPU
-//                  );
-
-
-
     // Get the matrixUniform location from the shader
     // This has to match the "matrix" variable name in the vertex shader
     // The uniform is used in the render() function to send the model matrix to the shader
     mMatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "matrix" );
+
+    // cleaner code test
+    foreach (auto VisualObject, mObjects) {
+        VisualObject->init(mMatrixUniform);
+    }
+
+    //canvas code
+//    for (auto it=mObjects.begin(); it!= mObjects.end(); it++)
+//        (*it)->init(mMatrixUniform);
 
     glBindVertexArray(0);       //unbinds any VertexArray - good practice
 }
@@ -156,6 +136,7 @@ void RenderWindow::init()
 // Called each frame - doing the rendering!!!
 void RenderWindow::render()
 {
+    mMVPmatrix->setToIdentity();
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
@@ -167,21 +148,13 @@ void RenderWindow::render()
     //what shader to use
     glUseProgram(mShaderProgram->getProgram() );
 
-    //what object to draw
-    glBindVertexArray( mVAO );
-
-    //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
-    //Must be here to update each frame - if static object, it could be set only once
-    glUniformMatrix4fv( mMatrixUniform, //the location of the matrix in the shader
-                        1,              //count
-                        GL_FALSE,       //transpose the matrix before sending it?
-                        mMVPmatrix->constData());   //the data of the matrix
-
-    //the actual draw call
-//    glDrawArrays(GL_TRIANGLES,      //draw mode
-//                 0,                 //position of first vertex to draw (in the VBO inside the VAO!)
-//                 xyz.mVertices.size());                //how many vertices should be drawn - 3 for the triangle
-    xyz.draw();
+    // cleaner code test
+    foreach (auto VisualObject, mObjects) {
+        VisualObject->draw();
+    }
+    //canvas code
+//    for (auto it=mObjects.begin(); it!= mObjects.end(); it++)
+//        (*it)->draw();
 
     //Calculate framerate before
     // checkForGLerrors() because that call takes a long time
@@ -198,8 +171,8 @@ void RenderWindow::render()
 
     //just to make the triangle rotate - tweak this:
     //                   degree, x,   y,   z -axis
-    if(mRotate)
-        mMVPmatrix->rotate(2.f, 0.f, 1.0, 0.f);
+//    if(mRotate)
+//        mMVPmatrix->rotate(2.f, 0.f, 1.0, 0.f);
 }
 
 //This function is called from Qt when window is exposed (shown)
