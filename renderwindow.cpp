@@ -13,6 +13,7 @@
 #include "logger.h"
 #include "xyz.h"
 #include "triangle.h"
+#include "trianglesurface.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow) : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
 {
@@ -38,8 +39,9 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
 
-    mObjects.push_back(new XYZ());
-    mObjects.push_back(new Triangle());
+//    mObjects.push_back(new XYZ());
+//    mObjects.push_back(new Triangle());
+    mObjects.push_back(new TriangleSurface);
 }
 
 RenderWindow::~RenderWindow()
@@ -48,20 +50,6 @@ RenderWindow::~RenderWindow()
     glDeleteVertexArrays( 1, &mVAO );
     glDeleteBuffers( 1, &mVBO );
 }
-
-//Simple global for vertices of a triangle - should belong to a class!
-//static GLfloat vertices[] =
-//{
-//    // Positions         // Colors
-//    -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // Bottom Left
-//    0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  // Bottom Right
-//    0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f   // Top
-
-//    //Triangle 2
-//    -0.25f, -0.25f, 0.25f,  0.25f, 0.5f, 0.25f,  // Bottom Left
-//    0.25f, -0.25f, 0.0f,   0.5f, 0.0f, 0.0f,  // Bottom Right
-//    0.0f,  0.25f, 0.0f,   0.0f, 0.0f, 5.0f   // Top
-//};
 
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
 void RenderWindow::init()
