@@ -11,9 +11,10 @@
 #include "shader.h"
 #include "mainwindow.h"
 #include "logger.h"
-#include "xyz.h"
-#include "triangle.h"
-#include "trianglesurface.h"
+//#include "xyz.h"
+//#include "triangle.h"
+//#include "trianglesurface.h"
+#include "twovariablefunctionspace.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow) : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
 {
@@ -41,7 +42,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
 //    mObjects.push_back(new XYZ());
 //    mObjects.push_back(new Triangle());
-    mObjects.push_back(new TriangleSurface);
+//    mObjects.push_back(new TriangleSurface);
+    mObjects.push_back(new TwoVariableFunctionSpace);
 }
 
 RenderWindow::~RenderWindow()
@@ -119,6 +121,8 @@ void RenderWindow::init()
     //canvas code
 //    for (auto it=mObjects.begin(); it!= mObjects.end(); it++)
 //        (*it)->init(mMatrixUniform);
+
+
 
     glBindVertexArray(0);       //unbinds any VertexArray - good practice
 }

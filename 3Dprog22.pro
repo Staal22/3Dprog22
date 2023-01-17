@@ -12,6 +12,7 @@ SOURCES += main.cpp \
     shader.cpp \
     triangle.cpp \
     trianglesurface.cpp \
+    twovariablefunctionspace.cpp \
     vertex.cpp \
     visualobject.cpp \
     xyz.cpp
@@ -23,6 +24,7 @@ HEADERS += \
     shader.h \
     triangle.h \
     trianglesurface.h \
+    twovariablefunctionspace.h \
     vertex.h \
     visualobject.h \
     xyz.h

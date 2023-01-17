@@ -14,7 +14,7 @@ class Vertex {
 private:
    float m_xyz[3];       	// position i 3D
    float m_normal[3];       // normal in 3D or rgb colors
-   float m_st[2];        	// texture coordinates if used
+   float m_uv[2];        	// texture coordinates if used
 
 public:
    Vertex();

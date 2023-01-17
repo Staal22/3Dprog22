@@ -1,29 +1,52 @@
-#include "trianglesurface.h"
+#include "twovariablefunctionspace.h"
 
-TriangleSurface::TriangleSurface()
+TwoVariableFunctionSpace::TwoVariableFunctionSpace()
 {
-    //         x   y   z   r g b
-    Vertex v0{0.0,0.0,0.0, 1,0,0};    mVertices.push_back(v0);
-    Vertex v1(0.5,0.0,0.0, 0,1,0);    mVertices.push_back(v1);
-    Vertex v2{0.5,0.5,0.0, 0,0,1};    mVertices.push_back(v2);
-    Vertex v3{0.0,0.0,0.0, 0,0,1};    mVertices.push_back(v3);
-    Vertex v4{0.5,0.5,0.0, 0,1,0};    mVertices.push_back(v4);
-    Vertex v5{0.0,0.5,0.0, 1,0,0};    mVertices.push_back(v5);
+    mVertices.clear();
+    for (auto x = xMin; x < xMax; x += h)
+    {
+        for (auto y = yMin; y < yMax; y += h)
+        {
+            z = sin(M_PI * x) * sin(M_PI * y);
+            mVertices.push_back(Vertex{x, y, z, x, y, z});
+            z = sin(M_PI * x + h) * sin(M_PI * y);
+            mVertices.push_back(Vertex{x + h, y, z, x, y, z});
+            z = sin(M_PI * x) * sin(M_PI * y + h);
+            mVertices.push_back(Vertex{x, y + h, z, x, y, z});
+            mVertices.push_back(Vertex{x, y + h, z, x, y, z});
+            z = sin(M_PI * x + h) * sin(M_PI * y);
+            mVertices.push_back(Vertex{x + h, y, z, x, y, z});
+            z = sin(M_PI * x + h) * sin(M_PI * y + h);
+            mVertices.push_back(Vertex{x + h, y + h, z, x, y, z});
+        }
+    }
     mMatrix.setToIdentity();
+    ToFile();
 }
 
-TriangleSurface::TriangleSurface(std::string filename)
+TwoVariableFunctionSpace::TwoVariableFunctionSpace(std::string filename)
 {
     readFile(filename);
     mMatrix.setToIdentity();
 }
 
-TriangleSurface::~TriangleSurface()
+TwoVariableFunctionSpace::~TwoVariableFunctionSpace()
 {
 
 }
 
-void TriangleSurface::readFile(std::string filename)
+void TwoVariableFunctionSpace::ToFile()
+{
+    std::ofstream outf{ "vertices.txt" };
+    if (!outf)
+    {
+        std::cerr << "Uh oh, vertices.txt could not be opened for writing!\n";
+    }
+    outf << "TEST TEST I REPEAT THIS IS A TEST OK" << '\n';
+    outf.close();
+}
+
+void TwoVariableFunctionSpace::readFile(std::string filename)
 {
     std::ifstream inn;
     inn.open(filename.c_str());
@@ -41,7 +64,7 @@ void TriangleSurface::readFile(std::string filename)
     }
 }
 
-void TriangleSurface::init(GLint shader)
+void TwoVariableFunctionSpace::init(GLint shader)
 {
     mMatrixUniform = shader;
 
@@ -91,7 +114,7 @@ void TriangleSurface::init(GLint shader)
     glBindVertexArray(0);
 }
 
-void TriangleSurface::draw()
+void TwoVariableFunctionSpace::draw()
 {
     //what object to draw
     glBindVertexArray(mVAO);
