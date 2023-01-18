@@ -17,8 +17,11 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QPushButton" name="rotationButton">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="text">
-       <string>Stop rotation</string>
+       <string>Start rotation</string>
       </property>
       <property name="checkable">
        <bool>true</bool>

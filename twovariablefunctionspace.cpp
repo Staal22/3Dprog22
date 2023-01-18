@@ -8,20 +8,20 @@ TwoVariableFunctionSpace::TwoVariableFunctionSpace()
         for (auto y = yMin; y < yMax; y += h)
         {
             z = sin(M_PI * x) * sin(M_PI * y);
-            mVertices.push_back(Vertex{x, y, z, x, y, z});
+            mVertices.push_back(Vertex{x, y, z, 0, 0, z});
             z = sin(M_PI * x + h) * sin(M_PI * y);
-            mVertices.push_back(Vertex{x + h, y, z, x, y, z});
+            mVertices.push_back(Vertex{x + h, y, z, 0, 0, z});
             z = sin(M_PI * x) * sin(M_PI * y + h);
-            mVertices.push_back(Vertex{x, y + h, z, x, y, z});
-            mVertices.push_back(Vertex{x, y + h, z, x, y, z});
+            mVertices.push_back(Vertex{x, y + h, z, 0, 0, z});
+            mVertices.push_back(Vertex{x, y + h, z, 0, 0, z});
             z = sin(M_PI * x + h) * sin(M_PI * y);
-            mVertices.push_back(Vertex{x + h, y, z, x, y, z});
+            mVertices.push_back(Vertex{x + h, y, z, 0, 0, z});
             z = sin(M_PI * x + h) * sin(M_PI * y + h);
-            mVertices.push_back(Vertex{x + h, y + h, z, x, y, z});
+            mVertices.push_back(Vertex{x + h, y + h, z, 0, 0, z});
         }
     }
     mMatrix.setToIdentity();
-    ToFile();
+//    ToFile();
 }
 
 TwoVariableFunctionSpace::TwoVariableFunctionSpace(std::string filename)
@@ -35,15 +35,22 @@ TwoVariableFunctionSpace::~TwoVariableFunctionSpace()
 
 }
 
-void TwoVariableFunctionSpace::ToFile()
+void TwoVariableFunctionSpace::ToFile(std::string filename)
 {
-    std::ofstream outf{ "vertices.txt" };
+    std::ofstream outf{ filename };
     if (!outf)
     {
         std::cerr << "Uh oh, vertices.txt could not be opened for writing!\n";
     }
-    outf << "TEST TEST I REPEAT THIS IS A TEST OK" << '\n';
+//    outf << "Number of vertices: " << mVertices.size() << " Format is (x,y,z)(r,g,b,)(u,v)" << '\n';
+    outf << mVertices.size() << '\n';
+    foreach (auto Vertex, mVertices) {
+        outf << Vertex;
+    }
     outf.close();
+    //If we're sending our vertices off to a file to be used somehwere else, we shouldn't
+    //leave behind duplicates here
+    mVertices.clear();
 }
 
 void TwoVariableFunctionSpace::readFile(std::string filename)
@@ -128,4 +135,9 @@ void TwoVariableFunctionSpace::draw()
     glDrawArrays(GL_TRIANGLES,
                  0,
                  mVertices.size());
+}
+
+void TwoVariableFunctionSpace::rotate()
+{
+    mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
 }

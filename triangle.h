@@ -10,7 +10,7 @@ public:
     ~Triangle() override;
     void init(GLint matrixUniform) override;
     void draw() override;
-
+    void rotate() override;
 };
 
 #endif // TRIANGLE_H

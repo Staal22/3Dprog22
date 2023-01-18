@@ -3,12 +3,12 @@
 TriangleSurface::TriangleSurface()
 {
     //         x   y   z   r g b
-    Vertex v0{0.0,0.0,0.0, 1,0,0};    mVertices.push_back(v0);
-    Vertex v1(0.5,0.0,0.0, 0,1,0);    mVertices.push_back(v1);
-    Vertex v2{0.5,0.5,0.0, 0,0,1};    mVertices.push_back(v2);
-    Vertex v3{0.0,0.0,0.0, 0,0,1};    mVertices.push_back(v3);
-    Vertex v4{0.5,0.5,0.0, 0,1,0};    mVertices.push_back(v4);
-    Vertex v5{0.0,0.5,0.0, 1,0,0};    mVertices.push_back(v5);
+//    Vertex v0{0.0,0.0,0.0, 1,0,0};    mVertices.push_back(v0);
+//    Vertex v1(0.5,0.0,0.0, 0,1,0);    mVertices.push_back(v1);
+//    Vertex v2{0.5,0.5,0.0, 0,0,1};    mVertices.push_back(v2);
+//    Vertex v3{0.0,0.0,0.0, 0,0,1};    mVertices.push_back(v3);
+//    Vertex v4{0.5,0.5,0.0, 0,1,0};    mVertices.push_back(v4);
+//    Vertex v5{0.0,0.5,0.0, 1,0,0};    mVertices.push_back(v5);
     mMatrix.setToIdentity();
 }
 
@@ -105,4 +105,9 @@ void TriangleSurface::draw()
     glDrawArrays(GL_TRIANGLES,
                  0,
                  mVertices.size());
+}
+
+void TriangleSurface::rotate()
+{
+    mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
 }

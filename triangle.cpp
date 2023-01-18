@@ -77,3 +77,10 @@ void Triangle::draw()
                  0,
                  mVertices.size());
 }
+
+void Triangle::rotate()
+{
+    mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
+}
+
+

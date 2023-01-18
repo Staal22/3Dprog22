@@ -12,6 +12,7 @@ public:
     void readFile(std::string filename);
     void init(GLint shader) override;
     void draw() override;
+    void rotate() override;
 
 };
 

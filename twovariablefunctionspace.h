@@ -14,13 +14,14 @@ public:
     float xMax = 1.0f;
     float yMin = 0.f;
     float yMax = 1.0f;
-    float h = 0.25f;
+    float h = 0.01f;
     float z = 0.f;
 
-    void ToFile();
+    void ToFile(std::string filename);
     void readFile(std::string filename);
     void init(GLint shader) override;
     void draw() override;
+    void rotate() override;
 };
 
 #endif // TWOVARIABLEFUNCTIONSPACE_H

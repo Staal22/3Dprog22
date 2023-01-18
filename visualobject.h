@@ -12,6 +12,7 @@ public:
    ~VisualObject();
    virtual void init(GLint matrixUniform)=0;
    virtual void draw()=0;
+   virtual void rotate()=0;
 
 protected:
    std::vector<Vertex> mVertices;

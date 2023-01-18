@@ -11,9 +11,9 @@
 #include "shader.h"
 #include "mainwindow.h"
 #include "logger.h"
-//#include "xyz.h"
-//#include "triangle.h"
-//#include "trianglesurface.h"
+#include "xyz.h"
+#include "triangle.h"
+#include "trianglesurface.h"
 #include "twovariablefunctionspace.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow) : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -42,8 +42,15 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
 //    mObjects.push_back(new XYZ());
 //    mObjects.push_back(new Triangle());
-//    mObjects.push_back(new TriangleSurface);
-    mObjects.push_back(new TwoVariableFunctionSpace);
+//    mObjects.push_back(new TriangleSurface());
+//    mObjects.push_back(new TwoVariableFunctionSpace());
+
+    TwoVariableFunctionSpace* tvSpace = new TwoVariableFunctionSpace();
+    TriangleSurface* tSurface = new TriangleSurface();
+    tvSpace->ToFile("vertices.txt");
+    tSurface->readFile("vertices.txt");
+    mObjects.push_back(tSurface);
+
 }
 
 RenderWindow::~RenderWindow()
@@ -56,6 +63,10 @@ RenderWindow::~RenderWindow()
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
 void RenderWindow::init()
 {
+    //debug showcase
+//    int* bingus = nullptr;
+//    *bingus += 10;
+
     //Get the instance of the utility Output logger
     //Have to do this, else program will crash (or you have to put in nullptr tests...)
     mLogger = Logger::getInstance();
@@ -165,8 +176,13 @@ void RenderWindow::render()
 
     //just to make the triangle rotate - tweak this:
     //                   degree, x,   y,   z -axis
-//    if(mRotate)
-//        mMVPmatrix->rotate(2.f, 0.f, 1.0, 0.f);
+    if(mRotate)
+    {
+//        mMVPmatrix->rotate(2.f, 1.f, 1.0, 1.f);
+        foreach (auto VisualObject, mObjects) {
+            VisualObject->rotate();
+        }
+    }
 }
 
 //This function is called from Qt when window is exposed (shown)
