@@ -102,7 +102,7 @@ void TriangleSurface::draw()
                        GL_FALSE,                //transpose the matrix before sending it?
                        mMatrix.constData());    //the data of the matrix
     //DRAW CALL MOMENT
-    glDrawArrays(GL_TRIANGLES,
+    glDrawArrays(GL_LINES,
                  0,
                  mVertices.size());
 }

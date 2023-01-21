@@ -45,9 +45,15 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    mObjects.push_back(new TriangleSurface());
 //    mObjects.push_back(new TwoVariableFunctionSpace());
 
+    //Oppgave 1
     TwoVariableFunctionSpace* tvSpace = new TwoVariableFunctionSpace();
-    TriangleSurface* tSurface = new TriangleSurface();
     tvSpace->ToFile("vertices.txt");
+
+    //Oppgave 2
+//    TwoVariableFunctionSpace* ovSpace = new TwoVariableFunctionSpace(1);
+//    ovSpace->ToFile("vertices.txt");
+
+    TriangleSurface* tSurface = new TriangleSurface();
     tSurface->readFile("vertices.txt");
     mObjects.push_back(tSurface);
 

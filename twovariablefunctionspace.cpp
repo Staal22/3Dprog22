@@ -1,27 +1,37 @@
 #include "twovariablefunctionspace.h"
 
-TwoVariableFunctionSpace::TwoVariableFunctionSpace()
+TwoVariableFunctionSpace::TwoVariableFunctionSpace(int variables)
 {
     mVertices.clear();
-    for (auto x = xMin; x < xMax; x += h)
+    if (variables == 1)
     {
-        for (auto y = yMin; y < yMax; y += h)
+        for (auto x = xMin; x < xMax; x += h)
         {
-            z = sin(M_PI * x) * sin(M_PI * y);
-            mVertices.push_back(Vertex{x, y, z, 0, 0, z});
-            z = sin(M_PI * x + h) * sin(M_PI * y);
-            mVertices.push_back(Vertex{x + h, y, z, 0, 0, z});
-            z = sin(M_PI * x) * sin(M_PI * y + h);
-            mVertices.push_back(Vertex{x, y + h, z, 0, 0, z});
-            mVertices.push_back(Vertex{x, y + h, z, 0, 0, z});
-            z = sin(M_PI * x + h) * sin(M_PI * y);
-            mVertices.push_back(Vertex{x + h, y, z, 0, 0, z});
-            z = sin(M_PI * x + h) * sin(M_PI * y + h);
-            mVertices.push_back(Vertex{x + h, y + h, z, 0, 0, z});
+            z = function(1, x);
+            mVertices.push_back(Vertex{x, z, 0, 0, z, 0});
+        }
+    }
+    else if (variables == 2)
+    {
+        for (auto x = xMin; x < xMax; x += h)
+        {
+            for (auto y = yMin; y < yMax; y += h)
+            {
+                z = function(2, x, y);
+                mVertices.push_back(Vertex{x, y, z, 0, 0, z});
+                z = function(2, x + h, y);
+                mVertices.push_back(Vertex{x + h, y, z, 0, 0, z});
+                z = function(2, x, y + h);
+                mVertices.push_back(Vertex{x, y + h, z, 0, 0, z});
+                mVertices.push_back(Vertex{x, y + h, z, 0, 0, z});
+                z = function(2, x + h, y);
+                mVertices.push_back(Vertex{x + h, y, z, 0, 0, z});
+                z = function(2, x + h, y + h);
+                mVertices.push_back(Vertex{x + h, y + h, z, 0, 0, z});
+            }
         }
     }
     mMatrix.setToIdentity();
-//    ToFile();
 }
 
 TwoVariableFunctionSpace::TwoVariableFunctionSpace(std::string filename)
@@ -132,7 +142,7 @@ void TwoVariableFunctionSpace::draw()
                        GL_FALSE,                //transpose the matrix before sending it?
                        mMatrix.constData());    //the data of the matrix
     //DRAW CALL MOMENT
-    glDrawArrays(GL_TRIANGLES,
+    glDrawArrays(GL_LINES,
                  0,
                  mVertices.size());
 }
@@ -140,4 +150,18 @@ void TwoVariableFunctionSpace::draw()
 void TwoVariableFunctionSpace::rotate()
 {
     mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
+}
+
+float TwoVariableFunctionSpace::function(int variables, float x, float y)
+{
+    if (variables == 1)
+    {
+        return cos(x + (M_PI/2)) * cos(x + (M_PI/2)); //Oppgave 2
+    }
+    else if (variables == 2)
+    {
+        return sin(M_PI * x) * sin(M_PI * y); //Oppgave 1
+    }
+    else
+        return -1.f;
 }
