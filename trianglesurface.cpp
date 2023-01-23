@@ -93,6 +93,10 @@ void TriangleSurface::init(GLint shader)
 
 void TriangleSurface::draw()
 {
+    if (hide)
+    {
+        return;
+    }
     //what object to draw
     glBindVertexArray(mVAO);
     //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here

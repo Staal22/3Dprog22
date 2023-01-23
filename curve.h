@@ -1,14 +1,13 @@
-#ifndef TWOVARIABLEFUNCTIONSPACE_H
-#define TWOVARIABLEFUNCTIONSPACE_H
+#ifndef CURVE_H
+#define CURVE_H
 
 #include "visualobject.h"
 
-class TwoVariableFunctionSpace : public VisualObject
+class Curve : public VisualObject
 {
 public:
-    TwoVariableFunctionSpace();
-    TwoVariableFunctionSpace(std::string filename);
-    ~TwoVariableFunctionSpace() override;
+    Curve();
+    ~Curve() override;
 
     void toFile(std::string filename);
 //    void readFile(std::string filename);
@@ -27,4 +26,4 @@ private:
     float z = 0.f;
 };
 
-#endif // TWOVARIABLEFUNCTIONSPACE_H
+#endif // CURVE_H

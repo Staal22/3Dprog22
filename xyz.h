@@ -10,6 +10,7 @@ public:
     ~XYZ() override;
     void init(GLint matrixUniform) override;
     void draw() override;
+    void rotate() override;
 };
 
 #endif // XYZ_H

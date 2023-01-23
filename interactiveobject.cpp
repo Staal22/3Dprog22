@@ -64,6 +64,7 @@ void InteractiveObject::init(GLint matrixUniform)
 
 void InteractiveObject::draw()
 {
+
     //what object to draw
     glBindVertexArray(mVAO);
     //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
@@ -85,8 +86,8 @@ void InteractiveObject::rotate()
 
 void InteractiveObject::move(float x, float y, float z)
 {
-    mx += x;
-    my += y;
-    mz += z;
-    mMatrix.translate(mx, my, mz);
+//    mx += x;
+//    my += y;
+//    mz += z;
+    mMatrix.translate(x, y, z);
 }

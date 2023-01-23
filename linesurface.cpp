@@ -1,23 +1,42 @@
-#include "xyz.h"
+#include "linesurface.h"
 
-XYZ::XYZ()
+LineSurface::LineSurface()
 {
-    mVertices.push_back(Vertex{0,0,0,1,0,0});
-    mVertices.push_back(Vertex{1,0,0,1,0,0});
-    mVertices.push_back(Vertex{0,0,0,0,1,0});
-    mVertices.push_back(Vertex{0,1,0,0,1,0});
-    mVertices.push_back(Vertex{0,0,0,0,0,1});
-    mVertices.push_back(Vertex{0,0,1,0,0,1});
+    mMatrix.setToIdentity();
 }
 
-XYZ::~XYZ()
+LineSurface::LineSurface(std::string filename)
+{
+    readFile(filename);
+    mMatrix.setToIdentity();
+}
+
+LineSurface::~LineSurface()
 {
 
 }
 
-void XYZ::init(GLint matrixUniform)
+void LineSurface::readFile(std::string filename)
 {
-    mMatrixUniform = matrixUniform;
+    std::ifstream inn;
+    inn.open(filename.c_str());
+
+    if (inn.is_open()) {
+        int n;
+        Vertex vertex;
+        inn >> n;
+        mVertices.reserve(n);
+        for (int i=0; i<n; i++) {
+             inn >> vertex;
+             mVertices.push_back(vertex);
+        }
+        inn.close();
+    }
+}
+
+void LineSurface::init(GLint shader)
+{
+    mMatrixUniform = shader;
 
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
@@ -63,11 +82,14 @@ void XYZ::init(GLint matrixUniform)
 
     //release vertex array bind(0) = release lol
     glBindVertexArray(0);
-
 }
 
-void XYZ::draw()
+void LineSurface::draw()
 {
+    if (hide)
+    {
+        return;
+    }
     //what object to draw
     glBindVertexArray(mVAO);
     //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
@@ -82,7 +104,9 @@ void XYZ::draw()
                  mVertices.size());
 }
 
-void XYZ::rotate()
+void LineSurface::rotate()
 {
     mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
 }
+
+

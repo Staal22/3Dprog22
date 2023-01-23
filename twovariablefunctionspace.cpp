@@ -1,17 +1,8 @@
 #include "twovariablefunctionspace.h"
 
-TwoVariableFunctionSpace::TwoVariableFunctionSpace(int variables)
+TwoVariableFunctionSpace::TwoVariableFunctionSpace()
 {
     mVertices.clear();
-    if (variables == 1)
-    {
-        for (auto x = xMin; x < xMax; x += h)
-        {
-            z = function(1, x);
-            mVertices.push_back(Vertex{x, z, 0, 0, z, 0});
-        }
-    }
-    else if (variables == 2)
     {
         for (auto x = xMin; x < xMax; x += h)
         {
@@ -34,23 +25,23 @@ TwoVariableFunctionSpace::TwoVariableFunctionSpace(int variables)
     mMatrix.setToIdentity();
 }
 
-TwoVariableFunctionSpace::TwoVariableFunctionSpace(std::string filename)
-{
-    readFile(filename);
-    mMatrix.setToIdentity();
-}
+//TwoVariableFunctionSpace::TwoVariableFunctionSpace(std::string filename)
+//{
+//    readFile(filename);
+//    mMatrix.setToIdentity();
+//}
 
 TwoVariableFunctionSpace::~TwoVariableFunctionSpace()
 {
 
 }
 
-void TwoVariableFunctionSpace::ToFile(std::string filename)
+void TwoVariableFunctionSpace::toFile(std::string filename)
 {
     std::ofstream outf{ filename };
     if (!outf)
     {
-        std::cerr << "Uh oh, vertices.txt could not be opened for writing!\n";
+        std::cerr << "Uh oh, " << filename << " could not be opened for writing!\n";
     }
 //    outf << "Number of vertices: " << mVertices.size() << " Format is (x,y,z)(r,g,b,)(u,v)" << '\n';
     outf << mVertices.size() << '\n';
@@ -63,23 +54,23 @@ void TwoVariableFunctionSpace::ToFile(std::string filename)
     mVertices.clear();
 }
 
-void TwoVariableFunctionSpace::readFile(std::string filename)
-{
-    std::ifstream inn;
-    inn.open(filename.c_str());
+//void TwoVariableFunctionSpace::readFile(std::string filename)
+//{
+//    std::ifstream inn;
+//    inn.open(filename.c_str());
 
-    if (inn.is_open()) {
-        int n;
-        Vertex vertex;
-        inn >> n;
-        mVertices.reserve(n);
-        for (int i=0; i<n; i++) {
-             inn >> vertex;
-             mVertices.push_back(vertex);
-        }
-        inn.close();
-    }
-}
+//    if (inn.is_open()) {
+//        int n;
+//        Vertex vertex;
+//        inn >> n;
+//        mVertices.reserve(n);
+//        for (int i=0; i<n; i++) {
+//             inn >> vertex;
+//             mVertices.push_back(vertex);
+//        }
+//        inn.close();
+//    }
+//}
 
 void TwoVariableFunctionSpace::init(GLint shader)
 {
@@ -133,18 +124,19 @@ void TwoVariableFunctionSpace::init(GLint shader)
 
 void TwoVariableFunctionSpace::draw()
 {
-    //what object to draw
-    glBindVertexArray(mVAO);
-    //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
-    //Must be here to update each frame - if static object, it could be set only once
-    glUniformMatrix4fv(mMatrixUniform,          //the location of the matrix in the shader
-                       1,                       //count
-                       GL_FALSE,                //transpose the matrix before sending it?
-                       mMatrix.constData());    //the data of the matrix
-    //DRAW CALL MOMENT
-    glDrawArrays(GL_TRIANGLES,
-                 0,
-                 mVertices.size());
+    // Never draws itself as of now, gets drawn by TriangleSurface
+//    //what object to draw
+//    glBindVertexArray(mVAO);
+//    //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
+//    //Must be here to update each frame - if static object, it could be set only once
+//    glUniformMatrix4fv(mMatrixUniform,          //the location of the matrix in the shader
+//                       1,                       //count
+//                       GL_FALSE,                //transpose the matrix before sending it?
+//                       mMatrix.constData());    //the data of the matrix
+//    //DRAW CALL MOMENT
+//    glDrawArrays(GL_TRIANGLES,
+//                 0,
+//                 mVertices.size());
 }
 
 void TwoVariableFunctionSpace::rotate()
@@ -154,14 +146,5 @@ void TwoVariableFunctionSpace::rotate()
 
 float TwoVariableFunctionSpace::function(int variables, float x, float y)
 {
-    if (variables == 1)
-    {
-        return cos(x + (M_PI/2)) * cos(x + (M_PI/2)); //Oppgave 2
-    }
-    else if (variables == 2)
-    {
-        return sin(M_PI * x) * sin(M_PI * y); //Oppgave 1
-    }
-    else
-        return -1.f;
+    return sin(M_PI * x) * sin(M_PI * y); //Oppgave 1
 }

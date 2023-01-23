@@ -9,6 +9,8 @@
 #include <vector>
 #include "interactiveobject.h"
 #include "visualobject.h"
+#include "trianglesurface.h"
+#include "linesurface.h"
 
 class QOpenGLContext;
 class Shader;
@@ -39,6 +41,8 @@ private:
 
     std::vector<VisualObject*> mObjects;
     VisualObject* testObject;
+    TriangleSurface* testPlane;
+    LineSurface* testCurve;
 
     QOpenGLContext *mContext{nullptr};  //Our OpenGL context
     bool mInitialized{false};

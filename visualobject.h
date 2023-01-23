@@ -15,12 +15,16 @@ public:
    virtual void rotate()=0;
    virtual void move(float x, float y, float z) { }
 
+   bool hide = false;
+
 protected:
    std::vector<Vertex> mVertices;
    GLuint mVAO{0};
    GLuint mVBO{0};
    GLint mMatrixUniform{0};
    QMatrix4x4 mMatrix;
+
+
 
 };
 

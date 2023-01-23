@@ -13,8 +13,8 @@
 #include "logger.h"
 #include "xyz.h"
 #include "triangle.h"
-#include "trianglesurface.h"
 #include "twovariablefunctionspace.h"
+#include "curve.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow) : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
 {
@@ -45,27 +45,24 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
 
-//    mObjects.push_back(new XYZ());
-//    mObjects.push_back(new Triangle());
-//    mObjects.push_back(new TriangleSurface());
-//    mObjects.push_back(new TwoVariableFunctionSpace());
+    mObjects.push_back(new XYZ());
+
     testObject = new InteractiveObject();
+    mObjects.push_back(testObject);
 
     //Oppgave 1
     TwoVariableFunctionSpace* tvSpace = new TwoVariableFunctionSpace();
-//    tvSpace->ToFile("vertices.txt");
+    tvSpace->toFile("planeVertices.txt");
+
+    testPlane = new TriangleSurface("planeVertices.txt");
+    mObjects.push_back(testPlane);
 
     //Oppgave 2
-//    TwoVariableFunctionSpace* ovSpace = new TwoVariableFunctionSpace(1);
-//    ovSpace->ToFile("vertices.txt");
+    Curve* curve = new Curve();
+    curve->toFile("curveVertices.txt");
 
-//    TriangleSurface* tSurface = new TriangleSurface();
-//    tSurface->readFile("vertices.txt");
-//    mObjects.push_back(tSurface);
-
-    mObjects.push_back(tvSpace);
-    mObjects.push_back(testObject);
-
+    testCurve = new LineSurface("curveVertices.txt");
+    mObjects.push_back(testCurve);
 
 }
 
@@ -337,13 +334,44 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
         mMainWindow->close();       //Shuts down the whole program
     }
 
+    float moveDistance = 0.1f;
     //You get the keyboard input like this
+    if(event->key() == Qt::Key_W)
+    {
+        testObject->move(0.f, moveDistance, 0.f);
+    }
     if(event->key() == Qt::Key_A)
     {
-        testObject->move(-0.1f, 0.0f, 0.0f);
+        testObject->move(-moveDistance, 0.f, 0.f);
+    }
+    if(event->key() == Qt::Key_S)
+    {
+        testObject->move(0.f, -moveDistance, 0.f);
+    }
+    if(event->key() == Qt::Key_D)
+    {
+        testObject->move(moveDistance, 0.0f, 0.f);
     }
 //    if(event->key() == Qt::Key_S)
 //    {
 //        mMainWindow->statusBar()->showMessage(" SSSS");
 //    }
+    if(event->key() == Qt::Key_1)
+    {
+        if (testCurve->hide)
+            testCurve->hide = false;
+        else
+        {
+            testCurve->hide = true;
+        }
+    }
+    if(event->key() == Qt::Key_2)
+    {
+        if (testPlane->hide)
+            testPlane->hide = false;
+        else
+        {
+            testPlane->hide = true;
+        }
+    }
 }
