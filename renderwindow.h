@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QElapsedTimer>
 #include <vector>
+#include "interactiveobject.h"
 #include "visualobject.h"
 
 class QOpenGLContext;
@@ -37,7 +38,7 @@ private:
     void init();            //initialize things we need before rendering
 
     std::vector<VisualObject*> mObjects;
-//    XYZ xyz;
+    VisualObject* testObject;
 
     QOpenGLContext *mContext{nullptr};  //Our OpenGL context
     bool mInitialized{false};

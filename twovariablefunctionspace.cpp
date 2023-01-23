@@ -142,7 +142,7 @@ void TwoVariableFunctionSpace::draw()
                        GL_FALSE,                //transpose the matrix before sending it?
                        mMatrix.constData());    //the data of the matrix
     //DRAW CALL MOMENT
-    glDrawArrays(GL_LINES,
+    glDrawArrays(GL_TRIANGLES,
                  0,
                  mVertices.size());
 }

@@ -49,18 +49,23 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    mObjects.push_back(new Triangle());
 //    mObjects.push_back(new TriangleSurface());
 //    mObjects.push_back(new TwoVariableFunctionSpace());
+    testObject = new InteractiveObject();
 
     //Oppgave 1
     TwoVariableFunctionSpace* tvSpace = new TwoVariableFunctionSpace();
-    tvSpace->ToFile("vertices.txt");
+//    tvSpace->ToFile("vertices.txt");
 
     //Oppgave 2
 //    TwoVariableFunctionSpace* ovSpace = new TwoVariableFunctionSpace(1);
 //    ovSpace->ToFile("vertices.txt");
 
-    TriangleSurface* tSurface = new TriangleSurface();
-    tSurface->readFile("vertices.txt");
-    mObjects.push_back(tSurface);
+//    TriangleSurface* tSurface = new TriangleSurface();
+//    tSurface->readFile("vertices.txt");
+//    mObjects.push_back(tSurface);
+
+    mObjects.push_back(tvSpace);
+    mObjects.push_back(testObject);
+
 
 }
 
@@ -333,10 +338,10 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
 
     //You get the keyboard input like this
-//    if(event->key() == Qt::Key_A)
-//    {
-//        mMainWindow->statusBar()->showMessage(" AAAA");
-//    }
+    if(event->key() == Qt::Key_A)
+    {
+        testObject->move(-0.1f, 0.0f, 0.0f);
+    }
 //    if(event->key() == Qt::Key_S)
 //    {
 //        mMainWindow->statusBar()->showMessage(" SSSS");

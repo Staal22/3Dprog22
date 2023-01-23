@@ -13,6 +13,7 @@ public:
    virtual void init(GLint matrixUniform)=0;
    virtual void draw()=0;
    virtual void rotate()=0;
+   virtual void move(float x, float y, float z) { }
 
 protected:
    std::vector<Vertex> mVertices;

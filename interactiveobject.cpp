@@ -1,49 +1,20 @@
-#include "trianglesurface.h"
+#include "interactiveobject.h"
 
-TriangleSurface::TriangleSurface()
+InteractiveObject::InteractiveObject()
 {
-    //         x   y   z   r g b
-//    Vertex v0{0.0,0.0,0.0, 1,0,0};    mVertices.push_back(v0);
-//    Vertex v1(0.5,0.0,0.0, 0,1,0);    mVertices.push_back(v1);
-//    Vertex v2{0.5,0.5,0.0, 0,0,1};    mVertices.push_back(v2);
-//    Vertex v3{0.0,0.0,0.0, 0,0,1};    mVertices.push_back(v3);
-//    Vertex v4{0.5,0.5,0.0, 0,1,0};    mVertices.push_back(v4);
-//    Vertex v5{0.0,0.5,0.0, 1,0,0};    mVertices.push_back(v5);
-    mMatrix.setToIdentity();
+    mVertices.push_back(Vertex{0, 0, 0, 1, 1, 0});
+    mVertices.push_back(Vertex{1, 0, 0, 1, 1, 0});
+    mVertices.push_back(Vertex{0, 1, 1, 1, 1, 0});
 }
 
-TriangleSurface::TriangleSurface(std::string filename)
-{
-    readFile(filename);
-    mMatrix.setToIdentity();
-}
-
-TriangleSurface::~TriangleSurface()
+InteractiveObject::~InteractiveObject()
 {
 
 }
 
-void TriangleSurface::readFile(std::string filename)
+void InteractiveObject::init(GLint matrixUniform)
 {
-    std::ifstream inn;
-    inn.open(filename.c_str());
-
-    if (inn.is_open()) {
-        int n;
-        Vertex vertex;
-        inn >> n;
-        mVertices.reserve(n);
-        for (int i=0; i<n; i++) {
-             inn >> vertex;
-             mVertices.push_back(vertex);
-        }
-        inn.close();
-    }
-}
-
-void TriangleSurface::init(GLint shader)
-{
-    mMatrixUniform = shader;
+    mMatrixUniform = matrixUniform;
 
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
@@ -91,7 +62,7 @@ void TriangleSurface::init(GLint shader)
     glBindVertexArray(0);
 }
 
-void TriangleSurface::draw()
+void InteractiveObject::draw()
 {
     //what object to draw
     glBindVertexArray(mVAO);
@@ -107,7 +78,15 @@ void TriangleSurface::draw()
                  mVertices.size());
 }
 
-void TriangleSurface::rotate()
+void InteractiveObject::rotate()
 {
     mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
+}
+
+void InteractiveObject::move(float x, float y, float z)
+{
+    mx += x;
+    my += y;
+    mz += z;
+    mMatrix.translate(mx, my, mz);
 }

@@ -6,6 +6,7 @@ CONFIG      += c++17
 TARGET      = 3D-programmering
 
 SOURCES += main.cpp \
+    interactiveobject.cpp \
     logger.cpp \
     mainwindow.cpp \
     renderwindow.cpp \
@@ -18,6 +19,7 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    interactiveobject.h \
     logger.h \
     mainwindow.h \
     renderwindow.h \
