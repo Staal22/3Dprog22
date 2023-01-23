@@ -17,7 +17,9 @@ public:
     void rotate() override;
 
 private:
-    float function(int variables, float x, float y = 0.f);
+    float function(float x, float y);
+    float funcX(float x, float y);
+    float funcY(float x, float y);
 
     float xMin = -1.f;
     float xMax = 1.0f;
