@@ -13,7 +13,6 @@
 #include "logger.h"
 #include "tetrahedron.h"
 #include "xyz.h"
-#include "triangle.h"
 #include "twovariablefunctionspace.h"
 #include "curve.h"
 
@@ -132,11 +131,12 @@ void RenderWindow::init()
     //NB: hardcoded path to files! You have to change this if you change directories for the project.
     //Qt makes a build-folder besides the project folder. That is why we go down one directory
     // (out of the build-folder) and then up into the project folder.
-    mShaderProgram = new Shader("../3Dprog22/plainshader.vert", "../3Dprog22/plainshader.frag");
+    mShaderProgram = new Shader("../3Dprog22/plainshader.vert", "../3Dprog22/plainshader.frag", "../3Dprog22/plainshader.geom");
 
     // Get the matrixUniform location from the shader
     // This has to match the "matrix" variable name in the vertex shader
     // The uniform is used in the render() function to send the model matrix to the shader
+    //mShaderProgram->use();
     mMatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "matrix" );
     mPmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "pmatrix" );
     mVmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "vmatrix" );

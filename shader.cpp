@@ -8,7 +8,7 @@
 
 #include "logger.h" //For our utility Logger class
 
-Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
+Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath, const GLchar *geometryPath)
 {
     initializeOpenGLFunctions();    //must do this to get access to OpenGL functions in QOpenGLFunctions
 
@@ -19,8 +19,11 @@ Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
     // 1. Retrieve the vertex/fragment source code from filePath
     std::string vertexCode;
     std::string fragmentCode;
+    std::string geometryCode;
+
     std::ifstream vShaderFile;
     std::ifstream fShaderFile;
+    std::ifstream gShaderFile;
 
     // Open files and check for errors
     vShaderFile.open( vertexPath );
@@ -29,25 +32,33 @@ Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
     fShaderFile.open( fragmentPath );
     if(!fShaderFile)
         mLogger->logText("ERROR SHADER FILE " + std::string(fragmentPath) + " NOT SUCCESFULLY READ", LogType::REALERROR);
-    std::stringstream vShaderStream, fShaderStream;
+    gShaderFile.open( geometryPath );
+//    if(!gShaderFile)
+//        mLogger->logText("ERROR SHADER FILE " + std::string(geometryPath) + " NOT SUCCESFULLY READ", LogType::REALERROR);
+    std::stringstream vShaderStream, fShaderStream, gShaderStream;
     // Read file's buffer contents into streams
     vShaderStream << vShaderFile.rdbuf( );
     fShaderStream << fShaderFile.rdbuf( );
+//    gShaderStream << gShaderFile.rdbuf( );
     // close file handlers
     vShaderFile.close( );
     fShaderFile.close( );
+//    gShaderFile.close( );
     // Convert stream into string
     vertexCode = vShaderStream.str( );
     fragmentCode = fShaderStream.str( );
+//    geometryCode = gShaderStream.str( );
 
     const GLchar *vShaderCode = vertexCode.c_str( );
     const GLchar *fShaderCode = fragmentCode.c_str( );
+//    const GLchar * gShaderCode = geometryCode.c_str( );
 
     // 2. Compile shaders
-    GLuint vertex, fragment;
+    GLuint vertex, fragment, geometry;
     GLint success;
     GLchar infoLog[512];
-    // Vertex Shader
+
+    // Vertex shader
     vertex = glCreateShader( GL_VERTEX_SHADER );
     glShaderSource( vertex, 1, &vShaderCode, nullptr );
     glCompileShader( vertex );
@@ -59,7 +70,8 @@ Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
         mLogger->logText("ERROR SHADER VERTEX " + std::string(vertexPath) +
                          " COMPILATION_FAILED\n" + infoLog, LogType::REALERROR);
     }
-    // Fragment Shader
+
+    // Fragment shader
     fragment = glCreateShader( GL_FRAGMENT_SHADER );
     glShaderSource( fragment, 1, &fShaderCode, nullptr );
     glCompileShader( fragment );
@@ -71,10 +83,25 @@ Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
         mLogger->logText("ERROR SHADER VERTEX " + std::string(fragmentPath) +
                          " COMPILATION_FAILED\n" + infoLog, LogType::REALERROR);
     }
+
+//    // Geometry shader
+//    geometry = glCreateShader( GL_GEOMETRY_SHADER );
+//    glShaderSource( geometry, 1, &gShaderCode, nullptr);
+//    glCompileShader( geometry );
+//    // Print compile errors if any
+//    glGetShaderiv( geometry, GL_COMPILE_STATUS, &success );
+//    if ( !success )
+//    {
+//        glGetShaderInfoLog( geometry, 512, nullptr, infoLog );
+//        mLogger->logText("ERROR SHADER GEOMETRY " + std::string(geometryPath) +
+//                         " COMPILATION_FAILED\n" + infoLog, LogType::REALERROR);
+//    }
+
     // Shader Program linking
     this->mProgram = glCreateProgram();
     glAttachShader( this->mProgram, vertex );
     glAttachShader( this->mProgram, fragment );
+//    glAttachShader( this->mProgram, geometry );
     glLinkProgram( this->mProgram );
     // Print linking errors if any
     glGetProgramiv( this->mProgram, GL_LINK_STATUS, &success );
@@ -97,6 +124,7 @@ Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
     // The shader program is now on the GPU and we reference it by using the mProgram variable
     glDeleteShader( vertex );
     glDeleteShader( fragment );
+//    glDeleteShader( geometry );
 }
 
 void Shader::use()

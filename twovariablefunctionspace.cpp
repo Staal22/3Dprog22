@@ -144,7 +144,17 @@ void TwoVariableFunctionSpace::rotate()
     mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
 }
 
-float TwoVariableFunctionSpace::function(int variables, float x, float y)
+float TwoVariableFunctionSpace::function(float x, float y)
 {
     return sin(M_PI * x) * sin(M_PI * y); //Oppgave 1
+}
+
+float TwoVariableFunctionSpace::funcX(float x, float y)
+{
+    return (M_PI*cos(M_PI*x) * sin(M_PI*y));
+}
+
+float TwoVariableFunctionSpace::funcY(float x, float y)
+{
+    return (M_PI*cos(M_PI*y) * sin(M_PI*x));
 }

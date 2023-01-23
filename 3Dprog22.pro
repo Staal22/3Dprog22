@@ -42,4 +42,5 @@ FORMS += \
 
 DISTFILES += \
     plainshader.frag \
+    plainshader.geom \
     plainshader.vert
