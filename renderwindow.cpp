@@ -37,6 +37,11 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mMVPmatrix = new QMatrix4x4{};
     mMVPmatrix->setToIdentity();    //1, 1, 1, 1 in the diagonal of the matrix
 
+    mPmatrix = new QMatrix4x4{};
+    mPmatrix->setToIdentity();
+    mVmatrix = new QMatrix4x4{};
+    mVmatrix->setToIdentity();
+
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
 
@@ -129,6 +134,8 @@ void RenderWindow::init()
     // This has to match the "matrix" variable name in the vertex shader
     // The uniform is used in the render() function to send the model matrix to the shader
     mMatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "matrix" );
+    mPmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "pmatrix" );
+    mVmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "vmatrix" );
 
     // cleaner code test
     foreach (auto VisualObject, mObjects) {
@@ -147,7 +154,15 @@ void RenderWindow::init()
 // Called each frame - doing the rendering!!!
 void RenderWindow::render()
 {
-    mMVPmatrix->setToIdentity();
+//    mMVPmatrix->setToIdentity();
+    mPmatrix->setToIdentity();
+    mVmatrix->setToIdentity();
+//    mPmatrix->perspective(60.f, 4.0f/3.0f, 0.1f, 10.0f);
+
+//    qDebug() << *mPmatrix;
+//    //Move camera
+//    mVmatrix->translate(0, 0, 5);
+
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
@@ -158,6 +173,10 @@ void RenderWindow::render()
 
     //what shader to use
     glUseProgram(mShaderProgram->getProgram() );
+
+    //Move to camera class later
+    glUniformMatrix4fv(mPmatrixUniform, 1, GL_FALSE, mPmatrix->constData());
+    glUniformMatrix4fv(mVmatrixUniform, 1, GL_FALSE, mVmatrix->constData());
 
     // cleaner code test
     foreach (auto VisualObject, mObjects) {
