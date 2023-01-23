@@ -13,6 +13,7 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     renderwindow.cpp \
     shader.cpp \
+    tetrahedron.cpp \
     triangle.cpp \
     trianglesurface.cpp \
     twovariablefunctionspace.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     mainwindow.h \
     renderwindow.h \
     shader.h \
+    tetrahedron.h \
     triangle.h \
     trianglesurface.h \
     twovariablefunctionspace.h \
