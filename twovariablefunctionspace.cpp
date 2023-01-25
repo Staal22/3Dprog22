@@ -8,16 +8,16 @@ TwoVariableFunctionSpace::TwoVariableFunctionSpace()
         {
             for (auto y = yMin; y < yMax; y += h)
             {
-                z = function(2, x, y);
+                z = function(x, y);
                 mVertices.push_back(Vertex{x, y, z, 0, 0, z});
-                z = function(2, x + h, y);
+                z = function(x + h, y);
                 mVertices.push_back(Vertex{x + h, y, z, 0, 0, z});
-                z = function(2, x, y + h);
+                z = function(x, y + h);
                 mVertices.push_back(Vertex{x, y + h, z, 0, 0, z});
                 mVertices.push_back(Vertex{x, y + h, z, 0, 0, z});
-                z = function(2, x + h, y);
+                z = function(x + h, y);
                 mVertices.push_back(Vertex{x + h, y, z, 0, 0, z});
-                z = function(2, x + h, y + h);
+                z = function(x + h, y + h);
                 mVertices.push_back(Vertex{x + h, y + h, z, 0, 0, z});
             }
         }
@@ -144,9 +144,32 @@ void TwoVariableFunctionSpace::rotate()
     mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
 }
 
+float TwoVariableFunctionSpace::numericIntegral()
+{
+    double dx = h;
+    double dy = h;
+    double area = dx * dy;
+    double cumSum = 0.f;
+    for (float x = 0 + h; x < 1.0f; x += h)
+    {
+        for (float y = 0 + h; y < 1.0f - x; y += h)
+        {
+            cumSum += area * functionNumeric(x, y);
+        }
+    }
+    return cumSum;
+}
+
+
+
 float TwoVariableFunctionSpace::function(float x, float y)
 {
     return sin(M_PI * x) * sin(M_PI * y); //Oppgave 1
+}
+
+float TwoVariableFunctionSpace::functionNumeric(double x, double y)
+{
+    return (1 - x - y);//oppgave 3
 }
 
 float TwoVariableFunctionSpace::funcX(float x, float y)

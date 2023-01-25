@@ -51,19 +51,22 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     testObject = new InteractiveObject();
     mObjects.push_back(testObject);
 
-    //Oppgave 1
+//    //Oppgave 1
     TwoVariableFunctionSpace* tvSpace = new TwoVariableFunctionSpace();
-    tvSpace->toFile("planeVertices.txt");
+//    tvSpace->toFile("planeVertices.txt");
 
-    testPlane = new TriangleSurface("planeVertices.txt");
-    mObjects.push_back(testPlane);
+//    testPlane = new TriangleSurface("planeVertices.txt");
+//    mObjects.push_back(testPlane);
 
-    //Oppgave 2
-    Curve* curve = new Curve();
-    curve->toFile("curveVertices.txt");
+//    //Oppgave 2
+//    Curve* curve = new Curve();
+//    curve->toFile("curveVertices.txt");
 
-    testCurve = new LineSurface("curveVertices.txt");
-    mObjects.push_back(testCurve);
+//    testCurve = new LineSurface("curveVertices.txt");
+//    mObjects.push_back(testCurve);
+
+    //Oppgave 3
+    qDebug() << tvSpace->numericIntegral();
 
 }
 

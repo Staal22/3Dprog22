@@ -16,8 +16,11 @@ public:
     void draw() override;
     void rotate() override;
 
+    float numericIntegral();
+
 private:
     float function(float x, float y);
+    float functionNumeric(double x, double y);
     float funcX(float x, float y);
     float funcY(float x, float y);
 
@@ -27,6 +30,8 @@ private:
     float yMax = 1.0f;
     float h = 0.01f;
     float z = 0.f;
+
+
 };
 
 #endif // TWOVARIABLEFUNCTIONSPACE_H
