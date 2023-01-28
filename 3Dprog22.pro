@@ -6,6 +6,7 @@ CONFIG      += c++17
 TARGET      = 3D-programmering
 
 SOURCES += main.cpp \
+    camera.cpp \
     curve.cpp \
     interactiveobject.cpp \
     linesurface.cpp \
@@ -22,6 +23,7 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    camera.h \
     curve.h \
     interactiveobject.h \
     linesurface.h \

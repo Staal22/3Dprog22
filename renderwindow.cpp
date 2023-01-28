@@ -161,14 +161,16 @@ void RenderWindow::init()
 // Called each frame - doing the rendering!!!
 void RenderWindow::render()
 {
+    mCamera.init(mPmatrixUniform, mVmatrixUniform);
+//    mCamera.perspective(60.f, 4.0f/3.0f, 0.1f, 10.0f);
+
 //    mMVPmatrix->setToIdentity();
-    mPmatrix->setToIdentity();
-    mVmatrix->setToIdentity();
+//    mPmatrix->setToIdentity();
+//    mVmatrix->setToIdentity();
 //    mPmatrix->perspective(60.f, 4.0f/3.0f, 0.1f, 10.0f);
 
 //    qDebug() << *mPmatrix;
-//    //Move camera
-//    mVmatrix->translate(0, 0, 5);
+
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -181,10 +183,10 @@ void RenderWindow::render()
     //what shader to use
     glUseProgram(mShaderProgram->getProgram() );
 
-    //Move to camera class later
-    glUniformMatrix4fv(mPmatrixUniform, 1, GL_FALSE, mPmatrix->constData());
-    glUniformMatrix4fv(mVmatrixUniform, 1, GL_FALSE, mVmatrix->constData());
-
+//    //Move camera
+//    mVmatrix->translate(0, 0, 5);
+//    mCamera.lookAt(QVector3D{0, 0, 5}, QVector3D{0, 0, 0}, QVector3D{0, 1, 0});
+    mCamera.update();
     // cleaner code test
     foreach (auto VisualObject, mObjects) {
         VisualObject->draw();

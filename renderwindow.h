@@ -11,6 +11,7 @@
 #include "visualobject.h"
 #include "trianglesurface.h"
 #include "linesurface.h"
+#include "camera.h"
 
 class QOpenGLContext;
 class Shader;
@@ -43,6 +44,7 @@ private:
     VisualObject* testObject;
     TriangleSurface* testPlane;
     LineSurface* testCurve;
+    Camera mCamera;
 
     QOpenGLContext *mContext{nullptr};  //Our OpenGL context
     bool mInitialized{false};
