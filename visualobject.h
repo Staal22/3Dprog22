@@ -23,6 +23,7 @@ public:
 
 protected:
    std::vector<Vertex> mVertices;
+   std::vector<GLuint> mIndices; 	// Til indeksering
    GLuint mVAO{0};
    GLuint mVBO{0};
    GLint mMatrixUniform{0};

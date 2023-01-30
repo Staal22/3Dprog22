@@ -12,32 +12,58 @@ TriangleSurface::TriangleSurface()
     mMatrix.setToIdentity();
 }
 
-TriangleSurface::TriangleSurface(std::string filename)
-{
-    readFile(filename);
-    mMatrix.setToIdentity();
-}
+//TriangleSurface::TriangleSurface(std::string filename)
+//{
+//    readFile(filename);
+//    mMatrix.setToIdentity();
+//}
 
 TriangleSurface::~TriangleSurface()
 {
 
 }
 
-void TriangleSurface::readFile(std::string filename)
+void TriangleSurface::readFile(std::string filename, bool IndexedVertices)
 {
-    std::ifstream inn;
-    inn.open(filename.c_str());
-
-    if (inn.is_open()) {
-        int n;
+    if (IndexedVertices)
+    {
+        std::ifstream inn;
+        inn.open(filename.c_str());
+        if (inn.is_open()) {
+        int ni, nv, indeks;
+        inn >> ni;
+        mIndices.reserve(ni);
+        inn >> nv;
+        mVertices.reserve(nv);
+        for (int i=0; i<ni; i++)
+        {
+            inn >> indeks; mIndices.push_back(indeks);
+        }
         Vertex vertex;
-        inn >> n;
-        mVertices.reserve(n);
-        for (int i=0; i<n; i++) {
-             inn >> vertex;
-             mVertices.push_back(vertex);
+        for (int i=0; i<nv; i++)
+        {
+            inn >> vertex; mVertices.push_back(vertex);
         }
         inn.close();
+        }
+
+    }
+    else
+    {
+        std::ifstream inn;
+        inn.open(filename.c_str());
+
+        if (inn.is_open()) {
+            int n;
+            Vertex vertex;
+            inn >> n;
+            mVertices.reserve(n);
+            for (int i=0; i<n; i++) {
+                 inn >> vertex;
+                 mVertices.push_back(vertex);
+            }
+            inn.close();
+        }
     }
 }
 
@@ -93,10 +119,15 @@ void TriangleSurface::init(GLint shader)
 
 void TriangleSurface::draw()
 {
-    if (hide)
-    {
-        return;
-    }
+//    if (hide)
+//    {
+//        return;
+//    }
+    initializeOpenGLFunctions();
+    glBindVertexArray( mVAO );
+    glUniformMatrix4fv( mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
+    glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
+    return;
     //what object to draw
     glBindVertexArray(mVAO);
     //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here

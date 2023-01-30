@@ -7,10 +7,10 @@ class TriangleSurface : public VisualObject
 {
 public:
     TriangleSurface();
-    TriangleSurface(std::string filename);
+//    TriangleSurface(std::string filename);
     ~TriangleSurface() override;
 
-    void readFile(std::string filename);
+    void readFile(std::string filename, bool IndexedVertices);
     void init(GLint shader) override;
     void draw() override;
     void rotate() override;

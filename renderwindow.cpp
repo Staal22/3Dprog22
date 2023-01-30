@@ -57,9 +57,6 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     TwoVariableFunctionSpace* tvSpace = new TwoVariableFunctionSpace();
 //    tvSpace->toFile("planeVertices.txt");
 
-//    testPlane = new TriangleSurface("planeVertices.txt");
-//    mObjects.push_back(testPlane);
-
 //    //Oppgave 2
 //    Curve* curve = new Curve();
 //    curve->toFile("curveVertices.txt");
@@ -71,8 +68,16 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     qDebug() << tvSpace->numericIntegral();
 
     Disc = new class Disc();
+
+    Tetrahedron* testahedron = new Tetrahedron();
+    testahedron->writeFile("tetrahedronVertices.txt");
+
 //    mObjects.push_back(new OctahedronBall(5));
-    mObjects.push_back(Disc);
+//    mObjects.push_back(Disc);
+
+    TriangleSurface* tS = new TriangleSurface();
+    tS->readFile("tetrahedronVertices", false);
+    mObjects.push_back(tS);
 }
 
 RenderWindow::~RenderWindow()

@@ -12,9 +12,9 @@ public:
     void init(GLint matrixUniform) override;
     void draw() override;
     void rotate() override;
+    void writeFile(std::string filename);
 
 protected:
-    std::vector<GLuint> mIndices; 	// Til indeksering
     GLuint mIBO{0};                 // for glDrawElements()
 
 };
