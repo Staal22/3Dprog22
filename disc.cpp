@@ -78,7 +78,6 @@ void Disc::draw()
 void Disc::move(float dt)
 {
 //    QVector3D ds=mVelocity*dt;
-//    // mPosition = mPosition + ds;		// hvis mPosisjon er Vector3d
 //    mPosition.translate(ds.x(), ds.y(), ds.z());	// hvis mPosisjon er Matrix4x4
 //    // normalen kan generelt være en parameter inn
 //    QVector3D normal = QVector3D{0.0f, 1.0f, 0.0f};

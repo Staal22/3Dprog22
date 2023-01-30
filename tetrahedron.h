@@ -15,7 +15,7 @@ public:
 
 protected:
     std::vector<GLuint> mIndices; 	// Til indeksering
-    GLuint mIBO{0};			// for glDrawElements()
+    GLuint mIBO{0};                 // for glDrawElements()
 
 };
 
