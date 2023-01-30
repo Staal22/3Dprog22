@@ -4,6 +4,7 @@ OctahedronBall::OctahedronBall(int n) : m_recursions(n), m_index(0)
 {
     mVertices.reserve(3 * 8 * pow(4, m_recursions));
     octahedronUnitBall();
+    mMatrix.setToIdentity();
 }
 
 //!//! \brief OctahedronBall::~OctahedronBall() virtual destructor

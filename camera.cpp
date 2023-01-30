@@ -20,7 +20,10 @@ void Camera::perspective(int degrees, double aspect, double nearplane, double fa
 
 void Camera::lookAt(const QVector3D &eye, const QVector3D &at, const QVector3D &up)
 {
+    //invertering?
+    mVmatrix.setToIdentity();
     mVmatrix.lookAt(eye, at, up);
+    mVmatrix.inverted();
 }
 
 void Camera::update()
@@ -33,5 +36,7 @@ void Camera::update()
 
 void Camera::translate(float dx, float dy, float dz)
 {
-
+    mEye.setX(mEye.x() + dx);
+    mEye.setY(mEye.y() + dy);
+    mEye.setZ(mEye.z() + dz);
 }

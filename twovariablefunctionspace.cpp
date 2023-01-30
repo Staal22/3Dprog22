@@ -36,7 +36,7 @@ TwoVariableFunctionSpace::~TwoVariableFunctionSpace()
 
 }
 
-void TwoVariableFunctionSpace::toFile(std::string filename)
+void TwoVariableFunctionSpace::writeFile(std::string filename)
 {
     std::ofstream outf{ filename };
     if (!outf)

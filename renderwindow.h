@@ -13,6 +13,7 @@
 #include "linesurface.h"
 #include "camera.h"
 
+
 class QOpenGLContext;
 class Shader;
 class MainWindow;
@@ -42,6 +43,7 @@ private:
 
     std::vector<VisualObject*> mObjects;
     VisualObject* testObject;
+    class Disc* Disc;
     TriangleSurface* testPlane;
     LineSurface* testCurve;
     Camera mCamera;
@@ -57,7 +59,8 @@ private:
     GLuint mVAO;                        //OpenGL reference to our VAO
     GLuint mVBO;                        //OpenGL reference to our VBO
 
-    QMatrix4x4 *mMVPmatrix{nullptr};         //The matrix with the transform for the object we draw
+//    QMatrix4x4 *mMVPmatrix{nullptr};         //The matrix with the transform for the object we draw
+
     QMatrix4x4 *mPmatrix{nullptr};
     QMatrix4x4 *mVmatrix{nullptr};
 

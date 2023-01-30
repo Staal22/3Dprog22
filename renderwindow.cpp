@@ -16,6 +16,7 @@
 #include "xyz.h"
 #include "twovariablefunctionspace.h"
 #include "curve.h"
+#include "disc.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow) : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
 {
@@ -69,7 +70,9 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     //Oppgave 3
     qDebug() << tvSpace->numericIntegral();
 
-    mObjects.push_back(new OctahedronBall(5));
+    Disc = new class Disc();
+//    mObjects.push_back(new OctahedronBall(5));
+    mObjects.push_back(Disc);
 }
 
 RenderWindow::~RenderWindow()
@@ -147,7 +150,8 @@ void RenderWindow::init()
     mVmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "vmatrix" );
 
     // cleaner code test
-    foreach (auto VisualObject, mObjects) {
+    foreach (auto VisualObject, mObjects)
+    {
         VisualObject->init(mMatrixUniform);
     }
 
@@ -155,7 +159,44 @@ void RenderWindow::init()
 //    for (auto it=mObjects.begin(); it!= mObjects.end(); it++)
 //        (*it)->init(mMatrixUniform);
 
+//    QMatrix4x4 A = QMatrix4x4(1,1,1,1,5,3,2,2,1,3,2,1,0,0,0,0);
+//    QMatrix4x4 test = A.inverted();
+//    qDebug() << A;
+//    for (int k=0; k<4-1; k++)
+//    {
+//        // pivot(k);
+//        // Ved radoperasjoner skal vi oppnå 0-ere under diagonalelementet
+//        // i alle rader nedenfor (altså kolonne k
+//        // Vi subtraherer et multiplum av k-te
+//        // rad fra radene nedenfor, nuller ut kolonner fra venstre
+//        for (int i=k+1; i<4; i++)
+//        {
+//            // Skal mult med denne og deretter trekke fra rad i
+//            // denne skal bli null og vi kan lagre faktoren her
+//            A(i,k) = A(i,k)/A(k,k);
+//            for (int j=k+1; j<4; j++)
+//            {
+//                // kolonnene til høyre for den som blir nullet ut
+//                A(i,j) = A(i,j) - A(i,k)*A(k,j);
+//            }
+//        }
+//    }
+//    qDebug() << A;
+//    qDebug() << test;
 
+//    QVector4D x(0,0,0,0);
+//    QVector4D b(0,0,0,0);
+//    for (int k=0; k<4; k++)
+//        for (int i=k+1; i<4; i++)
+//            b[i] = b[i]-A(i,k)*b[k];
+//    for (int i=4-1; i>=0; i--)
+//    {
+//        x[i] = b[i];
+//        for (int j=i+1; j<4; j++)
+//            x[i] = x[i] - A(i,j)*x[j];
+//        x[i] = x[i]/A(i,i);
+//    }
+//    qDebug() << x;
 
     glBindVertexArray(0);       //unbinds any VertexArray - good practice
 }
@@ -163,21 +204,18 @@ void RenderWindow::init()
 // Called each frame - doing the rendering!!!
 void RenderWindow::render()
 {
+    Disc->move(1);
+
     mCamera.init(mPmatrixUniform, mVmatrixUniform);
-//    mCamera.perspective(60.f, 4.0f/3.0f, 0.1f, 10.0f);
-
-//    mMVPmatrix->setToIdentity();
-//    mPmatrix->setToIdentity();
-//    mVmatrix->setToIdentity();
-//    mPmatrix->perspective(60.f, 4.0f/3.0f, 0.1f, 10.0f);
-
+    mCamera.perspective(60.f, 4.0f/3.0f, 0.1f, 10.0f);
+//    mCamera.translate(0, 0, 5);
 //    qDebug() << *mPmatrix;
+
+    mCamera.lookAt(QVector3D{0, 0, 5}, QVector3D{0, 0, 0}, QVector3D{0, 1, 0});
 
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
-
-    initializeOpenGLFunctions();    //must call this every frame it seems...
 
     //clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -186,11 +224,11 @@ void RenderWindow::render()
     glUseProgram(mShaderProgram->getProgram() );
 
 //    //Move camera
-//    mVmatrix->translate(0, 0, 5);
-//    mCamera.lookAt(QVector3D{0, 0, 5}, QVector3D{0, 0, 0}, QVector3D{0, 1, 0});
+//    mVmatrix->translate(0, 5550, 0);
     mCamera.update();
     // cleaner code test
-    foreach (auto VisualObject, mObjects) {
+    foreach (auto VisualObject, mObjects)
+    {
         VisualObject->draw();
     }
     //canvas code
@@ -214,8 +252,8 @@ void RenderWindow::render()
     //                   degree, x,   y,   z -axis
     if(mRotate)
     {
-//        mMVPmatrix->rotate(2.f, 1.f, 1.0, 1.f);
-        foreach (auto VisualObject, mObjects) {
+        foreach (auto VisualObject, mObjects)
+        {
             VisualObject->rotate();
         }
     }
