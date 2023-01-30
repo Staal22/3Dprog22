@@ -12,6 +12,7 @@ SOURCES += main.cpp \
     linesurface.cpp \
     logger.cpp \
     mainwindow.cpp \
+    octahedronball.cpp \
     renderwindow.cpp \
     shader.cpp \
     tetrahedron.cpp \
@@ -29,6 +30,7 @@ HEADERS += \
     linesurface.h \
     logger.h \
     mainwindow.h \
+    octahedronball.h \
     renderwindow.h \
     shader.h \
     tetrahedron.h \

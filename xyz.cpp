@@ -8,6 +8,7 @@ XYZ::XYZ()
     mVertices.push_back(Vertex{0,1,0,0,1,0});
     mVertices.push_back(Vertex{0,0,0,0,0,1});
     mVertices.push_back(Vertex{0,0,1,0,0,1});
+    mMatrix.setToIdentity();
 }
 
 XYZ::~XYZ()

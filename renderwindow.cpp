@@ -8,6 +8,7 @@
 #include <QStatusBar>
 #include <QDebug>
 #include <string>
+#include "octahedronball.h"
 #include "shader.h"
 #include "mainwindow.h"
 #include "logger.h"
@@ -34,8 +35,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     //This is the matrix used to transform (rotate) the triangle
     //You could do without, but then you have to simplify the shader and shader setup
-    mMVPmatrix = new QMatrix4x4{};
-    mMVPmatrix->setToIdentity();    //1, 1, 1, 1 in the diagonal of the matrix
+//    mMVPmatrix = new QMatrix4x4{};
+//    mMVPmatrix->setToIdentity();    //1, 1, 1, 1 in the diagonal of the matrix
 
     mPmatrix = new QMatrix4x4{};
     mPmatrix->setToIdentity();
@@ -68,6 +69,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     //Oppgave 3
     qDebug() << tvSpace->numericIntegral();
 
+    mObjects.push_back(new OctahedronBall(5));
 }
 
 RenderWindow::~RenderWindow()
@@ -359,10 +361,6 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     {
         testObject->move(moveDistance, 0.0f, 0.f);
     }
-//    if(event->key() == Qt::Key_S)
-//    {
-//        mMainWindow->statusBar()->showMessage(" SSSS");
-//    }
     if(event->key() == Qt::Key_1)
     {
         if (testCurve->hide)
