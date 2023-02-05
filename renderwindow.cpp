@@ -55,29 +55,29 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
 //    //Oppgave 1
     TwoVariableFunctionSpace* tvSpace = new TwoVariableFunctionSpace();
-//    tvSpace->toFile("planeVertices.txt");
+    tvSpace->writeFile("planeVertices.txt");
 
 //    //Oppgave 2
-//    Curve* curve = new Curve();
-//    curve->toFile("curveVertices.txt");
+    Curve* curve = new Curve();
+    curve->writeFile("curveVertices.txt");
 
-//    testCurve = new LineSurface("curveVertices.txt");
-//    mObjects.push_back(testCurve);
+    testCurve = new LineSurface("curveVertices.txt");
+    mObjects.push_back(testCurve);
 
     //Oppgave 3
     qDebug() << tvSpace->numericIntegral();
 
-    Disc = new class Disc();
+//    Disc = new class Disc();
 
-    Tetrahedron* testahedron = new Tetrahedron();
-    testahedron->writeFile("tetrahedronVertices.txt");
+//    Tetrahedron* testahedron = new Tetrahedron();
+//    testahedron->writeFile("tetrahedronVertices.txt");
 
 //    mObjects.push_back(new OctahedronBall(5));
 //    mObjects.push_back(Disc);
 
-    TriangleSurface* tS = new TriangleSurface();
-    tS->readFile("tetrahedronVertices", false);
-    mObjects.push_back(tS);
+    testPlane = new TriangleSurface();
+    testPlane->readFile("planeVertices.txt", false);
+    mObjects.push_back(testPlane);
 }
 
 RenderWindow::~RenderWindow()
@@ -209,11 +209,11 @@ void RenderWindow::init()
 // Called each frame - doing the rendering!!!
 void RenderWindow::render()
 {
-    Disc->move(1);
+//    Disc->move(1);
 
     mCamera.init(mPmatrixUniform, mVmatrixUniform);
     mCamera.perspective(60.f, 4.0f/3.0f, 0.1f, 10.0f);
-//    mCamera.translate(0, 0, 5);
+    mCamera.translate(0, 0, 5);
 //    qDebug() << *mPmatrix;
 
     mCamera.lookAt(QVector3D{0, 0, 5}, QVector3D{0, 0, 0}, QVector3D{0, 1, 0});

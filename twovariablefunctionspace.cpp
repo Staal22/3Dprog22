@@ -124,19 +124,19 @@ void TwoVariableFunctionSpace::init(GLint shader)
 
 void TwoVariableFunctionSpace::draw()
 {
-    // Never draws itself as of now, gets drawn by TriangleSurface
-//    //what object to draw
-//    glBindVertexArray(mVAO);
-//    //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
-//    //Must be here to update each frame - if static object, it could be set only once
-//    glUniformMatrix4fv(mMatrixUniform,          //the location of the matrix in the shader
-//                       1,                       //count
-//                       GL_FALSE,                //transpose the matrix before sending it?
-//                       mMatrix.constData());    //the data of the matrix
-//    //DRAW CALL MOMENT
-//    glDrawArrays(GL_TRIANGLES,
-//                 0,
-//                 mVertices.size());
+    // Should never draw itself as of now, gets drawn by TriangleSurface, use for debugging
+    //what object to draw
+    glBindVertexArray(mVAO);
+    //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
+    //Must be here to update each frame - if static object, it could be set only once
+    glUniformMatrix4fv(mMatrixUniform,          //the location of the matrix in the shader
+                       1,                       //count
+                       GL_FALSE,                //transpose the matrix before sending it?
+                       mMatrix.constData());    //the data of the matrix
+    //DRAW CALL MOMENT
+    glDrawArrays(GL_TRIANGLES,
+                 0,
+                 mVertices.size());
 }
 
 void TwoVariableFunctionSpace::rotate()

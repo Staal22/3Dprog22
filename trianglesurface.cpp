@@ -119,15 +119,15 @@ void TriangleSurface::init(GLint shader)
 
 void TriangleSurface::draw()
 {
-//    if (hide)
-//    {
-//        return;
-//    }
-    initializeOpenGLFunctions();
-    glBindVertexArray( mVAO );
-    glUniformMatrix4fv( mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
-    glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
-    return;
+    if (hide)
+    {
+        return;
+    }
+//    initializeOpenGLFunctions();
+//    glBindVertexArray( mVAO );
+//    glUniformMatrix4fv( mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
+//    glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
+//    return;
     //what object to draw
     glBindVertexArray(mVAO);
     //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here

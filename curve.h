@@ -9,7 +9,7 @@ public:
     Curve();
     ~Curve() override;
 
-    void toFile(std::string filename);
+    void writeFile(std::string filename);
 //    void readFile(std::string filename);
     void init(GLint shader) override;
     void draw() override;

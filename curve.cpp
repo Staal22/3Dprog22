@@ -16,7 +16,7 @@ Curve::~Curve()
 
 }
 
-void Curve::toFile(std::string filename)
+void Curve::writeFile(std::string filename)
 {
     std::ofstream outf{ filename };
     if (!outf)
