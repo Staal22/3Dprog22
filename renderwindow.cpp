@@ -85,7 +85,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mObjects.push_back(points);
     ParabolaApproximation* pApprox = new ParabolaApproximation();
     pApprox->fit(points->mVertices);
-    pApprox->replace(1, 10);
+    pApprox->replace(-1, 11);
     mObjects.push_back(pApprox);
 
 }
