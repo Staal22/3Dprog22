@@ -42,10 +42,10 @@ private:
     void init();            //initialize things we need before rendering
 
     std::vector<VisualObject*> mObjects;
-    VisualObject* testObject;
-    class Disc* Disc;
-    TriangleSurface* testPlane;
-    LineSurface* testCurve;
+    VisualObject* testObject = nullptr;
+    class Disc* Disc = nullptr;
+    TriangleSurface* testPlane = nullptr;
+    LineSurface* testCurve = nullptr;
     Camera mCamera;
 
     QOpenGLContext *mContext{nullptr};  //Our OpenGL context

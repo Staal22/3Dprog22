@@ -21,7 +21,7 @@ public:
 
    bool hide = false;
 
-protected:
+public:
    std::vector<Vertex> mVertices;
    std::vector<GLuint> mIndices; 	// Til indeksering
    GLuint mVAO{0};

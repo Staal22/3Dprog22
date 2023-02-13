@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <string>
 #include "octahedronball.h"
+#include "parabolaapproximation.h"
 #include "shader.h"
 #include "mainwindow.h"
 #include "logger.h"
@@ -48,25 +49,6 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mRenderTimer = new QTimer(this);
 
     mObjects.push_back(new XYZ());
-//    mObjects.push_back(new Tetrahedron());
-
-    testObject = new InteractiveObject();
-    mObjects.push_back(testObject);
-
-//    //Oppgave 1
-    TwoVariableFunctionSpace* tvSpace = new TwoVariableFunctionSpace();
-    tvSpace->writeFile("planeVertices.txt");
-
-//    //Oppgave 2
-    Curve* curve = new Curve();
-    curve->writeFile("curveVertices.txt");
-
-    testCurve = new LineSurface("curveVertices.txt");
-    mObjects.push_back(testCurve);
-
-    //Oppgave 3
-    qDebug() << tvSpace->numericIntegral();
-
 //    Disc = new class Disc();
 
 //    Tetrahedron* testahedron = new Tetrahedron();
@@ -75,9 +57,37 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    mObjects.push_back(new OctahedronBall(5));
 //    mObjects.push_back(Disc);
 
-    testPlane = new TriangleSurface();
-    testPlane->readFile("planeVertices.txt", false);
-    mObjects.push_back(testPlane);
+//    testObject = new InteractiveObject();
+//    mObjects.push_back(testObject);
+
+//    // Oblig 1
+//    //Oppgave 1
+//    TwoVariableFunctionSpace* tvSpace = new TwoVariableFunctionSpace();
+//    tvSpace->writeFile("planeVertices.txt");
+
+//    //Oppgave 2
+//    Curve* curve = new Curve();
+//    curve->writeFile("curveVertices.txt");
+
+//    testCurve = new LineSurface("curveVertices.txt");
+//    mObjects.push_back(testCurve);
+
+//    //Oppgave 3
+//    qDebug() << tvSpace->numericIntegral();
+
+//    testPlane = new TriangleSurface();
+//    testPlane->readFile("planeVertices.txt", false);
+//    mObjects.push_back(testPlane);
+
+    // Oblig 2
+    // Oppgave 1
+    ParabolaApproximation* points = new ParabolaApproximation();
+    mObjects.push_back(points);
+    ParabolaApproximation* pApprox = new ParabolaApproximation();
+    pApprox->fit(points->mVertices);
+    pApprox->replace(1, 10);
+    mObjects.push_back(pApprox);
+
 }
 
 RenderWindow::~RenderWindow()
@@ -212,11 +222,11 @@ void RenderWindow::render()
 //    Disc->move(1);
 
     mCamera.init(mPmatrixUniform, mVmatrixUniform);
-    mCamera.perspective(60.f, 4.0f/3.0f, 0.1f, 10.0f);
-    mCamera.translate(0, 0, 5);
+    mCamera.perspective(60.f, 4.0f/3.0f, 0.1f, 100.0f);
+    mCamera.translate(0, 0, 15);
 //    qDebug() << *mPmatrix;
 
-    mCamera.lookAt(QVector3D{0, 0, 5}, QVector3D{0, 0, 0}, QVector3D{0, 1, 0});
+    mCamera.lookAt(QVector3D{0, 0, 15}, QVector3D{0, 0, 0}, QVector3D{0, 1, 0});
 
 
     mTimeStart.restart(); //restart FPS clock
@@ -390,36 +400,46 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     //You get the keyboard input like this
     if(event->key() == Qt::Key_W)
     {
-        testObject->move(0.f, moveDistance, 0.f);
+        if (testObject != nullptr)
+            testObject->move(0.f, moveDistance, 0.f);
     }
     if(event->key() == Qt::Key_A)
     {
-        testObject->move(-moveDistance, 0.f, 0.f);
+        if (testObject != nullptr)
+            testObject->move(-moveDistance, 0.f, 0.f);
     }
     if(event->key() == Qt::Key_S)
     {
-        testObject->move(0.f, -moveDistance, 0.f);
+        if (testObject != nullptr)
+            testObject->move(0.f, -moveDistance, 0.f);
     }
     if(event->key() == Qt::Key_D)
     {
-        testObject->move(moveDistance, 0.0f, 0.f);
+        if (testObject != nullptr)
+            testObject->move(moveDistance, 0.0f, 0.f);
     }
     if(event->key() == Qt::Key_1)
     {
-        if (testCurve->hide)
-            testCurve->hide = false;
-        else
+        if (testCurve != nullptr)
         {
-            testCurve->hide = true;
+            if (testCurve->hide)
+                testCurve->hide = false;
+            else
+            {
+                testCurve->hide = true;
+            }
         }
     }
     if(event->key() == Qt::Key_2)
     {
-        if (testPlane->hide)
-            testPlane->hide = false;
-        else
+        if (testPlane != nullptr)
         {
-            testPlane->hide = true;
+            if (testPlane->hide)
+                testPlane->hide = false;
+            else
+            {
+                testPlane->hide = true;
+            }
         }
     }
 }

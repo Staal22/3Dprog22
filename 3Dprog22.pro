@@ -14,6 +14,7 @@ SOURCES += main.cpp \
     logger.cpp \
     mainwindow.cpp \
     octahedronball.cpp \
+    parabolaapproximation.cpp \
     renderwindow.cpp \
     shader.cpp \
     tetrahedron.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     logger.h \
     mainwindow.h \
     octahedronball.h \
+    parabolaapproximation.h \
     renderwindow.h \
     shader.h \
     tetrahedron.h \

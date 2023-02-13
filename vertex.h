@@ -11,7 +11,7 @@ class Vertex {
    //! Overloaded istream operator which reads all vertex data from an open textfile stream
    friend std::istream& operator>> (std::istream&, Vertex&);
 
-private:
+public:
    float m_xyz[3]{};       	// position i 3D
    float m_normal[3]{};       // normal in 3D or rgb colors
    float m_uv[2]{};        	// texture coordinates if used
