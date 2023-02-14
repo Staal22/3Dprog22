@@ -2,14 +2,11 @@
 #define PARABOLAAPPROXIMATION_H
 
 #include "visualobject.h"
-#include <QVector>
-#include <QPointF>
 
 class ParabolaApproximation : public VisualObject
 {
 public:
-    ParabolaApproximation();
-//    ParabolaApproximation(double xMin, double xMax);
+    ParabolaApproximation(bool inPoints = false);
     ~ParabolaApproximation() override;
 
     void init(GLint matrixUniform) override;
@@ -20,13 +17,11 @@ public:
     void replace(double xMin, double xMax);
 
 private:
+    double evaluate(double x) const;
     std::vector<double> solve(const std::vector<std::vector<double>> &A, const std::vector<double> &b);
     double dotProduct(const std::vector<std::vector<double>> &A, const std::vector<double> &b, int j);
 
-    // Evaluate the fitted parabola at a given x
-    double evaluate(double x) const;
-
-
+    bool points = false;
     double a = 0, b = 0, c = 0;
 };
 

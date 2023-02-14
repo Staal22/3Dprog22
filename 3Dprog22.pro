@@ -15,6 +15,7 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     octahedronball.cpp \
     parabolaapproximation.cpp \
+    polyinterpolation.cpp \
     renderwindow.cpp \
     shader.cpp \
     tetrahedron.cpp \
@@ -35,6 +36,7 @@ HEADERS += \
     mainwindow.h \
     octahedronball.h \
     parabolaapproximation.h \
+    polyinterpolation.h \
     renderwindow.h \
     shader.h \
     tetrahedron.h \

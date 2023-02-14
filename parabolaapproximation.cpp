@@ -1,7 +1,8 @@
 #include "parabolaapproximation.h"
 
-ParabolaApproximation::ParabolaApproximation()
+ParabolaApproximation::ParabolaApproximation(bool inPoints)
 {
+    points = inPoints;
     mVertices.push_back(Vertex{1,7,0,0,1,0});
     mVertices.push_back(Vertex{3,2,0,0,1,0});
     mVertices.push_back(Vertex{6,1,0,0,1,0});
@@ -11,17 +12,6 @@ ParabolaApproximation::ParabolaApproximation()
     mVertices.push_back(Vertex{10,7,0,0,1,0});
     mMatrix.setToIdentity();
 }
-
-//ParabolaApproximation::ParabolaApproximation(double xMin, double xMax)
-//{
-//    mVertices.clear();
-//    double h = 0.05f;
-//    for (double x = xMin; x < xMax; x += h)
-//    {
-//        mVertices.push_back(Vertex{x,evaluate(x),0,0,1,0});
-//    }
-//    mMatrix.setToIdentity();
-//}
 
 ParabolaApproximation::~ParabolaApproximation()
 {
@@ -89,9 +79,10 @@ void ParabolaApproximation::draw()
                        GL_FALSE,                //transpose the matrix before sending it?
                        mMatrix.constData());    //the data of the matrix
     //DRAW CALL MOMENT
-    glDrawArrays(GL_LINE_LOOP,
-                 0,
-                 mVertices.size());
+    if (points)
+        glDrawArrays(GL_POINTS, 0, mVertices.size());
+    else
+        glDrawArrays(GL_LINE_LOOP, 0, mVertices.size());
 }
 
 void ParabolaApproximation::rotate()
@@ -127,7 +118,6 @@ void ParabolaApproximation::fit(const std::vector<Vertex> &points)
     a = x_[0];
     b = x_[1];
     c = x_[2];
-    //    return x_;
 }
 
 void ParabolaApproximation::replace(double xMin, double xMax)
@@ -141,13 +131,20 @@ void ParabolaApproximation::replace(double xMin, double xMax)
     mMatrix.setToIdentity();
 }
 
-std::vector<double> ParabolaApproximation::solve(const std::vector<std::vector<double> > &A, const std::vector<double> &b)
+// Evaluate the fitted parabola at a given x
+double ParabolaApproximation::evaluate(double x) const
+{
+    return a * x * x + b * x + c;
+}
+
+std::vector<double> ParabolaApproximation::solve(const std::vector<std::vector<double>> &A, const std::vector<double> &b)
 {
     int n = A.size();
     int m = A[0].size();
 
     // Perform QR decomposition
-    std::vector<std::vector<double>> Q(n, std::vector<double>(m)), R(m, std::vector<double>(m));
+    std::vector<std::vector<double>> Q(n, std::vector<double>(m));
+    std::vector<std::vector<double>> R(m, std::vector<double>(m));
     for (int j = 0; j < m; j++)
     {
         for (int i = 0; i < n; i++)
@@ -201,19 +198,15 @@ std::vector<double> ParabolaApproximation::solve(const std::vector<std::vector<d
     return x;
 }
 
-double ParabolaApproximation::dotProduct(const std::vector<std::vector<double> > &A, const std::vector<double> &b, int j)
+double ParabolaApproximation::dotProduct(const std::vector<std::vector<double>> &A, const std::vector<double> &b, int j)
 {
     int n = A.size();
     double dot = 0.0;
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
+    {
         dot += A[i][j] * b[i];
     }
     return dot;
-}
-
-double ParabolaApproximation::evaluate(double x) const
-{
-    return a * x * x + b * x + c;
 }
 
 

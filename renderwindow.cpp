@@ -10,6 +10,7 @@
 #include <string>
 #include "octahedronball.h"
 #include "parabolaapproximation.h"
+#include "polyinterpolation.h"
 #include "shader.h"
 #include "mainwindow.h"
 #include "logger.h"
@@ -60,18 +61,15 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    testObject = new InteractiveObject();
 //    mObjects.push_back(testObject);
 
-//    // Oblig 1
+//    // Oblig 1 Matte
 //    //Oppgave 1
 //    TwoVariableFunctionSpace* tvSpace = new TwoVariableFunctionSpace();
 //    tvSpace->writeFile("planeVertices.txt");
-
 //    //Oppgave 2
 //    Curve* curve = new Curve();
 //    curve->writeFile("curveVertices.txt");
-
 //    testCurve = new LineSurface("curveVertices.txt");
 //    mObjects.push_back(testCurve);
-
 //    //Oppgave 3
 //    qDebug() << tvSpace->numericIntegral();
 
@@ -79,14 +77,19 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    testPlane->readFile("planeVertices.txt", false);
 //    mObjects.push_back(testPlane);
 
-    // Oblig 2
+    // Oblig 2 Matte
     // Oppgave 1
-    ParabolaApproximation* points = new ParabolaApproximation();
-    mObjects.push_back(points);
-    ParabolaApproximation* pApprox = new ParabolaApproximation();
-    pApprox->fit(points->mVertices);
-    pApprox->replace(-1, 11);
-    mObjects.push_back(pApprox);
+//    ParabolaApproximation* points = new ParabolaApproximation(true);
+//    mObjects.push_back(points);
+//    ParabolaApproximation* pApprox = new ParabolaApproximation();
+//    pApprox->fit(points->mVertices);
+//    pApprox->replace(-1, 11);
+//    mObjects.push_back(pApprox);
+    // Oppgave 2
+    mObjects.push_back(new PolyInterpolation(true));
+    PolyInterpolation* pInterp = new PolyInterpolation();
+    pInterp->replace(-3, 3);
+    mObjects.push_back(pInterp);
 
 }
 
@@ -214,6 +217,9 @@ void RenderWindow::init()
 //    qDebug() << x;
 
     glBindVertexArray(0);       //unbinds any VertexArray - good practice
+
+    mCamera.translate(0, 0, 15);
+    glPointSize(5);
 }
 
 // Called each frame - doing the rendering!!!
@@ -222,12 +228,10 @@ void RenderWindow::render()
 //    Disc->move(1);
 
     mCamera.init(mPmatrixUniform, mVmatrixUniform);
-    mCamera.perspective(60.f, 4.0f/3.0f, 0.1f, 100.0f);
-    mCamera.translate(0, 0, 15);
+
 //    qDebug() << *mPmatrix;
-
-    mCamera.lookAt(QVector3D{0, 0, 15}, QVector3D{0, 0, 0}, QVector3D{0, 1, 0});
-
+    mCamera.perspective(110.f, 16.0f/9.0f, 0.1f, 100.0f);
+    mCamera.lookAt(mCamera.mEye, mCamera.mEye + QVector3D::crossProduct(mCamera.left, mCamera.up), mCamera.up);
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -400,23 +404,36 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     //You get the keyboard input like this
     if(event->key() == Qt::Key_W)
     {
-        if (testObject != nullptr)
-            testObject->move(0.f, moveDistance, 0.f);
+//        if (testObject != nullptr)
+//            testObject->move(0.f, moveDistance, 0.f);
+        mCamera.translate(0,0,-1);
     }
     if(event->key() == Qt::Key_A)
     {
-        if (testObject != nullptr)
-            testObject->move(-moveDistance, 0.f, 0.f);
+//        if (testObject != nullptr)
+//            testObject->move(-moveDistance, 0.f, 0.f);
+        mCamera.translate(-1,0,0);
+
     }
     if(event->key() == Qt::Key_S)
     {
-        if (testObject != nullptr)
-            testObject->move(0.f, -moveDistance, 0.f);
+//        if (testObject != nullptr)
+//            testObject->move(0.f, -moveDistance, 0.f);
+        mCamera.translate(0,0,1);
     }
     if(event->key() == Qt::Key_D)
     {
-        if (testObject != nullptr)
-            testObject->move(moveDistance, 0.0f, 0.f);
+//        if (testObject != nullptr)
+//            testObject->move(moveDistance, 0.0f, 0.f);
+        mCamera.translate(1,0,0);
+    }
+    if(event->key() == Qt::Key_E)
+    {
+        mCamera.translate(0,1,0);
+    }
+    if(event->key() == Qt::Key_Q)
+    {
+        mCamera.translate(0,-1,0);
     }
     if(event->key() == Qt::Key_1)
     {
