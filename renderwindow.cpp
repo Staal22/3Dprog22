@@ -79,12 +79,12 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     // Oblig 2 Matte
     // Oppgave 1
-//    ParabolaApproximation* points = new ParabolaApproximation(true);
-//    mObjects.push_back(points);
-//    ParabolaApproximation* pApprox = new ParabolaApproximation();
-//    pApprox->fit(points->mVertices);
-//    pApprox->replace(-1, 11);
-//    mObjects.push_back(pApprox);
+    ParabolaApproximation* points = new ParabolaApproximation(true);
+    mObjects.push_back(points);
+    ParabolaApproximation* pApprox = new ParabolaApproximation();
+    pApprox->fit(points->mVertices);
+    pApprox->replace(-1, 11);
+    mObjects.push_back(pApprox);
     // Oppgave 2
     mObjects.push_back(new PolyInterpolation(true));
     PolyInterpolation* pInterp = new PolyInterpolation();
