@@ -8,6 +8,7 @@
 #include <QStatusBar>
 #include <QDebug>
 #include <string>
+#include "interactiveobject.h"
 #include "octahedronball.h"
 #include "parabolaapproximation.h"
 #include "polyinterpolation.h"
@@ -41,22 +42,17 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    mMVPmatrix = new QMatrix4x4{};
 //    mMVPmatrix->setToIdentity();    //1, 1, 1, 1 in the diagonal of the matrix
 
-    mPmatrix = new QMatrix4x4{};
-    mPmatrix->setToIdentity();
-    mVmatrix = new QMatrix4x4{};
-    mVmatrix->setToIdentity();
 
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
 
-    mObjects.push_back(new XYZ());
-//    Disc = new class Disc();
+    mMap.insert(std::pair<std::string, VisualObject*> {"xyz", new XYZ()});
+    mMap.insert(std::pair<std::string, VisualObject*> {"disc", new class Disc()});
 
 //    Tetrahedron* testahedron = new Tetrahedron();
 //    testahedron->writeFile("tetrahedronVertices.txt");
 
 //    mObjects.push_back(new OctahedronBall(5));
-//    mObjects.push_back(Disc);
 
 //    testObject = new InteractiveObject();
 //    mObjects.push_back(testObject);
@@ -79,17 +75,17 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     // Oblig 2 Matte
     // Oppgave 1
-    ParabolaApproximation* points = new ParabolaApproximation(true);
-    mObjects.push_back(points);
-    ParabolaApproximation* pApprox = new ParabolaApproximation();
-    pApprox->fit(points->mVertices);
-    pApprox->replace(-1, 11);
-    mObjects.push_back(pApprox);
-    // Oppgave 2
-    mObjects.push_back(new PolyInterpolation(true));
-    PolyInterpolation* pInterp = new PolyInterpolation();
-    pInterp->replace(-3, 3);
-    mObjects.push_back(pInterp);
+//    ParabolaApproximation* points = new ParabolaApproximation(true);
+//    mObjects.push_back(points);
+//    ParabolaApproximation* pApprox = new ParabolaApproximation();
+//    pApprox->fit(points->mVertices);
+//    pApprox->replace(-1, 11);
+//    mObjects.push_back(pApprox);
+//    // Oppgave 2
+//    mObjects.push_back(new PolyInterpolation(true));
+//    PolyInterpolation* pInterp = new PolyInterpolation();
+//    pInterp->replace(-3, 3);
+//    mObjects.push_back(pInterp);
 
 }
 
@@ -167,54 +163,13 @@ void RenderWindow::init()
     mPmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "pmatrix" );
     mVmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "vmatrix" );
 
-    // cleaner code test
-    foreach (auto VisualObject, mObjects)
-    {
-        VisualObject->init(mMatrixUniform);
+    for (auto& pair : mMap) {
+        pair.second->init(mMatrixUniform);
     }
 
     //canvas code
 //    for (auto it=mObjects.begin(); it!= mObjects.end(); it++)
 //        (*it)->init(mMatrixUniform);
-
-//    QMatrix4x4 A = QMatrix4x4(1,1,1,1,5,3,2,2,1,3,2,1,0,0,0,0);
-//    QMatrix4x4 test = A.inverted();
-//    qDebug() << A;
-//    for (int k=0; k<4-1; k++)
-//    {
-//        // pivot(k);
-//        // Ved radoperasjoner skal vi oppnå 0-ere under diagonalelementet
-//        // i alle rader nedenfor (altså kolonne k
-//        // Vi subtraherer et multiplum av k-te
-//        // rad fra radene nedenfor, nuller ut kolonner fra venstre
-//        for (int i=k+1; i<4; i++)
-//        {
-//            // Skal mult med denne og deretter trekke fra rad i
-//            // denne skal bli null og vi kan lagre faktoren her
-//            A(i,k) = A(i,k)/A(k,k);
-//            for (int j=k+1; j<4; j++)
-//            {
-//                // kolonnene til høyre for den som blir nullet ut
-//                A(i,j) = A(i,j) - A(i,k)*A(k,j);
-//            }
-//        }
-//    }
-//    qDebug() << A;
-//    qDebug() << test;
-
-//    QVector4D x(0,0,0,0);
-//    QVector4D b(0,0,0,0);
-//    for (int k=0; k<4; k++)
-//        for (int i=k+1; i<4; i++)
-//            b[i] = b[i]-A(i,k)*b[k];
-//    for (int i=4-1; i>=0; i--)
-//    {
-//        x[i] = b[i];
-//        for (int j=i+1; j<4; j++)
-//            x[i] = x[i] - A(i,j)*x[j];
-//        x[i] = x[i]/A(i,i);
-//    }
-//    qDebug() << x;
 
     glBindVertexArray(0);       //unbinds any VertexArray - good practice
 
@@ -226,6 +181,7 @@ void RenderWindow::init()
 void RenderWindow::render()
 {
 //    Disc->move(1);
+    mMap["disc"]->move(0.017f);
 
     mCamera.init(mPmatrixUniform, mVmatrixUniform);
 
@@ -245,11 +201,12 @@ void RenderWindow::render()
 //    //Move camera
 //    mVmatrix->translate(0, 5550, 0);
     mCamera.update();
-    // cleaner code test
-    foreach (auto VisualObject, mObjects)
-    {
-        VisualObject->draw();
+
+
+    for (auto& pair : mMap) {
+        pair.second->draw();
     }
+
     //canvas code
 //    for (auto it=mObjects.begin(); it!= mObjects.end(); it++)
 //        (*it)->draw();
@@ -267,13 +224,10 @@ void RenderWindow::render()
     // and wait for vsync.
     mContext->swapBuffers(this);
 
-    //just to make the triangle rotate - tweak this:
-    //                   degree, x,   y,   z -axis
     if(mRotate)
     {
-        foreach (auto VisualObject, mObjects)
-        {
-            VisualObject->rotate();
+        for (auto& pair : mMap) {
+            pair.second->rotate();
         }
     }
 }
@@ -399,8 +353,6 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     {
         mMainWindow->close();       //Shuts down the whole program
     }
-
-    float moveDistance = 0.1f;
     //You get the keyboard input like this
     if(event->key() == Qt::Key_W)
     {
@@ -437,25 +389,25 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_1)
     {
-        if (testCurve != nullptr)
+        if (mMap["testCurve"] != nullptr)
         {
-            if (testCurve->hide)
-                testCurve->hide = false;
+            if (mMap["testCurve"]->hide)
+                mMap["testCurve"]->hide = false;
             else
             {
-                testCurve->hide = true;
+                mMap["testCurve"]->hide = true;
             }
         }
     }
     if(event->key() == Qt::Key_2)
     {
-        if (testPlane != nullptr)
+        if (mMap["testPlane"] != nullptr)
         {
-            if (testPlane->hide)
-                testPlane->hide = false;
+            if (mMap["testPlane"]->hide)
+                mMap["testPlane"]->hide = false;
             else
             {
-                testPlane->hide = true;
+                mMap["testPlane"]->hide = true;
             }
         }
     }

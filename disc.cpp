@@ -57,6 +57,7 @@ void Disc::init(GLint matrixUniform)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size()*sizeof(GLuint), mIndices.data(), GL_STATIC_DRAW);
 
+    mRotation.setToIdentity();
 
     glBindVertexArray(0);
 }
@@ -77,22 +78,25 @@ void Disc::draw()
 
 void Disc::move(float dt)
 {
-//    QVector3D ds=mVelocity*dt;
-//    mPosition.translate(ds.x(), ds.y(), ds.z());	// hvis mPosisjon er Matrix4x4
-//    // normalen kan generelt være en parameter inn
-//    QVector3D normal = QVector3D{0.0f, 1.0f, 0.0f};
-//    // bruker kryssprodukt for å finne rotasjonsvektor
-//    QVector3D rotation = QVector3D::crossProduct(normal, mVelocity);
-//    rotation.normalize();
-//    // bruk formelen ds = r dt ==> dt = ds/r
-//    // for å finne ut hvor mye hjulet har rotert
-//    // og oppdater rotasjonsmatrisen
-//    // husk å starte med mRotation som identitetsmatrise
-//    mMatrix = mPosition*mRotation;		// hvis mPosition og mRotation er Matrix4x4
-//    return;
+    // movement
+    QVector3D ds=mVelocity*dt;
+    mPosition.translate(ds.x(), ds.y(), ds.z());	// hvis mPosisjon er Matrix4x4
+    // normalen kan generelt være en parameter inn
+    QVector3D normal = QVector3D{0.0f, 1.0f, 0.0f};
+    // bruker kryssprodukt for å finne rotasjonsvektor
+    QVector3D rotation = QVector3D::crossProduct(normal, mVelocity);
+    rotation.normalize();
+
+    // bruk formelen ds = r dt ==> dt = ds/r
+    // for å finne ut hvor mye hjulet har rotert
+    // og oppdater rotasjonsmatrisen
+    // husk å starte med mRotation som identitetsmatrise
+    //rotation
     float degrees = (180 * dt) / M_PI;
     mRotation.rotate(degrees, 0, 0, 1);
-    mMatrix = mRotation;
+
+    mMatrix = mPosition*mRotation;		// hvis mPosition og mRotation er Matrix4x4
+    return;
 }
 
 void Disc::writeFile(std::string filnavn)

@@ -35,7 +35,7 @@ public:
    QMatrix4x4 mRotation;
    QMatrix4x4 mScale;
    // Legger til rette for simulering
-   QVector3D mVelocity;
+   QVector3D mVelocity{-1, 0, 0};
 
 };
 

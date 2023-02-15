@@ -1,18 +1,14 @@
 #ifndef RENDERWINDOW_H
 #define RENDERWINDOW_H
-//#pragma once
 
 #include <QWindow>
 #include <QOpenGLFunctions_4_1_Core>
 #include <QTimer>
 #include <QElapsedTimer>
 #include <vector>
-#include "interactiveobject.h"
-#include "visualobject.h"
-#include "trianglesurface.h"
-#include "linesurface.h"
+#include <unordered_map>
 #include "camera.h"
-
+#include "visualobject.h"
 
 class QOpenGLContext;
 class Shader;
@@ -41,11 +37,7 @@ private slots:
 private:
     void init();            //initialize things we need before rendering
 
-    std::vector<VisualObject*> mObjects;
-    VisualObject* testObject = nullptr;
-    class Disc* Disc = nullptr;
-    TriangleSurface* testPlane = nullptr;
-    LineSurface* testCurve = nullptr;
+    std::unordered_map<std::string, VisualObject*> mMap;
     Camera mCamera;
 
     QOpenGLContext *mContext{nullptr};  //Our OpenGL context
@@ -60,9 +52,6 @@ private:
     GLuint mVBO;                        //OpenGL reference to our VBO
 
 //    QMatrix4x4 *mMVPmatrix{nullptr};         //The matrix with the transform for the object we draw
-
-    QMatrix4x4 *mPmatrix{nullptr};
-    QMatrix4x4 *mVmatrix{nullptr};
 
     QTimer *mRenderTimer{nullptr};           //timer that drives the gameloop
     QElapsedTimer mTimeStart;               //time variable that reads the calculated FPS
@@ -81,6 +70,7 @@ private:
     void startOpenGLDebugger();
 
 protected:
+  
     //The QWindow that we inherit from have these functions to capture
     // - mouse and keyboard.
     // Uncomment to use (you also have to make the definitions of
