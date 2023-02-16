@@ -87,8 +87,19 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    pInterp->replace(-3, 3);
 //    mObjects.push_back(pInterp);
 
-//    gsml::Point2D a{-4, -4}, b{4, -4}, c{4, 4}, d{-4, 4}; // må gjøres ordentlig
-//    mQuadTree.init(a, b, c, d);
+    gsml::Point2D a{-4, -4}, b{4, -4}, c{4, 4}, d{-4, 4}; // må gjøres ordentlig
+    mQuadTree.init(a, b, c, d);
+
+    // do last
+    std::string navn{"navn"}; // VisualObject should maybe have own name variable
+    for (auto& pair : mMap)
+    {
+        mObjects.push_back(pair.second);
+    }
+    for (auto& object : mObjects)
+    {
+        mQuadTree.insert(object->getPosition2D(), navn, object);
+    }
 }
 
 RenderWindow::~RenderWindow()
@@ -165,11 +176,10 @@ void RenderWindow::init()
     mPmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "pmatrix" );
     mVmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "vmatrix" );
 
-    for (auto& pair : mMap)
+    for (auto& object : mObjects)
     {
-        pair.second->init(mMatrixUniform);
+        object->init(mMatrixUniform);
     }
-
     //canvas code
 //    for (auto it=mObjects.begin(); it!= mObjects.end(); it++)
 //        (*it)->init(mMatrixUniform);
@@ -205,9 +215,12 @@ void RenderWindow::render()
 //    mVmatrix->translate(0, 5550, 0);
     mCamera.update();
 
-
-    for (auto& pair : mMap) {
-        pair.second->draw();
+//    for (auto& object : mObjects) {
+//        object->draw();
+//    }
+    for (auto& object : mQuadTree.m_objects)
+    {
+        object.second->draw();
     }
 
     //canvas code
@@ -229,8 +242,8 @@ void RenderWindow::render()
 
     if(mRotate)
     {
-        for (auto& pair : mMap) {
-            pair.second->rotate();
+        for (auto& object : mObjects) {
+            object->rotate();
         }
     }
 }

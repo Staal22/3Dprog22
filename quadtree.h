@@ -15,36 +15,6 @@ typedef std::pair<double, double> Point2D; // Erstatter Vector2D klasse
 template <class ID, class T>
 class QuadTree
 {
-private:
-    // Punkter som definerer hjørnene til objektet
-    // i samme rekkefølge som pekerne til subtrær
-    Point2D m_a;
-    Point2D m_b;
-    Point2D m_c;
-    Point2D m_d;
-    // Pekere til subtrær er nødvendig i en dynamisk
-    // quadtre implementering. Vi kunne ha lagt det
-    // i array også
-    QuadTree* m_sw;
-    QuadTree* m_se;
-    QuadTree* m_ne;
-    QuadTree* m_nw;
-
-    // Hvert quad lagrer sine egne objekter
-    // (T kan være objekter, pekere eller referanser)
-    // Legger opp til mulig søk på id
-    std::list<std::pair<ID,T>> m_objects;
-
-    bool isLeaf() const;
-
-    // Hjelpevariabel for å lagre alle T-ene
-    // for senere iterering
-    std::vector<T> m_all_objects; // skulle vært static
-
-
-    // Hjelpefunksjon - preorder traversering av subtre
-    void traverse_all(std::vector<T>& all_objects);
-
 public:
     QuadTree();
     QuadTree(const Point2D &v1, const Point2D &v2, const Point2D &v3, const Point2D & v4);
@@ -58,6 +28,14 @@ public:
     T& find(const ID& id);
     T& operator[] (ID id);
 
+    // Hvert quad lagrer sine egne objekter
+    // (T kan være objekter, pekere eller referanser)
+    // Legger opp til mulig søk på id
+    std::list<std::pair<ID,T>> m_objects;
+
+    // Hjelpevariabel for å lagre alle T-ene
+    // for senere iterering
+    std::vector<T> m_all_objects; // skulle vært static
 
     // Jukser litt med disse iteratorene. Det er ikke ekte iteratorfunksjoner
     // for QuadTre klassen, men for en container av T-er
@@ -70,6 +48,26 @@ public:
     {
         return m_all_objects.end();
     }
+
+private:
+    // Punkter som definerer hjørnene til objektet
+    // i samme rekkefølge som pekerne til subtrær
+    Point2D m_a;
+    Point2D m_b;
+    Point2D m_c;
+    Point2D m_d;
+    // Pekere til subtrær er nødvendig i en dynamisk
+    // quadtre implementering. Vi kunne ha lagt det
+    // i array også
+    QuadTree* m_sw = nullptr;
+    QuadTree* m_se = nullptr;
+    QuadTree* m_ne = nullptr;
+    QuadTree* m_nw = nullptr;
+
+    bool isLeaf() const;
+
+    // Hjelpefunksjon - preorder traversering av subtre
+    void traverse_all(std::vector<T>& all_objects);
 
 };
 
