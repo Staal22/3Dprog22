@@ -16,6 +16,16 @@ Vertex::Vertex(float x, float y, float z, float r, float g, float b)
 
 }
 
+Vertex::Vertex(QVector3D pos, QVector3D normal)
+{
+    m_xyz[0] = pos.x();
+    m_xyz[1] = pos.y();
+    m_xyz[2] = pos.z();
+    m_normal[0] = normal.x();
+    m_normal[1] = normal.y();
+    m_normal[2] = normal.z();
+}
+
 std::ostream& operator<< (std::ostream& os, const Vertex& v) {
   os << std::fixed;
   os << "(" << v.m_xyz[0] << ", " << v.m_xyz[1] << ", " << v.m_xyz[2] << ") ";

@@ -1,21 +1,21 @@
-#ifndef INTERACTIVEOBJECT_H
-#define INTERACTIVEOBJECT_H
+#ifndef PLAYER_H
+#define PLAYER_H
 
-#include "visualobject.h"
+#include "interactiveobject.h"
 
-class InteractiveObject : public VisualObject
+class Player : public InteractiveObject
 {
 public:
-    InteractiveObject();
-    ~InteractiveObject() override;
+    Player();
+    ~Player() override;
     void init(GLint matrixUniform) override;
     void draw() override;
     void move(float x, float y, float z) override;
+    void turn(float y);
 
 private:
     float mx{}, my{}, mz{}; //position
     GLuint mIBO{0};                 // for glDrawElements()
-
 };
 
-#endif // INTERACTIVEOBJECT_H
+#endif // PLAYER_H

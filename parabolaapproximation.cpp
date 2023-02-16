@@ -85,11 +85,6 @@ void ParabolaApproximation::draw()
         glDrawArrays(GL_LINE_LOOP, 0, mVertices.size());
 }
 
-void ParabolaApproximation::rotate()
-{
-
-}
-
 void ParabolaApproximation::fit(const std::vector<Vertex> &points)
 {
     int n = points.size();

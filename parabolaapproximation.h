@@ -11,8 +11,6 @@ public:
 
     void init(GLint matrixUniform) override;
     void draw() override;
-    void rotate() override;
-
     void fit(const std::vector<Vertex> &points);
     void replace(double xMin, double xMax);
 

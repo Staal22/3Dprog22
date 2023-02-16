@@ -1,14 +1,29 @@
 #include "trianglesurface.h"
 
-TriangleSurface::TriangleSurface()
+TriangleSurface::TriangleSurface(float size)
 {
-    //         x   y   z   r g b
-//    Vertex v0{0.0,0.0,0.0, 1,0,0};    mVertices.push_back(v0);
-//    Vertex v1(0.5,0.0,0.0, 0,1,0);    mVertices.push_back(v1);
-//    Vertex v2{0.5,0.5,0.0, 0,0,1};    mVertices.push_back(v2);
-//    Vertex v3{0.0,0.0,0.0, 0,0,1};    mVertices.push_back(v3);
-//    Vertex v4{0.5,0.5,0.0, 0,1,0};    mVertices.push_back(v4);
-//    Vertex v5{0.0,0.5,0.0, 1,0,0};    mVertices.push_back(v5);
+    float halfSize = size / 2.0f;
+
+    // Define the four corners of the plane
+    QVector3D v0 = QVector3D(-halfSize, 0.0f, -halfSize);
+    QVector3D v1 = QVector3D(halfSize, 0.0f, -halfSize);
+    QVector3D v2 = QVector3D(halfSize, 0.0f, halfSize);
+    QVector3D v3 = QVector3D(-halfSize, 0.0f, halfSize);
+
+    // Add the vertices to the vertex buffer
+    mVertices.push_back(Vertex(v0, QVector3D(1.0f, 1.0f, 1.0f)));
+    mVertices.push_back(Vertex(v1, QVector3D(1.0f, 1.0f, 1.0f)));
+    mVertices.push_back(Vertex(v2, QVector3D(1.0f, 1.0f, 1.0f)));
+    mVertices.push_back(Vertex(v3, QVector3D(1.0f, 1.0f, 1.0f)));
+
+    // Define the indices of the plane
+    mIndices.push_back(0);
+    mIndices.push_back(1);
+    mIndices.push_back(2);
+    mIndices.push_back(0);
+    mIndices.push_back(2);
+    mIndices.push_back(3);
+
     mMatrix.setToIdentity();
 }
 
@@ -70,50 +85,34 @@ void TriangleSurface::readFile(std::string filename, bool IndexedVertices)
 void TriangleSurface::init(GLint shader)
 {
     mMatrixUniform = shader;
-
-    //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
     //Vertex Array Object - VAO
-    //VAO is a conntainer that holds VBOs
     glGenVertexArrays( 1, &mVAO );
     glBindVertexArray( mVAO );
 
     //Vertex Buffer Object to hold vertices - VBO
-    //since the mVAO is bound, this VBO will belong to that VAO
     glGenBuffers( 1, &mVBO );
     glBindBuffer( GL_ARRAY_BUFFER, mVBO );
-
-    //send vertex data to the GPU
-    glBufferData( GL_ARRAY_BUFFER,  //buffer type
-                  mVertices.size()*sizeof( Vertex ),    //buffer size
-                  mVertices.data(), //the vertices themselves
-                  GL_STATIC_DRAW ); //whether we update the buffer on the GPU
+    glBufferData( GL_ARRAY_BUFFER, mVertices.size()*sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW );
 
     // 1rst attribute buffer : vertices
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(0,                                 //attribute - must match layout
-                          3,                                 //size
-                          GL_FLOAT,                          //data type
-                          GL_FALSE,                          //normalized?
-                          sizeof(Vertex),                    //stride
-                          reinterpret_cast<GLvoid*>(0));     //array buffer offset
+    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE,sizeof(Vertex), reinterpret_cast<const void*>(0));
     glEnableVertexAttribArray(0);
 
     // 2nd attribute buffer : colors
-    // Same paramater list as above, but attribute and offset are adjusted accordingly
-    glVertexAttribPointer(1,
-                          3,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          sizeof(Vertex),
-                          reinterpret_cast<GLvoid*>(3 * sizeof(GLfloat)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  reinterpret_cast<const void*>(3 * sizeof(GLfloat)) );
     glEnableVertexAttribArray(1);
 
     //enable the matrixUniform
     // mMatrixUniform = glGetUniformLocation( matrixUniform, "matrix" );
+    glGenBuffers(1, &mIBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size()*sizeof(GLuint), mIndices.data(), GL_STATIC_DRAW);
 
-    //release vertex array bind(0) = release lol
+    mRotation.setToIdentity();
+
     glBindVertexArray(0);
 }
 
@@ -123,23 +122,11 @@ void TriangleSurface::draw()
     {
         return;
     }
-//    initializeOpenGLFunctions();
-//    glBindVertexArray( mVAO );
-//    glUniformMatrix4fv( mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
-//    glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
-//    return;
-    //what object to draw
-    glBindVertexArray(mVAO);
-    //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
-    //Must be here to update each frame - if static object, it could be set only once
-    glUniformMatrix4fv(mMatrixUniform,          //the location of the matrix in the shader
-                       1,                       //count
-                       GL_FALSE,                //transpose the matrix before sending it?
-                       mMatrix.constData());    //the data of the matrix
-    //DRAW CALL MOMENT
-    glDrawArrays(GL_TRIANGLES,
-                 0,
-                 mVertices.size());
+
+    initializeOpenGLFunctions();
+    glBindVertexArray( mVAO );
+    glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mMatrix.constData());
+    glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
 }
 
 void TriangleSurface::rotate()

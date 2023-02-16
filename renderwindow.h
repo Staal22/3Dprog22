@@ -54,8 +54,6 @@ private:
     GLuint mVAO;                        //OpenGL reference to our VAO
     GLuint mVBO;                        //OpenGL reference to our VBO
 
-//    QMatrix4x4 *mMVPmatrix{nullptr};         //The matrix with the transform for the object we draw
-
     QTimer *mRenderTimer{nullptr};           //timer that drives the gameloop
     QElapsedTimer mTimeStart;               //time variable that reads the calculated FPS
 

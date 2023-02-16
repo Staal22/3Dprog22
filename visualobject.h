@@ -15,7 +15,7 @@ public:
    virtual void draw()=0;
    virtual void rotate() { }
    // move for interaktive objekter
-   virtual void move(float x, float y, float z) {  }
+   virtual void move(float x, float y, float z) { }
    // move for simulering (for eksempel NPC)
    virtual void move(float dt) { }
 

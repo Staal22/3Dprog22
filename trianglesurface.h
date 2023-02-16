@@ -6,7 +6,7 @@
 class TriangleSurface : public VisualObject
 {
 public:
-    TriangleSurface();
+    TriangleSurface(float size = 0);
 //    TriangleSurface(std::string filename);
     ~TriangleSurface() override;
 
@@ -14,6 +14,9 @@ public:
     void init(GLint shader) override;
     void draw() override;
     void rotate() override;
+
+protected:
+    GLuint mIBO{0};                 // for glDrawElements()
 
 };
 

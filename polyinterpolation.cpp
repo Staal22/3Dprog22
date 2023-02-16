@@ -93,10 +93,6 @@ void PolyInterpolation::draw()
         glDrawArrays(GL_LINE_LOOP, 0, mVertices.size());
 }
 
-void PolyInterpolation::rotate()
-{
-
-}
 
 void PolyInterpolation::replace(double xMin, double xMax)
 {

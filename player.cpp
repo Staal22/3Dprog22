@@ -1,13 +1,13 @@
-#include "tetrahedron.h"
+#include "player.h"
 
-Tetrahedron::Tetrahedron()
+Player::Player()
 {
     // face
-    mVertices.push_back(Vertex{0.f, 0.f, 0.f,  1.f, 1.f, 0.f});
-    mVertices.push_back(Vertex{1.f, 0.f, 0.f,  1.f, 1.f, 0.f});
-    mVertices.push_back(Vertex{0.5f, 1.f, 0.f,  1.f, 1.f, 0.f});
+    mVertices.push_back(Vertex{0.f, 0.f, 0.f,  0.f, 0.f, 0.f});
+    mVertices.push_back(Vertex{1.f, 0.f, 0.f,  0.f, 0.f, 0.f});
+    mVertices.push_back(Vertex{0.5f, 1.f, 0.f,  0.f, 0.f, 0.f});
     // nose
-    mVertices.push_back(Vertex{0.5f, 0.5f, 1.f,  1.f, 0.f, 0.f});
+    mVertices.push_back(Vertex{0.5f, 0.5f, 1.f,  0.f, 0.f, 0.f});
 
     mIndices.push_back(0);
     mIndices.push_back(1);
@@ -23,12 +23,12 @@ Tetrahedron::Tetrahedron()
     mIndices.push_back(1);
 }
 
-Tetrahedron::~Tetrahedron()
+Player::~Player()
 {
 
 }
 
-void Tetrahedron::init(GLint matrixUniform)
+void Player::init(GLint matrixUniform)
 {
     mMatrixUniform = matrixUniform;
     initializeOpenGLFunctions();
@@ -62,7 +62,7 @@ void Tetrahedron::init(GLint matrixUniform)
     glBindVertexArray(0);
 }
 
-void Tetrahedron::draw()
+void Player::draw()
 {
     initializeOpenGLFunctions();
     glBindVertexArray( mVAO );
@@ -70,37 +70,15 @@ void Tetrahedron::draw()
     glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
 }
 
-void Tetrahedron::rotate()
+void Player::move(float x, float y, float z)
 {
-    mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
+    mx += x;
+    my += y;
+    mz += z;
+    mMatrix.translate(x, y, z);
 }
 
-void Tetrahedron::writeFile(std::string filename)
+void Player::turn(float y)
 {
-    std::ofstream ut;
-    ut.open(filename.c_str());
-    if (ut.is_open())
-    {
-        auto m = mIndices.size();
-        auto n = mVertices.size();
-        Vertex vertex;
-        GLuint Int;
-        ut << m << " " << n << std::endl << std::endl;
-        int count = 0;
-        for (auto it=mIndices.begin(); it != mIndices.end(); it++)
-        {
-            count++;
-            Int = *it;
-            ut << Int << " ";
-            if (count % 3 == 0)
-                ut << std::endl;
-        }
-        ut << std::endl;
-        for (auto it=mVertices.begin(); it != mVertices.end(); it++)
-        {
-            vertex = *it;
-            ut << vertex;
-        }
-        ut.close();
-    }
+    mMatrix.rotate(1.f, 0.f, y, 0.f);
 }

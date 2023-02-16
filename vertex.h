@@ -1,6 +1,7 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
+#include "qvectornd.h"
 #include <iostream>
 #include <fstream>
 
@@ -19,6 +20,7 @@ public:
 public:
    Vertex();
    Vertex(float x, float y, float z, float r, float g, float b);
+   Vertex(QVector3D pos, QVector3D normal);
 
 };
 

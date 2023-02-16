@@ -11,11 +11,13 @@
 #include "interactiveobject.h"
 #include "octahedronball.h"
 #include "parabolaapproximation.h"
+#include "player.h"
 #include "polyinterpolation.h"
 #include "shader.h"
 #include "mainwindow.h"
 #include "logger.h"
 #include "tetrahedron.h"
+#include "trianglesurface.h"
 #include "xyz.h"
 #include "twovariablefunctionspace.h"
 #include "curve.h"
@@ -37,24 +39,18 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
         qDebug() << "Context could not be made - quitting this application";
     }
 
-    //This is the matrix used to transform (rotate) the triangle
-    //You could do without, but then you have to simplify the shader and shader setup
-//    mMVPmatrix = new QMatrix4x4{};
-//    mMVPmatrix->setToIdentity();    //1, 1, 1, 1 in the diagonal of the matrix
-
-
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
 
     mMap.insert(std::pair<std::string, VisualObject*> {"xyz", new XYZ()});
     mMap.insert(std::pair<std::string, VisualObject*> {"disc", new class Disc()});
+//    mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(20)});
+//    mMap.insert(std::pair<std::string,  VisualObject*>  {"player", new Player()});
+    mMap.insert(std::pair<std::string,  VisualObject*>  {"player", new InteractiveObject()});
 
-//    Tetrahedron* testahedron = new Tetrahedron();
+
 //    testahedron->writeFile("tetrahedronVertices.txt");
-
 //    mObjects.push_back(new OctahedronBall(5));
-
-//    testObject = new InteractiveObject();
 //    mObjects.push_back(testObject);
 
 //    // Oblig 1 Matte
@@ -186,7 +182,7 @@ void RenderWindow::init()
 
     glBindVertexArray(0);       //unbinds any VertexArray - good practice
 
-    mCamera.translate(0, 0, 15);
+    mCamera.translate(0, 6, 7);
     glPointSize(5);
 }
 
@@ -215,13 +211,16 @@ void RenderWindow::render()
 //    mVmatrix->translate(0, 5550, 0);
     mCamera.update();
 
-//    for (auto& object : mObjects) {
-//        object->draw();
-//    }
-    for (auto& object : mQuadTree.m_objects)
+    for (auto& object : mObjects)
     {
-        object.second->draw();
+        object->draw();
     }
+
+    // Quadtree working test
+//    for (auto& object : mQuadTree.m_objects)
+//    {
+//        object.second->draw();
+//    }
 
     //canvas code
 //    for (auto it=mObjects.begin(); it!= mObjects.end(); it++)
@@ -369,40 +368,71 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     {
         mMainWindow->close();       //Shuts down the whole program
     }
-    //You get the keyboard input like this
+    float moveDistance = 0.1f;
+    // Move camera
+//    if(event->key() == Qt::Key_W)
+//    {
+//        mCamera.translate(0,0,-1);
+//    }
+//    if(event->key() == Qt::Key_A)
+//    {
+//        mCamera.translate(-1,0,0);
+//    }
+//    if(event->key() == Qt::Key_S)
+//    {
+//        mCamera.translate(0,0,1);
+//    }
+//    if(event->key() == Qt::Key_D)
+//    {
+//        mCamera.translate(1,0,0);
+//    }
+//    if(event->key() == Qt::Key_E)
+//    {
+//        mCamera.translate(0,1,0);
+//    }
+//    if(event->key() == Qt::Key_Q)
+//    {
+//        mCamera.translate(0,-1,0);
+//    }
+
+    // Move Player
     if(event->key() == Qt::Key_W)
     {
-//        if (testObject != nullptr)
-//            testObject->move(0.f, moveDistance, 0.f);
-        mCamera.translate(0,0,-1);
+        if (mMap["player"] != nullptr)
+            mMap["player"]->move(0.f, 0.f, -moveDistance);
     }
     if(event->key() == Qt::Key_A)
     {
-//        if (testObject != nullptr)
-//            testObject->move(-moveDistance, 0.f, 0.f);
-        mCamera.translate(-1,0,0);
-
+        if (mMap["player"] != nullptr)
+            mMap["player"]->move(-moveDistance, 0.f, 0.f);
     }
     if(event->key() == Qt::Key_S)
     {
-//        if (testObject != nullptr)
-//            testObject->move(0.f, -moveDistance, 0.f);
-        mCamera.translate(0,0,1);
+        if (mMap["player"] != nullptr)
+            mMap["player"]->move(0.f, 0.f, moveDistance);
     }
     if(event->key() == Qt::Key_D)
     {
-//        if (testObject != nullptr)
-//            testObject->move(moveDistance, 0.0f, 0.f);
-        mCamera.translate(1,0,0);
+        if (mMap["player"] != nullptr)
+            mMap["player"]->move(moveDistance, 0.0f, 0.f);
     }
     if(event->key() == Qt::Key_E)
     {
-        mCamera.translate(0,1,0);
+        if (mMap["player"] != nullptr)
+            static_cast<Player*>(mMap["player"])->turn(5);
     }
     if(event->key() == Qt::Key_Q)
     {
-        mCamera.translate(0,-1,0);
+        if (mMap["player"] != nullptr)
+            static_cast<Player*>(mMap["player"])->turn(-5);
     }
+    if(event->key() == Qt::Key_Space)
+    {
+        if (mMap["player"] != nullptr)
+            (mMap["player"])->move(0, 1, 0);
+    }
+
+    //Toggle objects
     if(event->key() == Qt::Key_1)
     {
         if (mMap["testCurve"] != nullptr)
