@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include "camera.h"
 #include "visualobject.h"
+#include "quadtree.h"
 
 class QOpenGLContext;
 class Shader;
@@ -37,7 +38,9 @@ private slots:
 private:
     void init();            //initialize things we need before rendering
 
+    std::vector<VisualObject*> mObjects;
     std::unordered_map<std::string, VisualObject*> mMap;
+    gsml::QuadTree<std::string, VisualObject*> mQuadTree;
     Camera mCamera;
 
     QOpenGLContext *mContext{nullptr};  //Our OpenGL context

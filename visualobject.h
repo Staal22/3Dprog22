@@ -19,6 +19,8 @@ public:
    // move for simulering (for eksempel NPC)
    virtual void move(float dt) { }
 
+   std::pair<float,float> getPosition2D();
+
    bool hide = false;
 
 public:

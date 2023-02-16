@@ -87,6 +87,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    pInterp->replace(-3, 3);
 //    mObjects.push_back(pInterp);
 
+//    gsml::Point2D a{-4, -4}, b{4, -4}, c{4, 4}, d{-4, 4}; // må gjøres ordentlig
+//    mQuadTree.init(a, b, c, d);
 }
 
 RenderWindow::~RenderWindow()
@@ -163,7 +165,8 @@ void RenderWindow::init()
     mPmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "pmatrix" );
     mVmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "vmatrix" );
 
-    for (auto& pair : mMap) {
+    for (auto& pair : mMap)
+    {
         pair.second->init(mMatrixUniform);
     }
 

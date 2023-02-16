@@ -37,6 +37,7 @@ HEADERS += \
     octahedronball.h \
     parabolaapproximation.h \
     polyinterpolation.h \
+    quadtree.h \
     renderwindow.h \
     shader.h \
     tetrahedron.h \
