@@ -8,7 +8,7 @@
 #include <QStatusBar>
 #include <QDebug>
 #include <string>
-#include "interactiveobject.h"
+//#include "interactiveobject.h"
 #include "octahedronball.h"
 #include "parabolaapproximation.h"
 #include "player.h"
@@ -44,25 +44,33 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     mMap.insert(std::pair<std::string, VisualObject*> {"xyz", new XYZ()});
     mMap.insert(std::pair<std::string, VisualObject*> {"disc", new class Disc()});
-//    mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(20)});
-//    mMap.insert(std::pair<std::string,  VisualObject*>  {"player", new Player()});
-    mMap.insert(std::pair<std::string,  VisualObject*>  {"player", new InteractiveObject()});
+    mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(40)});
+    mMap.insert(std::pair<std::string, VisualObject*>  {"player", new Player()});
+
+    // Trophies
+    mObjects.push_back(new Trophy(5,0));
+    mObjects.push_back(new Trophy(7,2));
+    mObjects.push_back(new Trophy(9,4));
+    mObjects.push_back(new Trophy(11,6));
+    mObjects.push_back(new Trophy(11,2));
+    mObjects.push_back(new Trophy(9,-1));
+
 
 
 //    testahedron->writeFile("tetrahedronVertices.txt");
 //    mObjects.push_back(new OctahedronBall(5));
 //    mObjects.push_back(testObject);
 
-//    // Oblig 1 Matte
-//    //Oppgave 1
+    // Oblig 1 Matte
+    //Oppgave 1
 //    TwoVariableFunctionSpace* tvSpace = new TwoVariableFunctionSpace();
 //    tvSpace->writeFile("planeVertices.txt");
-//    //Oppgave 2
+    //Oppgave 2
 //    Curve* curve = new Curve();
 //    curve->writeFile("curveVertices.txt");
 //    testCurve = new LineSurface("curveVertices.txt");
 //    mObjects.push_back(testCurve);
-//    //Oppgave 3
+    //Oppgave 3
 //    qDebug() << tvSpace->numericIntegral();
 
 //    testPlane = new TriangleSurface();
@@ -77,14 +85,14 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    pApprox->fit(points->mVertices);
 //    pApprox->replace(-1, 11);
 //    mObjects.push_back(pApprox);
-//    // Oppgave 2
+    // Oppgave 2
 //    mObjects.push_back(new PolyInterpolation(true));
 //    PolyInterpolation* pInterp = new PolyInterpolation();
 //    pInterp->replace(-3, 3);
 //    mObjects.push_back(pInterp);
 
-    gsml::Point2D a{-4, -4}, b{4, -4}, c{4, 4}, d{-4, 4}; // må gjøres ordentlig
-    mQuadTree.init(a, b, c, d);
+//    gsml::Point2D a{-4, -4}, b{4, -4}, c{4, 4}, d{-4, 4}; // må gjøres ordentlig
+//    mQuadTree.init(a, b, c, d);
 
     // do last
     std::string navn{"navn"}; // VisualObject should maybe have own name variable
@@ -94,8 +102,21 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     }
     for (auto& object : mObjects)
     {
-        mQuadTree.insert(object->getPosition2D(), navn, object);
+        if (dynamic_cast<Trophy*>(object) != nullptr)
+        {
+            trophies.push_back(static_cast<Trophy*>(object));
+        }
     }
+//    for (auto& object : mObjects)
+//    {
+//        mQuadTree.insert(object->getPosition2D(), navn, object);
+//    }
+
+    // alternatively
+//    for (auto& pair : mMap)
+//    {
+//        mQuadTree.insert(pair.second->getPosition2D(), pair.first, pair.second);
+//    }
 }
 
 RenderWindow::~RenderWindow()
@@ -184,6 +205,9 @@ void RenderWindow::init()
 
     mCamera.translate(0, 6, 7);
     glPointSize(5);
+
+    // hard coded positions
+//    mMap["trophy"]->mMatrix.translate(5,0,0);
 }
 
 // Called each frame - doing the rendering!!!
@@ -239,9 +263,39 @@ void RenderWindow::render()
     // and wait for vsync.
     mContext->swapBuffers(this);
 
+    // shitty collision detection
+    Player* player = static_cast<Player*>(mMap["player"]);
+    QVector3D playerPosition = player->getPosition3D();
+    float rayLength = 100.0f; // length of ray to cast downwards
+    QVector3D rayStart = playerPosition;
+    QVector3D rayEnd = playerPosition - QVector3D(0, rayLength, 0);
+    TriangleSurface* floor = static_cast<TriangleSurface*>(mMap["floor"]);
+    if (floor->intersectsLine(rayStart, rayEnd))
+    {
+        // calculate the point of intersection between the ray and the object's surface
+        QVector3D intersection = floor->surfaceIntersection(rayStart, rayEnd, QVector3D{0,1,0});
+
+        // calculate the distance between the player's current position and the intersection point
+        float distance = playerPosition.distanceToPoint(intersection);
+
+        // adjust the player's position to sit on top of the object
+        mMap["player"]->move(0, -distance + 0.5f, 0);
+//        qDebug() << "Line intersected floor going from " << rayStart << " to " << rayEnd;
+    }
+    for (auto& trophy : trophies)
+    {
+        if (trophy->contains(playerPosition) && !trophy->hide)
+        {
+            trophy->hide = true;
+            player->score++;
+            qDebug() << "Score is: " << player->score;
+        }
+    }
+
     if(mRotate)
     {
-        for (auto& object : mObjects) {
+        for (auto& object : mObjects)
+        {
             object->rotate();
         }
     }
@@ -419,12 +473,12 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_E)
     {
         if (mMap["player"] != nullptr)
-            static_cast<Player*>(mMap["player"])->turn(5);
+            static_cast<Player*>(mMap["player"])->turn(-5);
     }
     if(event->key() == Qt::Key_Q)
     {
         if (mMap["player"] != nullptr)
-            static_cast<Player*>(mMap["player"])->turn(-5);
+            static_cast<Player*>(mMap["player"])->turn(5);
     }
     if(event->key() == Qt::Key_Space)
     {

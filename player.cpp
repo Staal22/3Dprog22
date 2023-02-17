@@ -2,25 +2,9 @@
 
 Player::Player()
 {
-    // face
-    mVertices.push_back(Vertex{0.f, 0.f, 0.f,  0.f, 0.f, 0.f});
-    mVertices.push_back(Vertex{1.f, 0.f, 0.f,  0.f, 0.f, 0.f});
-    mVertices.push_back(Vertex{0.5f, 1.f, 0.f,  0.f, 0.f, 0.f});
-    // nose
-    mVertices.push_back(Vertex{0.5f, 0.5f, 1.f,  0.f, 0.f, 0.f});
-
-    mIndices.push_back(0);
-    mIndices.push_back(1);
-    mIndices.push_back(2);
-    mIndices.push_back(0);
-    mIndices.push_back(2);
-    mIndices.push_back(3);
-    mIndices.push_back(0);
-    mIndices.push_back(3);
-    mIndices.push_back(1);
-    mIndices.push_back(3);
-    mIndices.push_back(2);
-    mIndices.push_back(1);
+    mVertices.reserve(3 * 8 * pow(4, m_recursions));
+    octahedronUnitBall();
+    mMatrix.setToIdentity();
 }
 
 Player::~Player()
@@ -42,43 +26,90 @@ void Player::init(GLint matrixUniform)
     glBindBuffer( GL_ARRAY_BUFFER, mVBO );
     glBufferData( GL_ARRAY_BUFFER, mVertices.size()*sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW );
 
+    glBufferData( GL_ARRAY_BUFFER, mVertices.size()*sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW );
+
     // 1rst attribute buffer : vertices
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE,sizeof(Vertex), reinterpret_cast<const void*>(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
     // 2nd attribute buffer : colors
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  reinterpret_cast<const void*>(3 * sizeof(GLfloat)) );
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  (GLvoid*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
 
-    // Her kommer et tillegg som har med Index Buffer Object og indeksarray å gjøre
-    glGenBuffers(1, &mIBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size()*sizeof(GLuint), mIndices.data(), GL_STATIC_DRAW);
-
     mRotation.setToIdentity();
-
-    //release vertex array bind(0) = release lol
     glBindVertexArray(0);
 }
 
 void Player::draw()
 {
-    initializeOpenGLFunctions();
     glBindVertexArray( mVAO );
-    glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mMatrix.constData());
-    glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
+    glUniformMatrix4fv( mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
+    glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
 }
 
 void Player::move(float x, float y, float z)
 {
-    mx += x;
-    my += y;
-    mz += z;
+//    mPosition.column(3).setX(mPosition.column(3).x() + x);
+//    mPosition.column(3).setY(mPosition.column(3).y() + z);
+//    mPosition.column(3).setZ(mPosition.column(3).y() + z);
+    mPosition.translate(x, y, z);
     mMatrix.translate(x, y, z);
+//    qDebug() << "Moved player and updated position to " << mPosition.column(3).x() << mPosition.column(3).y() << mPosition.column(3).z();
+//    for (int i = 0; i < mVertices.size(); i++)
+//    {
+//        QVector4D transformedVertex = mMatrix * QVector4D(mVertices[i].m_xyz, 1.0f);
+//        mVertices[i].m_xyz = QVector3D(transformedVertex);
+//    }
 }
 
 void Player::turn(float y)
 {
-    mMatrix.rotate(1.f, 0.f, y, 0.f);
+    mMatrix.rotate(y, 0.f, 1.f, 0.f);
+}
+
+void Player::octahedronUnitBall()
+{
+    QVector3D v0{0, 0, 1};
+    QVector3D v1{1, 0, 0};
+    QVector3D v2{0, 1, 0};
+    QVector3D v3{-1, 0, 0};
+    QVector3D v4{0, -1, 0};
+    QVector3D v5{0, 0, -1};
+
+    subDivide(v0, v1, v2, m_recursions);
+    subDivide(v0, v2, v3, m_recursions);
+    subDivide(v0, v3, v4, m_recursions);
+    subDivide(v0, v4, v1, m_recursions);
+    subDivide(v5, v2, v1, m_recursions);
+    subDivide(v5, v3, v2, m_recursions);
+    subDivide(v5, v4, v3, m_recursions);
+    subDivide(v5, v1, v4, m_recursions);
+}
+
+void Player::subDivide(const QVector3D &a, const QVector3D &b, const QVector3D &c, int n)
+{
+    if (n>0)
+    {
+        QVector3D v1 = a+b; v1.normalize();
+        QVector3D v2 = a+c; v2.normalize();
+        QVector3D v3 = c+b; v3.normalize();
+        subDivide(a, v1, v2, n-1);
+        subDivide(c, v2, v3, n-1);
+        subDivide(b, v3, v1, n-1);
+        subDivide(v3, v2, v1, n-1);
+    } else
+    {
+        makeTriangle(a, b, c);
+    }
+}
+
+void Player::makeTriangle(const QVector3D &v1, const QVector3D &v2, const QVector3D &v3)
+{
+    Vertex v{v1.x(), v1.y(), v1.z(), v1.x(), v1.y(), v1.z()};
+    mVertices.push_back(v);
+    v = Vertex{v2.x(), v2.y(), v2.z(), v2.x(), v2.y(), v2.z()};
+    mVertices.push_back(v);
+    v = Vertex{v3.x(), v3.y(), v3.z(), v3.x(), v3.y(), v3.z()};
+    mVertices.push_back(v);
 }

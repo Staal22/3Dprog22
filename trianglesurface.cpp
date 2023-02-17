@@ -24,14 +24,12 @@ TriangleSurface::TriangleSurface(float size)
     mIndices.push_back(2);
     mIndices.push_back(3);
 
+    // calculate the minimum and maximum points of the bounding box
+    min_ = QVector3D{0,0,0} - QVector3D(size / 2, 0.5f / 2, size / 2);
+    max_ = QVector3D{0,0,0} + QVector3D(size / 2, 0.5f / 2, size / 2);
+
     mMatrix.setToIdentity();
 }
-
-//TriangleSurface::TriangleSurface(std::string filename)
-//{
-//    readFile(filename);
-//    mMatrix.setToIdentity();
-//}
 
 TriangleSurface::~TriangleSurface()
 {
@@ -132,4 +130,50 @@ void TriangleSurface::draw()
 void TriangleSurface::rotate()
 {
     mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
+}
+
+bool TriangleSurface::contains(QVector3D point) const
+{
+    return point.x() >= min_.x() && point.x() <= max_.x() &&
+           point.y() >= min_.y() && point.y() <= max_.y() &&
+           point.z() >= min_.z() && point.z() <= max_.z();
+}
+
+bool TriangleSurface::intersectsLine(QVector3D start, QVector3D end) const
+{
+    // check if the line segment intersects the x,y,z planes of the bounding box
+    float tmin = (min_.x() - start.x()) / (end.x() - start.x());
+    float tmax = (max_.x() - start.x()) / (end.x() - start.x());
+    if (tmin > tmax) std::swap(tmin, tmax);
+
+    float tymin = (min_.y() - start.y()) / (end.y() - start.y());
+    float tymax = (max_.y() - start.y()) / (end.y() - start.y());
+    if (tymin > tymax) std::swap(tymin, tymax);
+
+    if ((tmin > tymax) || (tymin > tmax)) return false;
+
+    if (tymin > tmin) tmin = tymin;
+    if (tymax < tmax) tmax = tymax;
+
+    float tzmin = (min_.z() - start.z()) / (end.z() - start.z());
+    float tzmax = (max_.z() - start.z()) / (end.z() - start.z());
+    if (tzmin > tzmax) std::swap(tzmin, tzmax);
+
+    if ((tmin > tzmax) || (tzmin > tmax)) return false;
+
+    return true;
+}
+
+QVector3D TriangleSurface::surfaceIntersection(const QVector3D &start, const QVector3D &end, const QVector3D &surfaceNormal)
+{
+    // Calculate the direction vector of the line segment
+    QVector3D segmentDir = end - start;
+
+    // Calculate the distance from the start point to the intersection point
+    float t = QVector3D::dotProduct(surfaceNormal, start) / QVector3D::dotProduct(surfaceNormal, segmentDir);
+
+    // Calculate the intersection point
+    QVector3D intersection = start + t * segmentDir;
+
+    return intersection;
 }

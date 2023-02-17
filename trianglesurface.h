@@ -15,8 +15,17 @@ public:
     void draw() override;
     void rotate() override;
 
+    // check if a point is inside the bounding box
+    bool contains(QVector3D point) const;
+    // check if a line segment intersects the bounding box
+    bool intersectsLine(QVector3D start, QVector3D end) const;
+    QVector3D surfaceIntersection(const QVector3D& start, const QVector3D& end, const QVector3D& surfaceNormal);
+
 protected:
     GLuint mIBO{0};                 // for glDrawElements()
+    // custom bounding box
+    QVector3D min_;
+    QVector3D max_;
 
 };
 

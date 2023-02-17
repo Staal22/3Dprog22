@@ -20,6 +20,7 @@ public:
    virtual void move(float dt) { }
 
    std::pair<float,float> getPosition2D();
+   QVector3D getPosition3D();
 
    bool hide = false;
 
@@ -33,7 +34,7 @@ public:
 
    // Velger å lagre posisjon, rotasjon og translasjon
    // i hver sin 4x4 matrise
-   QMatrix4x4 mPosition;
+   QMatrix4x4 mPosition{0,0,0};
    QMatrix4x4 mRotation;
    QMatrix4x4 mScale;
    // Legger til rette for simulering

@@ -22,6 +22,7 @@ SOURCES += main.cpp \
     tetrahedron.cpp \
     triangle.cpp \
     trianglesurface.cpp \
+    trophy.cpp \
     twovariablefunctionspace.cpp \
     vertex.cpp \
     visualobject.cpp \
@@ -45,6 +46,7 @@ HEADERS += \
     tetrahedron.h \
     triangle.h \
     trianglesurface.h \
+    trophy.h \
     twovariablefunctionspace.h \
     vertex.h \
     visualobject.h \

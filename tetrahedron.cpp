@@ -57,8 +57,6 @@ void Tetrahedron::init(GLint matrixUniform)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size()*sizeof(GLuint), mIndices.data(), GL_STATIC_DRAW);
 
     mRotation.setToIdentity();
-
-    //release vertex array bind(0) = release lol
     glBindVertexArray(0);
 }
 

@@ -8,6 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include "camera.h"
+#include "trophy.h"
 #include "visualobject.h"
 #include "quadtree.h"
 
@@ -38,9 +39,12 @@ private slots:
 private:
     void init();            //initialize things we need before rendering
 
+    // Containers
     std::vector<VisualObject*> mObjects;
     std::unordered_map<std::string, VisualObject*> mMap;
     gsml::QuadTree<std::string, VisualObject*> mQuadTree;
+    std::vector<Trophy*> trophies;
+
     Camera mCamera;
 
     QOpenGLContext *mContext{nullptr};  //Our OpenGL context
