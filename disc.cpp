@@ -58,7 +58,6 @@ void Disc::init(GLint matrixUniform)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size()*sizeof(GLuint), mIndices.data(), GL_STATIC_DRAW);
 
     mRotation.setToIdentity();
-
     glBindVertexArray(0);
 }
 
@@ -96,7 +95,6 @@ void Disc::move(float dt)
     mRotation.rotate(degrees, 0, 0, 1);
 
     mMatrix = mPosition*mRotation;		// hvis mPosition og mRotation er Matrix4x4
-    return;
 }
 
 void Disc::writeFile(std::string filnavn)

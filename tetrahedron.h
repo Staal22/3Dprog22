@@ -12,6 +12,7 @@ public:
     void init(GLint matrixUniform) override;
     void draw() override;
     void rotate() override;
+    void move(float dt, GraphFunction* function) override;
     void writeFile(std::string filename);
 
 protected:

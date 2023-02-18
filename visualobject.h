@@ -18,6 +18,8 @@ public:
    virtual void move(float x, float y, float z) { }
    // move for simulering (for eksempel NPC)
    virtual void move(float dt) { }
+   // just a test please don't be mad Dag y.y
+   virtual void move(float dt, class GraphFunction* function) { }
 
    std::pair<float,float> getPosition2D();
    QVector3D getPosition3D();

@@ -1,9 +1,9 @@
 #ifndef TWOVARIABLEFUNCTIONSPACE_H
 #define TWOVARIABLEFUNCTIONSPACE_H
 
-#include "visualobject.h"
+#include "graphfunction.h"
 
-class TwoVariableFunctionSpace : public VisualObject
+class TwoVariableFunctionSpace : public GraphFunction
 {
 public:
     TwoVariableFunctionSpace();
@@ -17,9 +17,9 @@ public:
     void rotate() override;
 
     float numericIntegral();
+    double evaluate (double x, double y) const override;
 
 private:
-    float function(float x, float y);
     float functionNumeric(double x, double y);
     float funcX(float x, float y);
     float funcY(float x, float y);

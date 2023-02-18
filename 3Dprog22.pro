@@ -9,6 +9,7 @@ SOURCES += main.cpp \
     camera.cpp \
     curve.cpp \
     disc.cpp \
+    graphfunction.cpp \
     interactiveobject.cpp \
     linesurface.cpp \
     logger.cpp \
@@ -32,6 +33,7 @@ HEADERS += \
     camera.h \
     curve.h \
     disc.h \
+    graphfunction.h \
     interactiveobject.h \
     linesurface.h \
     logger.h \

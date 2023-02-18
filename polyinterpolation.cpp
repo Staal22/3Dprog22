@@ -105,7 +105,7 @@ void PolyInterpolation::replace(double xMin, double xMax)
     mMatrix.setToIdentity();
 }
 
-double PolyInterpolation::evaluate(double x)
+double PolyInterpolation::evaluate(double x) const
 {
     double t = 1.0;
     double y = 0.0;
@@ -114,5 +114,10 @@ double PolyInterpolation::evaluate(double x)
         t *= x;
     }
     return y;
+}
+
+std::pair<double, double> PolyInterpolation::range() const
+{
+    return std::make_pair(min, max);
 }
 

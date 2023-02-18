@@ -1,9 +1,9 @@
 #ifndef PARABOLAAPPROXIMATION_H
 #define PARABOLAAPPROXIMATION_H
 
-#include "visualobject.h"
+#include "graphfunction.h"
 
-class ParabolaApproximation : public VisualObject
+class ParabolaApproximation : public GraphFunction
 {
 public:
     ParabolaApproximation(bool inPoints = false);
@@ -15,7 +15,7 @@ public:
     void replace(double xMin, double xMax);
 
 private:
-    double evaluate(double x) const;
+    double evaluate(double x) const override;
     std::vector<double> solve(const std::vector<std::vector<double>> &A, const std::vector<double> &b);
     double dotProduct(const std::vector<std::vector<double>> &A, const std::vector<double> &b, int j);
 

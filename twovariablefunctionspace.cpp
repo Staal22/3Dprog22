@@ -8,16 +8,16 @@ TwoVariableFunctionSpace::TwoVariableFunctionSpace()
         {
             for (auto y = yMin; y < yMax; y += h)
             {
-                z = function(x, y);
+                z = evaluate(x, y);
                 mVertices.push_back(Vertex{x, y, z, 0, 0, z});
-                z = function(x + h, y);
+                z = evaluate(x + h, y);
                 mVertices.push_back(Vertex{x + h, y, z, 0, 0, z});
-                z = function(x, y + h);
+                z = evaluate(x, y + h);
                 mVertices.push_back(Vertex{x, y + h, z, 0, 0, z});
                 mVertices.push_back(Vertex{x, y + h, z, 0, 0, z});
-                z = function(x + h, y);
+                z = evaluate(x + h, y);
                 mVertices.push_back(Vertex{x + h, y, z, 0, 0, z});
-                z = function(x + h, y + h);
+                z = evaluate(x + h, y + h);
                 mVertices.push_back(Vertex{x + h, y + h, z, 0, 0, z});
             }
         }
@@ -160,9 +160,7 @@ float TwoVariableFunctionSpace::numericIntegral()
     return cumSum;
 }
 
-
-
-float TwoVariableFunctionSpace::function(float x, float y)
+double TwoVariableFunctionSpace::evaluate(double x, double y) const
 {
     return sin(M_PI * x) * sin(M_PI * y); //Oppgave 1
 }

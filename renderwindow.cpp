@@ -44,6 +44,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     mMap.insert(std::pair<std::string, VisualObject*> {"xyz", new XYZ()});
     mMap.insert(std::pair<std::string, VisualObject*> {"disc", new class Disc()});
+    mMap.insert(std::pair<std::string, VisualObject*> {"tetrahedron", new Tetrahedron()});
     mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(40)});
     mMap.insert(std::pair<std::string, VisualObject*>  {"player", new Player()});
 
@@ -86,16 +87,13 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    pApprox->replace(-1, 11);
 //    mObjects.push_back(pApprox);
     // Oppgave 2
-//    mObjects.push_back(new PolyInterpolation(true));
-//    PolyInterpolation* pInterp = new PolyInterpolation();
-//    pInterp->replace(-3, 3);
-//    mObjects.push_back(pInterp);
+    mMap.insert(std::pair<std::string, VisualObject*> {"pInterp", new PolyInterpolation});
+    static_cast<PolyInterpolation*>(mMap["pInterp"])->replace(-3, 3);
 
 //    gsml::Point2D a{-4, -4}, b{4, -4}, c{4, 4}, d{-4, 4}; // må gjøres ordentlig
 //    mQuadTree.init(a, b, c, d);
 
     // do last
-    std::string navn{"navn"}; // VisualObject should maybe have own name variable
     for (auto& pair : mMap)
     {
         mObjects.push_back(pair.second);
@@ -107,6 +105,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
             trophies.push_back(static_cast<Trophy*>(object));
         }
     }
+    //    std::string navn{"navn"}; // VisualObject should maybe have own name variable
 //    for (auto& object : mObjects)
 //    {
 //        mQuadTree.insert(object->getPosition2D(), navn, object);
@@ -213,8 +212,8 @@ void RenderWindow::init()
 // Called each frame - doing the rendering!!!
 void RenderWindow::render()
 {
-//    Disc->move(1);
     mMap["disc"]->move(0.017f);
+    mMap["tetrahedron"]->move(-0.017f, static_cast<PolyInterpolation*>(mMap["pInterp"]));
 
     mCamera.init(mPmatrixUniform, mVmatrixUniform);
 
