@@ -6,12 +6,13 @@ House::House()
     door2 = QVector3D(0, 0.6f, 0.75f); // 10
     door3 = QVector3D(0, 0, 1.25f); // 11
     door4 = QVector3D(0, 0.6f, 1.25f); // 12
+    houseVertices();
 
     // Define the indices of the house shape
     std::vector<unsigned int> indices =
     {
         0, 1, 2, 2, 3, 0,    // roof
-        4, 0, 3,
+//        4, 0, 3,
         4, 3, 2,
         4, 2, 1,
         4, 1, 0,
@@ -80,7 +81,7 @@ void House::init(GLint matrixUniform)
 //    mMatrix.rotate(-45.f, 0, 1, 0);
 
     // calculate the minimum and maximum points of the bounding box
-    QVector3D door = (door1 + door3 ) / 2;
+    QVector3D door = (door1 * 5 + door3 * 5) / 2;
     min_ = QVector3D{door.x(), door.y(), door.z()} - QVector3D(0.5f / 2.f, 1.f / 2.f, 0.5f / 2.f);
     max_ = QVector3D{door.x(), door.y(), door.z()} + QVector3D(0.5f / 2.f, 1.f / 2.f, 0.5f / 2.f);
 }
@@ -101,7 +102,7 @@ void House::open()
     door1 = QVector3D(0.5f, 0, 1.25f); // 9
     door2 = QVector3D(0.5f, 0.6f, 1.25f); // 10
     houseVertices();
-
+    mMatrix.scale(0.2f);
     init(mMatrixUniform);
 }
 

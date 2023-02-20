@@ -204,7 +204,7 @@ void RenderWindow::init()
 
     glBindVertexArray(0);       //unbinds any VertexArray - good practice
 
-    mCamera.translate(0, 6, 15);
+    mCamera.translate(-15, 6, 15);
     glPointSize(5);
 
     // hard coded positions
@@ -221,7 +221,8 @@ void RenderWindow::render()
 
 //    qDebug() << *mPmatrix;
     mCamera.perspective(110.f, 16.0f/9.0f, 0.1f, 100.0f);
-    mCamera.lookAt(mCamera.mEye, mCamera.mEye + QVector3D::crossProduct(mCamera.left, mCamera.up), mCamera.up);
+//    mCamera.lookAt(mCamera.mEye, mCamera.mEye + QVector3D::crossProduct(mCamera.left, mCamera.up), mCamera.up);
+    mCamera.lookAt(mCamera.mEye, {0, 0, 0}, mCamera.up);
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -287,6 +288,7 @@ void RenderWindow::render()
     if (house->contains(playerPosition))
     {
         house->open();
+        qDebug() << "Door opened";
     }
     for (auto& trophy : trophies)
     {
