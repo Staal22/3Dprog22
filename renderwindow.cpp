@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <string>
 //#include "interactiveobject.h"
+#include "house.h"
 #include "octahedronball.h"
 #include "parabolaapproximation.h"
 #include "player.h"
@@ -47,6 +48,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mMap.insert(std::pair<std::string, VisualObject*> {"tetrahedron", new Tetrahedron()});
     mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(40)});
     mMap.insert(std::pair<std::string, VisualObject*>  {"player", new Player()});
+    mMap.insert(std::pair<std::string, VisualObject*>  {"house", new House()});
 
     // Trophies
     mObjects.push_back(new Trophy(5,0));
@@ -202,7 +204,7 @@ void RenderWindow::init()
 
     glBindVertexArray(0);       //unbinds any VertexArray - good practice
 
-    mCamera.translate(0, 6, 7);
+    mCamera.translate(0, 6, 15);
     glPointSize(5);
 
     // hard coded positions
@@ -269,6 +271,7 @@ void RenderWindow::render()
     QVector3D rayStart = playerPosition;
     QVector3D rayEnd = playerPosition - QVector3D(0, rayLength, 0);
     TriangleSurface* floor = static_cast<TriangleSurface*>(mMap["floor"]);
+    House* house = static_cast<House*>(mMap["house"]);
     if (floor->intersectsLine(rayStart, rayEnd))
     {
         // calculate the point of intersection between the ray and the object's surface
@@ -280,6 +283,10 @@ void RenderWindow::render()
         // adjust the player's position to sit on top of the object
         mMap["player"]->move(0, -distance + 0.5f, 0);
 //        qDebug() << "Line intersected floor going from " << rayStart << " to " << rayEnd;
+    }
+    if (house->contains(playerPosition))
+    {
+        house->open();
     }
     for (auto& trophy : trophies)
     {
@@ -488,14 +495,10 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     //Toggle objects
     if(event->key() == Qt::Key_1)
     {
-        if (mMap["testCurve"] != nullptr)
+        if (mMap["pInterp"] != nullptr)
         {
-            if (mMap["testCurve"]->hide)
-                mMap["testCurve"]->hide = false;
-            else
-            {
-                mMap["testCurve"]->hide = true;
-            }
+            static_cast<PolyInterpolation*>(mMap["pInterp"])->toggleFunction();
+            mMap["pInterp"]->init(mMatrixUniform);
         }
     }
     if(event->key() == Qt::Key_2)

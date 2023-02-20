@@ -3,10 +3,10 @@
 PolyInterpolation::PolyInterpolation(bool inPoints)
 {
     points = inPoints;
-    mVertices.push_back(Vertex{-2,1,0,1,0,0});
-    mVertices.push_back(Vertex{-1,.66f,0,1,0,0});
-    mVertices.push_back(Vertex{.23f,1.49f,0,1,0,0});
-    mVertices.push_back(Vertex{2.1f,3,0,1,0,0});
+    mVertices.push_back(Vertex{x1[0], y1[0],0,1,0,0});
+    mVertices.push_back(Vertex{x1[1], y1[1],0,1,0,0});
+    mVertices.push_back(Vertex{x1[2], y1[2],0,1,0,0});
+    mVertices.push_back(Vertex{x1[3], y1[3],0,1,0,0});
     mMatrix.setToIdentity();
 
     for (int i = 0; i < 4; i++)
@@ -15,10 +15,10 @@ PolyInterpolation::PolyInterpolation(bool inPoints)
         for (int j = 0; j < 4; j++)
         {
             A(i, j) = t;
-            t *= x[i];
+            t *= x1[i];
         }
     }
-    c = A.inverted() * QVector4D(y[0], y[1], y[2], y[3]);
+    c = A.inverted() * QVector4D(y1[0], y1[1], y1[2], y1[3]);
 }
 
 PolyInterpolation::~PolyInterpolation()
@@ -119,5 +119,47 @@ double PolyInterpolation::evaluate(double x) const
 std::pair<double, double> PolyInterpolation::range() const
 {
     return std::make_pair(min, max);
+}
+
+void PolyInterpolation::toggleFunction()
+{
+    mVertices.clear();
+    if (toggled)
+    {
+        mVertices.push_back(Vertex{x1[0], y1[0],0,1,0,0});
+        mVertices.push_back(Vertex{x1[1], y1[1],0,1,0,0});
+        mVertices.push_back(Vertex{x1[2], y1[2],0,1,0,0});
+        mVertices.push_back(Vertex{x1[3], y1[3],0,1,0,0});
+        for (int i = 0; i < 4; i++)
+        {
+            double t = 1.0;
+            for (int j = 0; j < 4; j++)
+            {
+                A(i, j) = t;
+                t *= x1[i];
+            }
+        }
+        c = A.inverted() * QVector4D(y1[0], y1[1], y1[2], y1[3]);
+    }
+    else
+    {
+        mVertices.push_back(Vertex{x2[0], y2[0],0,1,0,0});
+        mVertices.push_back(Vertex{x2[1], y2[1],0,1,0,0});
+        mVertices.push_back(Vertex{x2[2], y2[2],0,1,0,0});
+        mVertices.push_back(Vertex{x2[3], y2[3],0,1,0,0});
+        for (int i = 0; i < 4; i++)
+        {
+            double t = 1.0;
+            for (int j = 0; j < 4; j++)
+            {
+                A(i, j) = t;
+                t *= x2[i];
+            }
+        }
+        c = A.inverted() * QVector4D(y2[0], y2[1], y2[2], y2[3]);
+    }
+//    mMatrix.setToIdentity();
+    replace(-3, 3);
+    toggled = !toggled;
 }
 

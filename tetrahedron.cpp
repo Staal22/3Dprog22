@@ -92,6 +92,7 @@ void Tetrahedron::draw()
     glBindVertexArray(mVAO);
     glUniformMatrix4fv(mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
     glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
+
 //    // Indexed
 //    initializeOpenGLFunctions();
 //    glBindVertexArray( mVAO );

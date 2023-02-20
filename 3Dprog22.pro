@@ -10,6 +10,7 @@ SOURCES += main.cpp \
     curve.cpp \
     disc.cpp \
     graphfunction.cpp \
+    house.cpp \
     interactiveobject.cpp \
     linesurface.cpp \
     logger.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     curve.h \
     disc.h \
     graphfunction.h \
+    house.h \
     interactiveobject.h \
     linesurface.h \
     logger.h \
