@@ -2,10 +2,16 @@
 
 House::House()
 {
+    corner1 = QVector3D(0, 0, 0); // 5
+    corner2 = QVector3D(1, 0, 0); // 6
+    corner3 = QVector3D(1, 0, 2); // 7
+    corner4 = QVector3D(0, 0, 2); // 8
+
     door1 = QVector3D(0, 0, 0.75f); // 9
     door2 = QVector3D(0, 0.6f, 0.75f); // 10
     door3 = QVector3D(0, 0, 1.25f); // 11
     door4 = QVector3D(0, 0.6f, 1.25f); // 12
+
     houseVertices();
 
     // Define the indices of the house shape
@@ -36,6 +42,20 @@ House::House()
     {
         mIndices.push_back(indices[i]);
     }
+
+    mMatrix.scale(5);
+//    mMatrix.translate(3, 0, 0);
+//    mMatrix.rotate(-45.f, 0, 1, 0);
+
+    // calculate the minimum and maximum points of the bounding box
+    QVector3D door = (door1 * 5 + door3 * 5) / 2;
+    doorMin_ = QVector3D{door.x(), door.y(), door.z()} - QVector3D(3.0f / 2.f, 1.f / 2.f, 1.0f / 2.f);
+    doorMax_ = QVector3D{door.x(), door.y(), door.z()} + QVector3D(3.0f / 2.f, 1.f / 2.f, 1.0f / 2.f);
+    QVector3D house1 = (corner1 * 5 + corner2 * 5) / 2;
+    QVector3D house2 = (corner4 * 5 + corner3 * 5) / 2;
+    QVector3D house = (house1 + house2) / 2;
+    min_ = QVector3D{house.x(), house.y(), house.z()} - QVector3D(5.0f / 2.f, 3.f / 2.f, 10.0f / 2.f);
+    max_ = QVector3D{house.x(), house.y(), house.z()} + QVector3D(5.0f / 2.f, 3.f / 2.f, 10.0f / 2.f);
 }
 
 House::~House()
@@ -76,14 +96,7 @@ void House::init(GLint matrixUniform)
     mRotation.setToIdentity();
     glBindVertexArray(0);
 
-    mMatrix.scale(5);
-//    mMatrix.translate(3, 0, 0);
-//    mMatrix.rotate(-45.f, 0, 1, 0);
 
-    // calculate the minimum and maximum points of the bounding box
-    QVector3D door = (door1 * 5 + door3 * 5) / 2;
-    min_ = QVector3D{door.x(), door.y(), door.z()} - QVector3D(0.5f / 2.f, 1.f / 2.f, 0.5f / 2.f);
-    max_ = QVector3D{door.x(), door.y(), door.z()} + QVector3D(0.5f / 2.f, 1.f / 2.f, 0.5f / 2.f);
 }
 
 void House::draw()
@@ -97,13 +110,32 @@ void House::draw()
 
 void House::open()
 {
-    mVertices.clear();
+    if (!doorOpen)
+    {
+        mVertices.clear();
 
-    door1 = QVector3D(0.5f, 0, 1.25f); // 9
-    door2 = QVector3D(0.5f, 0.6f, 1.25f); // 10
-    houseVertices();
-    mMatrix.scale(0.2f);
-    init(mMatrixUniform);
+        //Switch to inner camera
+        door1 = QVector3D(0.5f, 0, 1.25f); // 9
+        door2 = QVector3D(0.5f, 0.6f, 1.25f); // 10
+        houseVertices();
+        doorOpen = true;
+        init(mMatrixUniform);
+    }
+}
+
+void House::close()
+{
+    if (doorOpen)
+    {
+        mVertices.clear();
+
+        // if !contains(player) switch to outer camera
+        door1 = QVector3D(0, 0, 0.75f); // 9
+        door2 = QVector3D(0, 0.6f, 0.75f); // 10
+        houseVertices();
+        doorOpen = false;
+        init(mMatrixUniform);
+    }
 }
 
 bool House::contains(QVector3D point) const
@@ -111,6 +143,13 @@ bool House::contains(QVector3D point) const
     return point.x() >= min_.x() && point.x() <= max_.x() &&
            point.y() >= min_.y() && point.y() <= max_.y() &&
            point.z() >= min_.z() && point.z() <= max_.z();
+}
+
+bool House::doorContains(QVector3D point) const
+{
+    return point.x() >= doorMin_.x() && point.x() <= doorMax_.x() &&
+           point.y() >= doorMin_.y() && point.y() <= doorMax_.y() &&
+           point.z() >= doorMin_.z() && point.z() <= doorMax_.z();
 }
 
 void House::houseVertices()
@@ -121,10 +160,6 @@ void House::houseVertices()
     QVector3D v3(1, 1, 2); // 2
     QVector3D v4(0, 1, 2); // 3
     QVector3D v5(0.5f, 2, 1); // 4
-    QVector3D v6(0, 0, 0); // 5
-    QVector3D v7(1, 0, 0); // 6
-    QVector3D v8(1, 0, 2); // 7
-    QVector3D v9(0, 0, 2); // 8
     QVector3D v14(0, 1, 0.75f); // 13
     QVector3D v15(0, 1, 1.25f); // 14
     QVector3D v16(0, 0.6f, 0.75f); // 15
@@ -141,10 +176,10 @@ void House::houseVertices()
     mVertices.push_back(Vertex{v3, red}); //2
     mVertices.push_back(Vertex{v4, red}); //3
     mVertices.push_back(Vertex{v5, red}); //4
-    mVertices.push_back(Vertex{v6, red}); //5
-    mVertices.push_back(Vertex{v7, red}); //6
-    mVertices.push_back(Vertex{v8, red}); //7
-    mVertices.push_back(Vertex{v9, red}); //8
+    mVertices.push_back(Vertex{corner1, red}); //5
+    mVertices.push_back(Vertex{corner2, red}); //6
+    mVertices.push_back(Vertex{corner3, red}); //7
+    mVertices.push_back(Vertex{corner4, red}); //8
     mVertices.push_back(Vertex{door1, green}); //9
     mVertices.push_back(Vertex{door2, green}); //10
     mVertices.push_back(Vertex{door3, green}); //11

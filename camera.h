@@ -15,6 +15,7 @@ public:
    void lookAt(const QVector3D& eye, const QVector3D& at, const QVector3D& up);
    void update();
    void translate(float dx, float dy, float dz);
+   void setPos(float x, float y, float z);
 
    QVector3D mEye;
    QVector3D left = {-1,0,0};

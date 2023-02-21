@@ -42,3 +42,10 @@ void Camera::translate(float dx, float dy, float dz)
     mEye.setY(mEye.y() + dy);
     mEye.setZ(mEye.z() + dz);
 }
+
+void Camera::setPos(float x, float y, float z)
+{
+    mEye.setX(x);
+    mEye.setY(y);
+    mEye.setZ(z);
+}

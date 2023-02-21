@@ -51,7 +51,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mMap.insert(std::pair<std::string, VisualObject*>  {"house", new House()});
 
     // Trophies
-    mObjects.push_back(new Trophy(5,0));
+    mObjects.push_back(new Trophy(2.5f,4));
     mObjects.push_back(new Trophy(7,2));
     mObjects.push_back(new Trophy(9,4));
     mObjects.push_back(new Trophy(11,6));
@@ -285,10 +285,19 @@ void RenderWindow::render()
         mMap["player"]->move(0, -distance + 0.5f, 0);
 //        qDebug() << "Line intersected floor going from " << rayStart << " to " << rayEnd;
     }
-    if (house->contains(playerPosition))
+    if (house->doorContains(playerPosition))
     {
         house->open();
-        qDebug() << "Door opened";
+//        qDebug() << "Door opened";
+        mCamera.setPos(2.5f, 3, 8);
+    }
+    else if (!house->doorContains(playerPosition))
+    {
+        house->close();
+        if (!house->contains(playerPosition))
+        {
+            mCamera.setPos(-15, 6, 15);
+        }
     }
     for (auto& trophy : trophies)
     {
