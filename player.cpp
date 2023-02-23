@@ -1,4 +1,5 @@
 #include "player.h"
+#include "graphfunction.h"
 
 Player::Player()
 {
@@ -50,17 +51,28 @@ void Player::draw()
 
 void Player::move(float x, float y, float z)
 {
-//    mPosition.column(3).setX(mPosition.column(3).x() + x);
-//    mPosition.column(3).setY(mPosition.column(3).y() + z);
-//    mPosition.column(3).setZ(mPosition.column(3).y() + z);
     mPosition.translate(x, y, z);
-    mMatrix.translate(x, y, z);
-//    qDebug() << "Moved player and updated position to " << mPosition.column(3).x() << mPosition.column(3).y() << mPosition.column(3).z();
-//    for (int i = 0; i < mVertices.size(); i++)
-//    {
-//        QVector4D transformedVertex = mMatrix * QVector4D(mVertices[i].m_xyz, 1.0f);
-//        mVertices[i].m_xyz = QVector3D(transformedVertex);
-//    }
+    mMatrix = mPosition;
+}
+
+void Player::move(float x, float y, float z, GraphFunction *function)
+{
+    QVector4D pos4D = mPosition.column(3);
+    QVector3D pos3D = pos4D.toVector3D();
+    float distance = 0.f;
+    // movement
+    float value = function->evaluate(pos3D.x(), pos3D.z());
+    if (value > 0)
+        distance = pos3D.distanceToPoint(QVector3D(pos3D.x(), value, pos3D.z()));
+    if (pos3D.y() > value)
+        distance *= -1;
+    if (pos3D.x() > -5 &&
+            pos3D.x() < 5 &&
+            pos3D.z() > -10 &&
+            pos3D.z() < 10)
+        distance = 0;
+    mPosition.translate(x, distance, z);
+    mMatrix = mRotation * mPosition;
 }
 
 void Player::turn(float y)

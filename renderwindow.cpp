@@ -46,7 +46,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mMap.insert(std::pair<std::string, VisualObject*> {"xyz", new XYZ()});
     mMap.insert(std::pair<std::string, VisualObject*> {"disc", new class Disc()});
     mMap.insert(std::pair<std::string, VisualObject*> {"tetrahedron", new Tetrahedron()});
-    mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(40)});
+//    mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(40)});
+    mMap.insert(std::pair<std::string, VisualObject*>  {"floor", new TwoVariableFunctionSpace()});
     mMap.insert(std::pair<std::string, VisualObject*>  {"player", new Player()});
     mMap.insert(std::pair<std::string, VisualObject*>  {"house", new House()});
 
@@ -220,7 +221,7 @@ void RenderWindow::render()
     mCamera.init(mPmatrixUniform, mVmatrixUniform);
 
 //    qDebug() << *mPmatrix;
-    mCamera.perspective(110.f, 16.0f/9.0f, 0.1f, 100.0f);
+    mCamera.perspective(90.f, 16.0f/9.0f, 0.1f, 100.0f);
 //    mCamera.lookAt(mCamera.mEye, mCamera.mEye + QVector3D::crossProduct(mCamera.left, mCamera.up), mCamera.up);
     mCamera.lookAt(mCamera.mEye, {0, 0, 0}, mCamera.up);
 
@@ -269,26 +270,10 @@ void RenderWindow::render()
     Player* player = static_cast<Player*>(mMap["player"]);
     QVector3D playerPosition = player->getPosition3D();
     float rayLength = 100.0f; // length of ray to cast downwards
-    QVector3D rayStart = playerPosition;
-    QVector3D rayEnd = playerPosition - QVector3D(0, rayLength, 0);
-    TriangleSurface* floor = static_cast<TriangleSurface*>(mMap["floor"]);
     House* house = static_cast<House*>(mMap["house"]);
-    if (floor->intersectsLine(rayStart, rayEnd))
-    {
-        // calculate the point of intersection between the ray and the object's surface
-        QVector3D intersection = floor->surfaceIntersection(rayStart, rayEnd, QVector3D{0,1,0});
-
-        // calculate the distance between the player's current position and the intersection point
-        float distance = playerPosition.distanceToPoint(intersection);
-
-        // adjust the player's position to sit on top of the object
-        mMap["player"]->move(0, -distance + 0.5f, 0);
-//        qDebug() << "Line intersected floor going from " << rayStart << " to " << rayEnd;
-    }
     if (house->doorContains(playerPosition))
     {
         house->open();
-//        qDebug() << "Door opened";
         mCamera.setPos(2.5f, 3, 8);
     }
     else if (!house->doorContains(playerPosition))
@@ -466,26 +451,27 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
 //        mCamera.translate(0,-1,0);
 //    }
 
+    TwoVariableFunctionSpace* floor = static_cast<TwoVariableFunctionSpace*>(mMap["floor"]);
     // Move Player
     if(event->key() == Qt::Key_W)
     {
         if (mMap["player"] != nullptr)
-            mMap["player"]->move(0.f, 0.f, -moveDistance);
+            mMap["player"]->move(0.f, 0.f, -moveDistance, floor);
     }
     if(event->key() == Qt::Key_A)
     {
         if (mMap["player"] != nullptr)
-            mMap["player"]->move(-moveDistance, 0.f, 0.f);
+            mMap["player"]->move(-moveDistance, 0.f, 0.f, floor);
     }
     if(event->key() == Qt::Key_S)
     {
         if (mMap["player"] != nullptr)
-            mMap["player"]->move(0.f, 0.f, moveDistance);
+            mMap["player"]->move(0.f, 0.f, moveDistance, floor);
     }
     if(event->key() == Qt::Key_D)
     {
         if (mMap["player"] != nullptr)
-            mMap["player"]->move(moveDistance, 0.0f, 0.f);
+            mMap["player"]->move(moveDistance, 0.0f, 0.f, floor);
     }
     if(event->key() == Qt::Key_E)
     {

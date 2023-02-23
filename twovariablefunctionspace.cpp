@@ -2,34 +2,34 @@
 
 TwoVariableFunctionSpace::TwoVariableFunctionSpace()
 {
-    mVertices.clear();
     {
-        for (auto x = xMin; x < xMax; x += h)
+        float y = 0.f;
+        for (auto x = min; x < max; x += h)
         {
-            for (auto y = yMin; y < yMax; y += h)
+            for (auto z = min; z < max; z += h)
             {
-                z = evaluate(x, y);
-                mVertices.push_back(Vertex{x, y, z, 0, 0, z});
-                z = evaluate(x + h, y);
-                mVertices.push_back(Vertex{x + h, y, z, 0, 0, z});
-                z = evaluate(x, y + h);
-                mVertices.push_back(Vertex{x, y + h, z, 0, 0, z});
-                mVertices.push_back(Vertex{x, y + h, z, 0, 0, z});
-                z = evaluate(x + h, y);
-                mVertices.push_back(Vertex{x + h, y, z, 0, 0, z});
-                z = evaluate(x + h, y + h);
-                mVertices.push_back(Vertex{x + h, y + h, z, 0, 0, z});
+                y = 0;
+                if (!(5 > x && x > -5 && 10 > z && z > -10))
+                    y = evaluate(x, z);
+                mVertices.push_back(Vertex{x, y, z, 0, 0.6f, y});
+                if (!(5 > x && x > -5 && 10 > z && z > -10))
+                    y = evaluate(x + h, z);
+                mVertices.push_back(Vertex{x + h, y, z, 0, 0.6f, y});
+                if (!(5 > x && x > -5 && 10 > z && z > -10))
+                    y = evaluate(x, z + h);
+                mVertices.push_back(Vertex{x, y, z + h, 0, 0.6f, y});
+                mVertices.push_back(Vertex{x, y, z + h, 0, 0.6f, y});
+                if (!(5 > x && x > -5 && 10 > z && z > -10))
+                    y = evaluate(x + h, z);
+                mVertices.push_back(Vertex{x + h, y, z, 0, 0.6f, y});
+                if (!(5 > x && x > -5 && 10 > z && z > -10))
+                    y = evaluate(x + h, z + h);
+                mVertices.push_back(Vertex{x + h, y, z + h, 0, 0.6f, y});
             }
         }
     }
     mMatrix.setToIdentity();
 }
-
-//TwoVariableFunctionSpace::TwoVariableFunctionSpace(std::string filename)
-//{
-//    readFile(filename);
-//    mMatrix.setToIdentity();
-//}
 
 TwoVariableFunctionSpace::~TwoVariableFunctionSpace()
 {
@@ -43,7 +43,7 @@ void TwoVariableFunctionSpace::writeFile(std::string filename)
     {
         std::cerr << "Uh oh, " << filename << " could not be opened for writing!\n";
     }
-//    outf << "Number of vertices: " << mVertices.size() << " Format is (x,y,z)(r,g,b,)(u,v)" << '\n';
+    //    outf << "Number of vertices: " << mVertices.size() << " Format is (x,y,z)(r,g,b,)(u,v)" << '\n';
     outf << mVertices.size() << '\n';
     foreach (auto Vertex, mVertices) {
         outf << Vertex;
@@ -53,24 +53,6 @@ void TwoVariableFunctionSpace::writeFile(std::string filename)
     //leave behind duplicates here
     mVertices.clear();
 }
-
-//void TwoVariableFunctionSpace::readFile(std::string filename)
-//{
-//    std::ifstream inn;
-//    inn.open(filename.c_str());
-
-//    if (inn.is_open()) {
-//        int n;
-//        Vertex vertex;
-//        inn >> n;
-//        mVertices.reserve(n);
-//        for (int i=0; i<n; i++) {
-//             inn >> vertex;
-//             mVertices.push_back(vertex);
-//        }
-//        inn.close();
-//    }
-//}
 
 void TwoVariableFunctionSpace::init(GLint shader)
 {
@@ -144,6 +126,11 @@ void TwoVariableFunctionSpace::rotate()
     mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
 }
 
+std::pair<double, double> TwoVariableFunctionSpace::range() const
+{
+    return std::make_pair(min, max);
+}
+
 float TwoVariableFunctionSpace::numericIntegral()
 {
     double dx = h;
@@ -160,22 +147,22 @@ float TwoVariableFunctionSpace::numericIntegral()
     return cumSum;
 }
 
-double TwoVariableFunctionSpace::evaluate(double x, double y) const
+double TwoVariableFunctionSpace::evaluate(double x, double z) const
 {
-    return sin(M_PI * x) * sin(M_PI * y); //Oppgave 1
+    return sin(M_PI * x) * sin(M_PI * z); //Oppgave 1
 }
 
-float TwoVariableFunctionSpace::functionNumeric(double x, double y)
+float TwoVariableFunctionSpace::functionNumeric(double x, double z)
 {
-    return (1 - x - y);//oppgave 3
+    return (1 - x - z);//oppgave 3
 }
 
-float TwoVariableFunctionSpace::funcX(float x, float y)
+float TwoVariableFunctionSpace::funcX(float x, float z)
 {
-    return (M_PI*cos(M_PI*x) * sin(M_PI*y));
+    return (M_PI*cos(M_PI*x) * sin(M_PI*z));
 }
 
-float TwoVariableFunctionSpace::funcY(float x, float y)
+float TwoVariableFunctionSpace::funcY(float x, float z)
 {
-    return (M_PI*cos(M_PI*y) * sin(M_PI*x));
+    return (M_PI*cos(M_PI*z) * sin(M_PI*x));
 }

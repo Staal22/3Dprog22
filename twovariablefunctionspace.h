@@ -15,22 +15,18 @@ public:
     void init(GLint shader) override;
     void draw() override;
     void rotate() override;
-
+    virtual std::pair<double, double> range() const override;
     float numericIntegral();
-    double evaluate (double x, double y) const override;
+    double evaluate (double x, double z) const override;
 
 private:
-    float functionNumeric(double x, double y);
-    float funcX(float x, float y);
-    float funcY(float x, float y);
+    float functionNumeric(double x, double z);
+    float funcX(float x, float z);
+    float funcY(float x, float z);
 
-    float xMin = -1.f;
-    float xMax = 1.0f;
-    float yMin = -1.f;
-    float yMax = 1.0f;
-    float h = 0.01f;
-    float z = 0.f;
-
+    float min = -20.f;
+    float max = 20.0f;
+    float h = 0.05f;
 
 };
 

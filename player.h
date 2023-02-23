@@ -11,6 +11,7 @@ public:
     void init(GLint matrixUniform) override;
     void draw() override;
     void move(float x, float y, float z) override;
+    void move(float x, float y, float z, GraphFunction* function) override;
     void turn(float y);
 
     int score = 0;

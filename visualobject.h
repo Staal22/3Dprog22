@@ -16,6 +16,7 @@ public:
    virtual void rotate() { }
    // move for interaktive objekter
    virtual void move(float x, float y, float z) { }
+   virtual void move(float x, float y, float z, class GraphFunction* function) { }
    // move for simulering (for eksempel NPC)
    virtual void move(float dt) { }
    // just a test please don't be mad Dag y.y

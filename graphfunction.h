@@ -10,7 +10,7 @@ public:
     ~GraphFunction() override;
 
     virtual double evaluate(double x) const { }
-    virtual double evaluate (double x, double y) const { }
+    virtual double evaluate (double x, double z) const { }
     virtual std::pair<double, double> range() const { };
 };
 
