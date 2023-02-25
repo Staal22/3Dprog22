@@ -53,11 +53,11 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     // Trophies
     mObjects.push_back(new Trophy(2.5f,4));
-    mObjects.push_back(new Trophy(7,2));
-    mObjects.push_back(new Trophy(9,4));
-    mObjects.push_back(new Trophy(11,6));
-    mObjects.push_back(new Trophy(11,2));
-    mObjects.push_back(new Trophy(9,-1));
+    mObjects.push_back(new Trophy(-7,2));
+    mObjects.push_back(new Trophy(-9,4));
+    mObjects.push_back(new Trophy(-11,6));
+    mObjects.push_back(new Trophy(-11,2));
+    mObjects.push_back(new Trophy(-9,1));
 
 
 

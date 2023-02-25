@@ -2,46 +2,39 @@
 
 Trophy::Trophy(float x, float z)
 {
-    // Calculate the angle between each slice
-    float angle = (2 * M_PI) / numSlices;
+    // Vertex positions
+    Vertex v0 (QVector3D(-0.5f, -0.5f, -0.5f), QVector3D(0,1,1));
+    Vertex v1 (QVector3D(0.5f, -0.5f, -0.5f), QVector3D(1,0,1));
+    Vertex v2 (QVector3D(0.5f, 0.5f, -0.5f), QVector3D(1,1,0));
+    Vertex v3 (QVector3D(-0.5f, 0.5f, -0.5f), QVector3D(1,1,1));
+    Vertex v4 (QVector3D(-0.5f, -0.5f, 0.5f), QVector3D(0,0,1));
+    Vertex v5 (QVector3D(0.5f, -0.5f, 0.5f), QVector3D(0,1,0));
+    Vertex v6 (QVector3D(0.5f, 0.5f, 0.5f), QVector3D(1,0,0));
+    Vertex v7 (QVector3D(-0.5f, 0.5f, 0.5f), QVector3D(1,1,0));
 
-    // Generate vertices for the base of the cone
-    mVertices.push_back(Vertex{QVector3D(0, 0, 0), QVector3D{1,1,0}});
-    for (int i = 0; i <= numSlices; i++)
-    {
-        float x = radius * cos(i * angle);
-        float z = radius * sin(i * angle);
-        mVertices.push_back(Vertex{QVector3D(x, 0, z), QVector3D{1,1,0}});
-    }
+    // Front face
+    mVertices.push_back(v0); mVertices.push_back(v1); mVertices.push_back(v2);
+    mVertices.push_back(v0); mVertices.push_back(v2); mVertices.push_back(v3);
 
-    // Generate vertices for the top of the cone
-    mVertices.push_back(Vertex{QVector3D(0, height, 0), QVector3D{1,1,0}});
-    for (int i = 0; i <= numSlices; i++)
-    {
-        float x = radius * cos(i * angle);
-        float z = radius * sin(i * angle);
-        mVertices.push_back(Vertex{QVector3D(x, height, z), QVector3D{1,1,0}});
-    }
+    // Back face
+    mVertices.push_back(v4); mVertices.push_back(v6); mVertices.push_back(v5);
+    mVertices.push_back(v4); mVertices.push_back(v7); mVertices.push_back(v6);
 
-    // Generate vertices for the sides of the cone
-    for (int i = 1; i <= numSlices; i++)
-    {
-        mVertices.push_back(Vertex{QVector3D(0.0f, 0.0f, 0.0f), QVector3D{1,1,0}});
-        mVertices.push_back(Vertex{QVector3D(radius * cos(i * angle), 0.0f, radius * sin(i * angle)), QVector3D{1,1,0}});
-        mVertices.push_back(Vertex{QVector3D(radius * cos((i - 1) * angle), 0.0f, radius * sin((i - 1) * angle)), QVector3D{1,1,0}});
+    // Top face
+    mVertices.push_back(v3); mVertices.push_back(v2); mVertices.push_back(v6);
+    mVertices.push_back(v3); mVertices.push_back(v6); mVertices.push_back(v7);
 
-        mVertices.push_back(Vertex{QVector3D(0.0f, height, 0.0f), QVector3D{1,1,0}});
-        mVertices.push_back(Vertex{QVector3D(radius * cos((i - 1) * angle), 0.0f, radius * sin((i - 1) * angle)), QVector3D{1,1,0}});
-        mVertices.push_back(Vertex{QVector3D(radius * cos(i * angle), 0.0f, radius * sin(i * angle)), QVector3D{1,1,0}});
+    // Bottom face
+    mVertices.push_back(v0); mVertices.push_back(v4); mVertices.push_back(v5);
+    mVertices.push_back(v0); mVertices.push_back(v5); mVertices.push_back(v1);
 
-        mVertices.push_back(Vertex{QVector3D(radius * cos(i * angle), 0.0f, radius * sin(i * angle)), QVector3D{1,1,0}});
-        mVertices.push_back(Vertex{QVector3D(radius * cos((i - 1) * angle), 0.0f, radius * sin((i - 1) * angle)), QVector3D{1,1,0}});
-        mVertices.push_back(Vertex{QVector3D(radius * cos((i - 1) * angle), height, radius * sin((i - 1) * angle)), QVector3D{1,1,0}});
+    // Left face
+    mVertices.push_back(v0); mVertices.push_back(v3); mVertices.push_back(v7);
+    mVertices.push_back(v0); mVertices.push_back(v7); mVertices.push_back(v4);
 
-        mVertices.push_back(Vertex{QVector3D(radius * cos(i * angle), 0.0f, radius * sin(i * angle)), QVector3D{1,1,0}});
-        mVertices.push_back(Vertex{QVector3D(radius * cos((i - 1) * angle), height, radius * sin((i - 1) * angle)), QVector3D{1,1,0}});
-        mVertices.push_back(Vertex{QVector3D(radius * cos(i * angle), height, radius * sin(i * angle)), QVector3D{1,1,0}});
-    }
+    // Right face
+    mVertices.push_back(v1); mVertices.push_back(v5); mVertices.push_back(v6);
+    mVertices.push_back(v1); mVertices.push_back(v6); mVertices.push_back(v2);
 
     mMatrix.translate(x, 0.0f, z);
 
