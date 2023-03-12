@@ -8,6 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include "camera.h"
+#include "objectgroup.h"
 #include "trophy.h"
 #include "visualobject.h"
 #include "quadtree.h"
@@ -41,7 +42,24 @@ private slots:
 private:
     void init();            //initialize things we need before rendering
 
-    QOpenGLShaderProgram* program;
+    QOpenGLShaderProgram* vertexShader;
+    QOpenGLShaderProgram* plainShader;
+    QOpenGLShaderProgram* textureShader;
+    QOpenGLShaderProgram* terrainShader;
+
+    std::vector<ObjectGroup*> groups;
+    ObjectGroup* plainObjects;
+    ObjectGroup* texturedObjects;
+    ObjectGroup* terrainObjects;
+
+    // Retrieve and store uniform locations
+    struct UniformLocations
+    {
+        GLint model;
+        GLint view;
+        GLint projection;
+    };
+    UniformLocations uLoc;
 
     // Containers
     std::vector<VisualObject*> mObjects;
@@ -55,9 +73,9 @@ private:
     bool mInitialized{false};
 
     Shader *mShaderProgram{nullptr};    //holds pointer the GLSL shader program
-    GLint  mMatrixUniform;              //OpenGL reference to the Uniform in the shader program
-    GLint mPmatrixUniform;
-    GLint mVmatrixUniform;
+    GLint modelMatrixUniform;              //OpenGL reference to the Uniform in the shader program
+    GLint projectionMatrixUniform;
+    GLint viewMatrixUniform;
 
     GLuint mVAO;                        //OpenGL reference to our VAO
     GLuint mVBO;                        //OpenGL reference to our VBO
@@ -80,14 +98,10 @@ private:
 
 protected:
   
-    //The QWindow that we inherit from have these functions to capture
-    // - mouse and keyboard.
-    // Uncomment to use (you also have to make the definitions of
-    // these functions in the cpp-file to use them of course!)
-    //
+    //The QWindow that we inherit from have these functions to capture mouse and keyboard.
     //    void mousePressEvent(QMouseEvent *event) override{}
     //    void mouseMoveEvent(QMouseEvent *event) override{}
-    void keyPressEvent(QKeyEvent *event) override;              //the only one we use now
+    void keyPressEvent(QKeyEvent *event) override;
     //    void keyReleaseEvent(QKeyEvent *event) override{}
     //    void wheelEvent(QWheelEvent *event) override{}
 };

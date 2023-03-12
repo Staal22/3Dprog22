@@ -132,6 +132,55 @@ void TriangleSurface::rotate()
     mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
 }
 
+void TriangleSurface::subDivide()
+{
+    // Step 1: Compute new vertices at the midpoint of each edge
+    std::vector<Vertex> newVertices;
+    for (int i = 0; i < mIndices.size(); i += 3) {
+        int v1 = mIndices[i];
+        int v2 = mIndices[i+1];
+        int v3 = mIndices[i+2];
+        QVector3D midpoint1 = 0.5f * (mVertices[v1].m_xyz + mVertices[v2].m_xyz);
+        QVector3D midpoint2 = 0.5f * (mVertices[v2].m_xyz + mVertices[v3].m_xyz);
+        QVector3D midpoint3 = 0.5f * (mVertices[v3].m_xyz + mVertices[v1].m_xyz);
+        newVertices.push_back(mVertices[v1].m_xyz);
+        newVertices.push_back(midpoint1);
+        newVertices.push_back(mVertices[v2].m_xyz);
+        newVertices.push_back(midpoint2);
+        newVertices.push_back(mVertices[v3].m_xyz);
+        newVertices.push_back(midpoint3);
+        newVertices.push_back(midpoint1);
+        newVertices.push_back(midpoint2);
+        newVertices.push_back(midpoint3);
+    }
+    // Step 2: Create new indices for the subdivided mesh
+    std::vector<GLuint> newIndices;
+    for (int i = 0; i < mIndices.size(); i += 3) {
+        int v1 = mIndices[i];
+        int v2 = mIndices[i+1];
+        int v3 = mIndices[i+2];
+        int m1 = newVertices.size() - (mIndices.size() - i) + 1;
+        int m2 = newVertices.size() - (mIndices.size() - i) + 3;
+        int m3 = newVertices.size() - (mIndices.size() - i) + 5;
+        newIndices.push_back(v1);
+        newIndices.push_back(m1);
+        newIndices.push_back(m3);
+        newIndices.push_back(m1);
+        newIndices.push_back(v2);
+        newIndices.push_back(m2);
+        newIndices.push_back(m2);
+        newIndices.push_back(v3);
+        newIndices.push_back(m3);
+        newIndices.push_back(m1);
+        newIndices.push_back(m2);
+        newIndices.push_back(m3);
+    }
+    // Step 3: Replace the old mesh with the subdivided mesh
+    mVertices = newVertices;
+    mIndices = newIndices;
+    init(mMatrixUniform);
+}
+
 bool TriangleSurface::contains(QVector3D point) const
 {
     return point.x() >= min_.x() && point.x() <= max_.x() &&

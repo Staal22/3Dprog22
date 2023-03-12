@@ -1,12 +1,12 @@
-#version 410 core
+#version 330 core
 
 in vec4 color;
 in vec2 textureCoord;
 
-out vec4 fragmentColor;     //color sent to fragment on screen
+out vec4 fragmentColor;
 
-uniform sampler2D textureSampler;
 uniform bool hasTexture;
+uniform sampler2D textureSampler;
 
 void main()
 {

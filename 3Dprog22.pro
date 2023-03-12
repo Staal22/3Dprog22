@@ -15,6 +15,7 @@ SOURCES += main.cpp \
     linesurface.cpp \
     logger.cpp \
     mainwindow.cpp \
+    objectgroup.cpp \
     octahedronball.cpp \
     parabolaapproximation.cpp \
     player.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
     linesurface.h \
     logger.h \
     mainwindow.h \
+    objectgroup.h \
     octahedronball.h \
     parabolaapproximation.h \
     player.h \
@@ -63,6 +65,6 @@ FORMS += \
 
 DISTFILES += \
     plainshader.frag \
-    plainshader.geom \
+    plainshader.gsh \
     plainshader.vert \
     textureshader.frag

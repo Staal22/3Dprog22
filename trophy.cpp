@@ -5,40 +5,6 @@
 Trophy::Trophy(float x, float z)
 {
     // Vertex positions and uv
-
-//    Vertex v0 (QVector3D(-0.5f, -0.5f, -0.5f), QVector2D(0,0));
-//    Vertex v1 (QVector3D(0.5f, -0.5f, -0.5f), QVector2D(1,0));
-//    Vertex v2 (QVector3D(0.5f, 0.5f, -0.5f), QVector2D(1,1));
-//    Vertex v3 (QVector3D(-0.5f, 0.5f, -0.5f), QVector2D(0,1));
-//    Vertex v4 (QVector3D(-0.5f, -0.5f, 0.5f), QVector2D(1,0));
-//    Vertex v5 (QVector3D(0.5f, -0.5f, 0.5f), QVector2D(0,0));
-//    Vertex v6 (QVector3D(0.5f, 0.5f, 0.5f), QVector2D(0,1));
-//    Vertex v7 (QVector3D(-0.5f, 0.5f, 0.5f), QVector2D(1,1));
-
-//    // Front face
-//    mVertices.push_back(v0); mVertices.push_back(v1); mVertices.push_back(v2);
-//    mVertices.push_back(v0); mVertices.push_back(v2); mVertices.push_back(v3);
-
-//    // Back face
-//    mVertices.push_back(v4); mVertices.push_back(v6); mVertices.push_back(v5);
-//    mVertices.push_back(v4); mVertices.push_back(v7); mVertices.push_back(v6);
-
-//    // Left face
-//    mVertices.push_back(v0); mVertices.push_back(v3); mVertices.push_back(v7);
-//    mVertices.push_back(v0); mVertices.push_back(v7); mVertices.push_back(v4);
-
-//    // Right face
-//    mVertices.push_back(v1); mVertices.push_back(v5); mVertices.push_back(v6);
-//    mVertices.push_back(v1); mVertices.push_back(v6); mVertices.push_back(v2);
-
-//    // Top face
-//    mVertices.push_back(v3); mVertices.push_back(v2); mVertices.push_back(v6);
-//    mVertices.push_back(v3); mVertices.push_back(v6); mVertices.push_back(v7);
-
-//    // Bottom face
-//    mVertices.push_back(v0); mVertices.push_back(v4); mVertices.push_back(v5);
-//    mVertices.push_back(v0); mVertices.push_back(v5); mVertices.push_back(v1);
-
     // Front face
     mVertices.push_back(Vertex{QVector3D(-0.5f, -0.5f, 0.5f), QVector2D(0.0f, 0.0f)}); // Bottom left
     mVertices.push_back(Vertex{QVector3D(0.5f, -0.5f, 0.5f), QVector2D(1.0f, 0.0f)}); // Bottom right
@@ -92,8 +58,6 @@ Trophy::Trophy(float x, float z)
     mVertices.push_back(Vertex{QVector3D(-0.5f, -0.5f, -0.5f), QVector2D(0.0f, 0.0f)}); // Bottom left
     mVertices.push_back(Vertex{QVector3D(0.5f, -0.5f, 0.5f), QVector2D(1.0f, 1.0f)}); // Top right
     mVertices.push_back(Vertex{QVector3D(-0.5f, -0.5f, 0.5f), QVector2D(0.0f, 1.0f)}); // Top left
-
-
 
     mMatrix.translate(x, 0.0f, z);
 
@@ -149,10 +113,8 @@ void Trophy::init(GLint matrixUniform)
     // 2nd attribute buffer : colors
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_normal)));
 
-
     // 3rd attribute buffer : texture coordinates
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_uv)));
-
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -160,7 +122,7 @@ void Trophy::init(GLint matrixUniform)
 
     texture->bind(0);
 
-//    glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void Trophy::draw()

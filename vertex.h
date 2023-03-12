@@ -19,6 +19,8 @@ public:
 
 public:
    Vertex();
+   Vertex(float x, float y, float z);
+   Vertex(QVector3D pos);
    Vertex(float x, float y, float z, float r, float g, float b);
    Vertex(QVector3D pos, QVector3D normal);
    Vertex(float x, float y, float z, float u, float v);

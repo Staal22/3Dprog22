@@ -9,18 +9,17 @@
 #include <QDebug>
 #include <string>
 #include "house.h"
-#include "octahedronball.h"
-#include "parabolaapproximation.h"
+//#include "octahedronball.h"
+//#include "parabolaapproximation.h"
 #include "player.h"
 #include "polyinterpolation.h"
-#include "shader.h"
 #include "mainwindow.h"
 #include "logger.h"
 #include "tetrahedron.h"
-#include "trianglesurface.h"
+//#include "trianglesurface.h"
 #include "xyz.h"
 #include "twovariablefunctionspace.h"
-#include "curve.h"
+//#include "curve.h"
 #include "disc.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow) : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -162,34 +161,57 @@ void RenderWindow::init()
     //    glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
     glClearColor(0.4f, 0.4f, 0.4f, 1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
 
-    //Compile shaders:
+    //Compile shaders: OLD CODE
 //    mShaderProgram = new Shader("../3Dprog22/plainshader.vert", "../3Dprog22/plainshader.frag");
-
-    program = new QOpenGLShaderProgram();
-    program->addShaderFromSourceFile(QOpenGLShader::Vertex, "../3Dprog22/plainshader.vert");
-    program->addShaderFromSourceFile(QOpenGLShader::Fragment, "../3Dprog22/textureshader.frag");
-    program->link();
 
     // Get the matrixUniform location from the shader
     // This has to match the "matrix" variable name in the vertex shader
     // The uniform is used in the render() function to send the model matrix to the shader
-    //mShaderProgram->use();
-//    mMatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "matrix" );
-//    mPmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "pmatrix" );
-//    mVmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "vmatrix" );
+//    mShaderProgram->use();
+//    mMatrixUniform = glGetUniformLocation(mShaderProgram->getProgram(), "model");
+//    mPmatrixUniform = glGetUniformLocation(mShaderProgram->getProgram(), "projection");
+//    mVmatrixUniform = glGetUniformLocation(mShaderProgram->getProgram(), "view");
 
-    mMatrixUniform = glGetUniformLocation( program->programId(), "matrix" );
-    mPmatrixUniform = glGetUniformLocation( program->programId(), "pmatrix" );
-    mVmatrixUniform = glGetUniformLocation( program->programId(), "vmatrix" );
+//    vertexShader = new QOpenGLShaderProgram();
+//    vertexShader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../3Dprog22/plainshader.vert");
+//    vertexShader->link();
+    // Default plain shader - treats normal as rgb
+//    plainShader = new QOpenGLShaderProgram();
+//    plainShader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../3Dprog22/plainshader.vert");
+//    plainShader->addShaderFromSourceFile(QOpenGLShader::Fragment, "../3Dprog22/plainshader.frag");
+//    plainShader->link();
+    // Texture shader - supports textures
+    textureShader = new QOpenGLShaderProgram();
+    textureShader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../3Dprog22/plainshader.vert");
+    textureShader->addShaderFromSourceFile(QOpenGLShader::Fragment, "../3Dprog22/textureshader.frag");
+    textureShader->link();
+
+    modelMatrixUniform = glGetUniformLocation(textureShader->programId(), "model");
+    projectionMatrixUniform = glGetUniformLocation(textureShader->programId(), "projection");
+    viewMatrixUniform = glGetUniformLocation(textureShader->programId(), "view");
+
+//    plainObjects = new ObjectGroup(plainShader);
+//    texturedObjects = new ObjectGroup(textureShader);
+//    groups.push_back(plainObjects);
+//    groups.push_back(texturedObjects);
+
+//    for (auto& object : mObjects)
+//    {
+//        object->init(modelMatrixUniform);
+//        if (object->hasTexture)
+//            texturedObjects->addObject(object);
+//        else
+//            plainObjects->addObject(object);
+//    }
 
     for (auto& object : mObjects)
     {
-        object->init(mMatrixUniform);
+        object->init(modelMatrixUniform);
     }
 
-    program->bind();
-    program->setUniformValue("textureSampler", 0);
-    program->release();
+    textureShader->bind();
+    textureShader->setUniformValue("textureSampler", 0);
+    textureShader->release();
 
     glBindVertexArray(0);
 
@@ -200,12 +222,12 @@ void RenderWindow::init()
 // Called each frame - doing the rendering!!!
 void RenderWindow::render()
 {
-    program->bind();
+    textureShader->bind();
 
     mMap["disc"]->move(0.017f);
     mMap["tetrahedron"]->move(-0.017f, static_cast<PolyInterpolation*>(mMap["pInterp"]));
 
-    mCamera.init(mPmatrixUniform, mVmatrixUniform);
+    mCamera.init(projectionMatrixUniform, viewMatrixUniform);
 
     mCamera.perspective(90.f, 16.0f/9.0f, 0.1f, 100.0f);
 //    mCamera.lookAt(mCamera.mEye, mCamera.mEye + QVector3D::crossProduct(mCamera.left, mCamera.up), mCamera.up);
@@ -217,18 +239,24 @@ void RenderWindow::render()
     //clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //what shader to use
+    //what shader to use OLD CODE
 //    glUseProgram(mShaderProgram->getProgram());
 
-//    //Move camera
-//    mVmatrix->translate(0, 5550, 0);
     mCamera.update();
 
+    // Vertices
     for (auto& object : mObjects)
     {
-        program->setUniformValue("hasTexture", object->hasTexture);
+        textureShader->setUniformValue("hasTexture", object->hasTexture);
         object->draw();
     }
+//    for (auto& group : groups)
+//    {
+//        modelMatrixUniform = glGetUniformLocation(group->m_shaderProgram->programId(), "model");
+//        projectionMatrixUniform = glGetUniformLocation(group->m_shaderProgram->programId(), "projection");
+//        viewMatrixUniform = glGetUniformLocation(group->m_shaderProgram->programId(), "view");
+//        group->render();
+//    }
 
     // Quadtree working test
 //    for (auto& object : mQuadTree.m_objects)
@@ -285,7 +313,7 @@ void RenderWindow::render()
         }
     }
 
-    program->release();
+    textureShader->release();
 }
 
 //This function is called from Qt when window is exposed (shown)
@@ -480,7 +508,7 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
         if (mMap["pInterp"] != nullptr)
         {
             static_cast<PolyInterpolation*>(mMap["pInterp"])->toggleFunction();
-            mMap["pInterp"]->init(mMatrixUniform);
+            mMap["pInterp"]->init(modelMatrixUniform);
         }
     }
     if(event->key() == Qt::Key_2)

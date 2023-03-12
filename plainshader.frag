@@ -1,10 +1,10 @@
-#version 410 core
+#version 330 core
 
 in vec4 color;
 
-out vec4 fragmentColor;     //color sent to fragment on screen
+out vec4 fragmentColor;
 
 void main()
 {
-    fragmentColor = color;   //color given to current fragment (pixel)
+    fragmentColor = color;
 }

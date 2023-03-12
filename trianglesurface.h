@@ -15,6 +15,8 @@ public:
     void draw() override;
     void rotate() override;
 
+    void subDivide();
+
     // check if a point is inside the bounding box
     bool contains(QVector3D point) const;
     // check if a line segment intersects the bounding box

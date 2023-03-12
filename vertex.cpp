@@ -5,6 +5,20 @@ Vertex::Vertex()
 
 }
 
+Vertex::Vertex(float x, float y, float z)
+{
+    m_xyz[0] = x;
+    m_xyz[1] = y;
+    m_xyz[2] = z;
+}
+
+Vertex::Vertex(QVector3D pos)
+{
+    m_xyz[0] = pos.x();
+    m_xyz[1] = pos.y();
+    m_xyz[2] = pos.z();
+}
+
 Vertex::Vertex(float x, float y, float z, float r, float g, float b)
 {
     m_xyz[0] = x;
