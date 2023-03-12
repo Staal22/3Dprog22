@@ -11,6 +11,8 @@
 #include "trophy.h"
 #include "visualobject.h"
 #include "quadtree.h"
+//#include <QOpenGLFunctions>
+#include <QOpenGLShaderProgram>
 
 class QOpenGLContext;
 class Shader;
@@ -38,6 +40,8 @@ private slots:
 
 private:
     void init();            //initialize things we need before rendering
+
+    QOpenGLShaderProgram* program;
 
     // Containers
     std::vector<VisualObject*> mObjects;

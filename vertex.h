@@ -14,14 +14,17 @@ class Vertex {
 
 public:
    QVector3D m_xyz{};       	// position i 3D
-   float m_normal[3]{};         // normal in 3D or rgb colors
-   float m_uv[2]{};         	// texture coordinates if used
+   QVector3D m_normal{1, 1, 1}; // normal in 3D or rgb colors
+   QVector2D m_uv{};         	// texture coordinates if used
 
 public:
    Vertex();
    Vertex(float x, float y, float z, float r, float g, float b);
    Vertex(QVector3D pos, QVector3D normal);
-
+   Vertex(float x, float y, float z, float u, float v);
+   Vertex(QVector3D pos, QVector2D uv);
+   Vertex(float x, float y, float z, float r, float g, float b, float u, float v);
+   Vertex(QVector3D pos, QVector3D normal, QVector2D uv);
 };
 
 #endif // VERTEX_H

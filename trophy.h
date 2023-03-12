@@ -16,6 +16,9 @@ public:
     bool contains(QVector3D point) const;
 
 private:
+    // Texture
+    QOpenGLTexture* texture;
+
     float radius = 1.0f;
     float height = 2.0f;
     int numSlices = 20;

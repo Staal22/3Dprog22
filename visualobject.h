@@ -4,6 +4,7 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <QMatrix4x4>
 #include <vector>
+#include "qopengltexture.h"
 #include "vertex.h"
 
 class VisualObject : public QOpenGLFunctions_4_1_Core {
@@ -42,6 +43,8 @@ public:
    QMatrix4x4 mScale;
    // Legger til rette for simulering
    QVector3D mVelocity{-1, 0, 0};
+
+   bool hasTexture = false;
 
 };
 

@@ -8,7 +8,6 @@
 #include <QStatusBar>
 #include <QDebug>
 #include <string>
-//#include "interactiveobject.h"
 #include "house.h"
 #include "octahedronball.h"
 #include "parabolaapproximation.h"
@@ -59,12 +58,6 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mObjects.push_back(new Trophy(-11,2));
     mObjects.push_back(new Trophy(-9,1));
 
-
-
-//    testahedron->writeFile("tetrahedronVertices.txt");
-//    mObjects.push_back(new OctahedronBall(5));
-//    mObjects.push_back(testObject);
-
     // Oblig 1 Matte
     //Oppgave 1
 //    TwoVariableFunctionSpace* tvSpace = new TwoVariableFunctionSpace();
@@ -89,6 +82,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    pApprox->fit(points->mVertices);
 //    pApprox->replace(-1, 11);
 //    mObjects.push_back(pApprox);
+
     // Oppgave 2
     mMap.insert(std::pair<std::string, VisualObject*> {"pInterp", new PolyInterpolation});
     static_cast<PolyInterpolation*>(mMap["pInterp"])->replace(-3, 3);
@@ -128,22 +122,17 @@ RenderWindow::~RenderWindow()
     glDeleteBuffers( 1, &mVBO );
 }
 
-// Sets up the general OpenGL stuff and the buffers needed to render a triangle
 void RenderWindow::init()
 {
-    //debug showcase
-//    int* bingus = nullptr;
-//    *bingus += 10;
-
     //Get the instance of the utility Output logger
-    //Have to do this, else program will crash (or you have to put in nullptr tests...)
+    //Have to do this, else program will crash (or you have to put in nullptr tests)
     mLogger = Logger::getInstance();
 
     //Connect the gameloop timer to the render function:
     //This makes our render loop
     connect(mRenderTimer, SIGNAL(timeout()), this, SLOT(render()));
-    //********************** General OpenGL stuff **********************
 
+    //********************** General OpenGL stuff **********************
     //The OpenGL context has to be set.
     //The context belongs to the instanse of this class!
     if (!mContext->makeCurrent(this)) {
@@ -160,8 +149,6 @@ void RenderWindow::init()
     initializeOpenGLFunctions();
 
     //Print render version info (what GPU is used):
-    //Nice to see if you use the Intel GPU or the dedicated GPU on your laptop
-    // - can be deleted
     mLogger->logText("The active GPU and API:", LogType::HIGHLIGHT);
     std::string tempString;
     tempString += std::string("  Vendor: ") + std::string((char*)glGetString(GL_VENDOR)) + "\n" +
@@ -169,58 +156,57 @@ void RenderWindow::init()
             std::string("  Version: ") + std::string((char*)glGetString(GL_VERSION));
     mLogger->logText(tempString);
 
-    //Start the Qt OpenGL debugger
-    //Really helpfull when doing OpenGL
-    //Supported on most Windows machines - at least with NVidia GPUs
-    //reverts to plain glGetError() on Mac and other unsupported PCs
-    // - can be deleted
     startOpenGLDebugger();
 
-    //general OpenGL stuff:
     glEnable(GL_DEPTH_TEST);            //enables depth sorting - must then use GL_DEPTH_BUFFER_BIT in glClear
     //    glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
     glClearColor(0.4f, 0.4f, 0.4f, 1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
 
     //Compile shaders:
-    //NB: hardcoded path to files! You have to change this if you change directories for the project.
-    //Qt makes a build-folder besides the project folder. That is why we go down one directory
-    // (out of the build-folder) and then up into the project folder.
-    mShaderProgram = new Shader("../3Dprog22/plainshader.vert", "../3Dprog22/plainshader.frag", "../3Dprog22/plainshader.geom");
+//    mShaderProgram = new Shader("../3Dprog22/plainshader.vert", "../3Dprog22/plainshader.frag");
+
+    program = new QOpenGLShaderProgram();
+    program->addShaderFromSourceFile(QOpenGLShader::Vertex, "../3Dprog22/plainshader.vert");
+    program->addShaderFromSourceFile(QOpenGLShader::Fragment, "../3Dprog22/textureshader.frag");
+    program->link();
 
     // Get the matrixUniform location from the shader
     // This has to match the "matrix" variable name in the vertex shader
     // The uniform is used in the render() function to send the model matrix to the shader
     //mShaderProgram->use();
-    mMatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "matrix" );
-    mPmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "pmatrix" );
-    mVmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "vmatrix" );
+//    mMatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "matrix" );
+//    mPmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "pmatrix" );
+//    mVmatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "vmatrix" );
+
+    mMatrixUniform = glGetUniformLocation( program->programId(), "matrix" );
+    mPmatrixUniform = glGetUniformLocation( program->programId(), "pmatrix" );
+    mVmatrixUniform = glGetUniformLocation( program->programId(), "vmatrix" );
 
     for (auto& object : mObjects)
     {
         object->init(mMatrixUniform);
     }
-    //canvas code
-//    for (auto it=mObjects.begin(); it!= mObjects.end(); it++)
-//        (*it)->init(mMatrixUniform);
 
-    glBindVertexArray(0);       //unbinds any VertexArray - good practice
+    program->bind();
+    program->setUniformValue("textureSampler", 0);
+    program->release();
+
+    glBindVertexArray(0);
 
     mCamera.translate(-15, 6, 15);
     glPointSize(5);
-
-    // hard coded positions
-//    mMap["trophy"]->mMatrix.translate(5,0,0);
 }
 
 // Called each frame - doing the rendering!!!
 void RenderWindow::render()
 {
+    program->bind();
+
     mMap["disc"]->move(0.017f);
     mMap["tetrahedron"]->move(-0.017f, static_cast<PolyInterpolation*>(mMap["pInterp"]));
 
     mCamera.init(mPmatrixUniform, mVmatrixUniform);
 
-//    qDebug() << *mPmatrix;
     mCamera.perspective(90.f, 16.0f/9.0f, 0.1f, 100.0f);
 //    mCamera.lookAt(mCamera.mEye, mCamera.mEye + QVector3D::crossProduct(mCamera.left, mCamera.up), mCamera.up);
     mCamera.lookAt(mCamera.mEye, {0, 0, 0}, mCamera.up);
@@ -232,7 +218,7 @@ void RenderWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //what shader to use
-    glUseProgram(mShaderProgram->getProgram() );
+//    glUseProgram(mShaderProgram->getProgram());
 
 //    //Move camera
 //    mVmatrix->translate(0, 5550, 0);
@@ -240,6 +226,7 @@ void RenderWindow::render()
 
     for (auto& object : mObjects)
     {
+        program->setUniformValue("hasTexture", object->hasTexture);
         object->draw();
     }
 
@@ -248,10 +235,6 @@ void RenderWindow::render()
 //    {
 //        object.second->draw();
 //    }
-
-    //canvas code
-//    for (auto it=mObjects.begin(); it!= mObjects.end(); it++)
-//        (*it)->draw();
 
     //Calculate framerate before
     // checkForGLerrors() because that call takes a long time
@@ -269,7 +252,7 @@ void RenderWindow::render()
     // shitty collision detection
     Player* player = static_cast<Player*>(mMap["player"]);
     QVector3D playerPosition = player->getPosition3D();
-    float rayLength = 100.0f; // length of ray to cast downwards
+//    float rayLength = 100.0f; // length of ray to cast downwards
     House* house = static_cast<House*>(mMap["house"]);
     if (house->doorContains(playerPosition))
     {
@@ -301,6 +284,8 @@ void RenderWindow::render()
             object->rotate();
         }
     }
+
+    program->release();
 }
 
 //This function is called from Qt when window is exposed (shown)
