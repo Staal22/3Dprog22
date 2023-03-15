@@ -1,4 +1,6 @@
 #include "house.h"
+#include "qimage.h"
+#include "qopengltexture.h"
 
 House::House()
 {
@@ -92,6 +94,19 @@ void House::init()
 
     mRotation.setToIdentity();
     glBindVertexArray(0);
+
+    // Load the image using QImage
+    QImage image;
+    image.load("heightmap.bmp");
+
+    // Create an OpenGL texture object and bind the image to it
+    texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
+    texture->setData(image);
+    texture->setWrapMode(QOpenGLTexture::Repeat);
+    texture->setMinificationFilter(QOpenGLTexture::Nearest);
+    texture->setMagnificationFilter(QOpenGLTexture::Nearest);
+
+    texture->bind(1);
 }
 
 void House::draw(GLint shader)

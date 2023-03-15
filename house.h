@@ -38,6 +38,8 @@ private:
     GLuint mIBO{0};
 
     bool doorOpen = false;
+
+    class QOpenGLTexture* texture;
 };
 
 #endif // HOUSE_H

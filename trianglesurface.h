@@ -14,7 +14,8 @@ public:
     void init() override;
     void draw(GLint shader) override;
     void rotate() override;
-    void subDivide(int level);
+    void changeTerrain();
+    void subdivide(int subdivisions);
 
     // check if a point is inside the bounding box
     bool contains(QVector3D point) const;
@@ -22,6 +23,7 @@ public:
     bool intersectsLine(QVector3D start, QVector3D end) const;
     QVector3D surfaceIntersection(const QVector3D& start, const QVector3D& end, const QVector3D& surfaceNormal);
 
+    class QOpenGLTexture* texture;
 protected:
     GLuint mIBO{0};                 // for glDrawElements()
     // custom bounding box
@@ -34,8 +36,6 @@ private:
     QVector3D v1;
     QVector3D v2;
     QVector3D v3;
-
-    void triangulate(QVector3D v0, QVector3D v1, QVector3D v2, QVector3D v3, int level);
 
 };
 

@@ -212,6 +212,7 @@ void RenderWindow::init()
 
     textureShader->bind();
     textureShader->setUniformValue("textureSampler", 0);
+//    textureShader->setUniformValue("heightmap", 1);
     textureShader->release();
 
     glBindVertexArray(0);
@@ -220,7 +221,8 @@ void RenderWindow::init()
     glPointSize(5);
 
     //Hardcoded stuff
-    static_cast<TriangleSurface*>(mMap["floor"])->subDivide(3);
+//    static_cast<TriangleSurface*>(mMap["floor"])->subdivide(7);
+//    static_cast<TriangleSurface*>(mMap["floor"])->changeTerrain();
 }
 
 // Called each frame - doing the rendering!!!
@@ -268,7 +270,7 @@ void RenderWindow::render()
 //        object.second->draw();
 //    }
 
-    // Calculate framerate before
+    //Calculate framerate before
     // checkForGLerrors() because that call takes a long time
     // and before swapBuffers(), else it will show the vsync time
     calculateFramerate();
@@ -475,22 +477,22 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_W)
     {
         if (mMap["player"] != nullptr)
-            mMap["player"]->move(0.f, 0.f, -moveDistance, floor);
+            mMap["player"]->move(0.f, 0.f, -moveDistance/*, floor*/);
     }
     if(event->key() == Qt::Key_A)
     {
         if (mMap["player"] != nullptr)
-            mMap["player"]->move(-moveDistance, 0.f, 0.f, floor);
+            mMap["player"]->move(-moveDistance, 0.f, 0.f/*, floor*/);
     }
     if(event->key() == Qt::Key_S)
     {
         if (mMap["player"] != nullptr)
-            mMap["player"]->move(0.f, 0.f, moveDistance, floor);
+            mMap["player"]->move(0.f, 0.f, moveDistance/*, floor*/);
     }
     if(event->key() == Qt::Key_D)
     {
         if (mMap["player"] != nullptr)
-            mMap["player"]->move(moveDistance, 0.0f, 0.f, floor);
+            mMap["player"]->move(moveDistance, 0.0f, 0.f/*, floor*/);
     }
     if(event->key() == Qt::Key_E)
     {

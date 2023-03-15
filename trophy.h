@@ -17,7 +17,6 @@ public:
     bool contains(QVector3D point) const;
 
 private:
-    // Texture
     QOpenGLTexture* texture;
 
     float radius = 1.0f;

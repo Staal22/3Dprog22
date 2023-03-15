@@ -19,29 +19,28 @@ uniform mat4 view;
 uniform sampler2D heightmap;
 
 // Define constants
-const float heightScale = 0.2;
+const float heightScale = 1;
 
 void main()
 {
-    // Get the height value from the heightmap texture
-    float height = texture(heightmap, textureCoordIn).r * heightScale;
+//    // Get the height value from the heightmap texture
+//    float height = texture(heightmap, textureCoordIn).r * heightScale;
 
-    // Displace the vertex position along the Y-axis
-    vec4 positionDisplaced = vec4(positionIn.x, positionIn.y + height, positionIn.z, 1.0);
+//    // Displace the vertex position along the Y-axis
+//    vec4 positionDisplaced = vec4(positionIn.x, positionIn.y + height, positionIn.z, 1.0);
 
-    // Transform the vertex position into world space
-    vec4 worldPos = model * positionDisplaced;
+//    // Transform the vertex position into world space
+//    vec4 worldPos = model * positionDisplaced;
 
-    // Calculate the normal in world space
-    normal = mat3(transpose(inverse(model))) * vec3(0, 1, 0);
+//    // Calculate the normal in world space
+//    normal = mat3(transpose(inverse(model))) * vec3(0, 1, 0);
 
-    // Transform the vertex position and normal into view space
-    //fragPos = vec3(view * worldPos);
-    //normal = normalize(mat3(view * model) * normalOut);
+//    // Transform the vertex position and normal into view space
+//    fragPos = vec3(view * worldPos);
+//    normal = normalize(mat3(view * model) * normal);
 
     color = colorIn;
     textureCoord = textureCoordIn;
 //    gl_Position = projection * view * worldPos;
     gl_Position = projection * view * model * positionIn;
-
 }
