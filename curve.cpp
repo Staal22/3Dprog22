@@ -8,7 +8,7 @@ Curve::Curve()
         z = function(1, x);
         mVertices.push_back(Vertex{x, z, 0, 0, z, 0});
     }
-    mMatrix.setToIdentity();
+    model.setToIdentity();
 }
 
 Curve::~Curve()
@@ -34,10 +34,8 @@ void Curve::writeFile(std::string filename)
     mVertices.clear();
 }
 
-void Curve::init(GLint shader)
+void Curve::init()
 {
-    mMatrixUniform = shader;
-
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
@@ -84,8 +82,9 @@ void Curve::init(GLint shader)
     glBindVertexArray(0);
 }
 
-void Curve::draw()
+void Curve::draw(GLint shader)
 {
+//    modelUniform = shader;
     //Never draws itself curremtly, gets drawn by LineSurface
 //    //what object to draw
 //    glBindVertexArray(mVAO);
@@ -103,7 +102,7 @@ void Curve::draw()
 
 void Curve::rotate()
 {
-    mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
+    model.rotate(2.f, 0.f, 1.f, 0.f);
 
 }
 

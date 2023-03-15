@@ -59,7 +59,7 @@ Trophy::Trophy(float x, float z)
     mVertices.push_back(Vertex{QVector3D(0.5f, -0.5f, 0.5f), QVector2D(1.0f, 1.0f)}); // Top right
     mVertices.push_back(Vertex{QVector3D(-0.5f, -0.5f, 0.5f), QVector2D(0.0f, 1.0f)}); // Top left
 
-    mMatrix.translate(x, 0.0f, z);
+    model.translate(x, 0.0f, z);
 
     // calculate the minimum and maximum points of the bounding box
     min_ = QVector3D{x,0,z} - QVector3D(radius / 2, height / 2, radius / 2);
@@ -78,9 +78,8 @@ Trophy::~Trophy()
     texture->release();
 }
 
-void Trophy::init(GLint matrixUniform)
+void Trophy::init()
 {
-    mMatrixUniform = matrixUniform;
     initializeOpenGLFunctions();
 
     // Load the image using QImage
@@ -125,13 +124,14 @@ void Trophy::init(GLint matrixUniform)
     glBindVertexArray(0);
 }
 
-void Trophy::draw()
+void Trophy::draw(GLint shader)
 {
+    modelUniform = shader;
     // Bind the texture to a texture unit
     if (hide)
         return;
     glBindVertexArray(mVAO);
-    glUniformMatrix4fv(mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
+    glUniformMatrix4fv(modelUniform, 1, GL_FALSE, model.constData());
     glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
 }
 

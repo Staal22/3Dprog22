@@ -9,8 +9,8 @@ public:
     House();
     ~House() override;
 
-    void init(GLint matrixUniform) override;
-    void draw() override;
+    void init() override;
+    void draw(GLint shader) override;
     void open();
     void close();
 
@@ -38,7 +38,6 @@ private:
     GLuint mIBO{0};
 
     bool doorOpen = false;
-
 };
 
 #endif // HOUSE_H

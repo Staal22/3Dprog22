@@ -28,9 +28,8 @@ InteractiveObject::~InteractiveObject()
 
 }
 
-void InteractiveObject::init(GLint matrixUniform)
+void InteractiveObject::init()
 {
-    mMatrixUniform = matrixUniform;
     initializeOpenGLFunctions();
 
     //Vertex Array Object - VAO
@@ -62,11 +61,12 @@ void InteractiveObject::init(GLint matrixUniform)
     glBindVertexArray(0);
 }
 
-void InteractiveObject::draw()
+void InteractiveObject::draw(GLint shader)
 {
+    modelUniform = shader;
     initializeOpenGLFunctions();
     glBindVertexArray( mVAO );
-    glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mMatrix.constData());
+    glUniformMatrix4fv( modelUniform, 1, GL_TRUE, model.constData());
     glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
 }
 
@@ -75,5 +75,5 @@ void InteractiveObject::move(float x, float y, float z)
     mx += x;
     my += y;
     mz += z;
-    mMatrix.translate(x, y, z);
+    model.translate(x, y, z);
 }

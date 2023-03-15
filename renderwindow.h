@@ -39,6 +39,14 @@ public:
 private slots:
     void render();          //the actual render - function
 
+
+public:
+    GLint modelMatrixUniform;              //OpenGL reference to the Uniform in the shader program
+    GLint projectionMatrixUniform;
+    GLint viewMatrixUniform;
+
+    Camera mCamera;
+
 private:
     void init();            //initialize things we need before rendering
 
@@ -52,30 +60,16 @@ private:
     ObjectGroup* texturedObjects;
     ObjectGroup* terrainObjects;
 
-    // Retrieve and store uniform locations
-    struct UniformLocations
-    {
-        GLint model;
-        GLint view;
-        GLint projection;
-    };
-    UniformLocations uLoc;
-
     // Containers
     std::vector<VisualObject*> mObjects;
     std::unordered_map<std::string, VisualObject*> mMap;
     gsml::QuadTree<std::string, VisualObject*> mQuadTree;
     std::vector<Trophy*> trophies;
 
-    Camera mCamera;
-
     QOpenGLContext *mContext{nullptr};  //Our OpenGL context
     bool mInitialized{false};
 
     Shader *mShaderProgram{nullptr};    //holds pointer the GLSL shader program
-    GLint modelMatrixUniform;              //OpenGL reference to the Uniform in the shader program
-    GLint projectionMatrixUniform;
-    GLint viewMatrixUniform;
 
     GLuint mVAO;                        //OpenGL reference to our VAO
     GLuint mVBO;                        //OpenGL reference to our VBO

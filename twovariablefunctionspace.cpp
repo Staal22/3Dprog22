@@ -28,7 +28,7 @@ TwoVariableFunctionSpace::TwoVariableFunctionSpace()
             }
         }
     }
-    mMatrix.setToIdentity();
+    model.setToIdentity();
 }
 
 TwoVariableFunctionSpace::~TwoVariableFunctionSpace()
@@ -54,10 +54,8 @@ void TwoVariableFunctionSpace::writeFile(std::string filename)
     mVertices.clear();
 }
 
-void TwoVariableFunctionSpace::init(GLint shader)
+void TwoVariableFunctionSpace::init()
 {
-    mMatrixUniform = shader;
-
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
@@ -104,17 +102,18 @@ void TwoVariableFunctionSpace::init(GLint shader)
     glBindVertexArray(0);
 }
 
-void TwoVariableFunctionSpace::draw()
+void TwoVariableFunctionSpace::draw(GLint shader)
 {
+    modelUniform = shader;
     // Should never draw itself as of now, gets drawn by TriangleSurface, use for debugging
     //what object to draw
     glBindVertexArray(mVAO);
     //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
     //Must be here to update each frame - if static object, it could be set only once
-    glUniformMatrix4fv(mMatrixUniform,          //the location of the matrix in the shader
+    glUniformMatrix4fv(modelUniform,          //the location of the matrix in the shader
                        1,                       //count
                        GL_FALSE,                //transpose the matrix before sending it?
-                       mMatrix.constData());    //the data of the matrix
+                       model.constData());    //the data of the matrix
     //DRAW CALL MOMENT
     glDrawArrays(GL_TRIANGLES,
                  0,
@@ -123,7 +122,7 @@ void TwoVariableFunctionSpace::draw()
 
 void TwoVariableFunctionSpace::rotate()
 {
-    mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
+    model.rotate(2.f, 0.f, 1.f, 0.f);
 }
 
 std::pair<double, double> TwoVariableFunctionSpace::range() const

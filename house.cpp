@@ -43,7 +43,7 @@ House::House()
         mIndices.push_back(indices[i]);
     }
 
-    mMatrix.scale(5);
+    model.scale(5);
 //    mMatrix.translate(3, 0, 0);
 //    mMatrix.rotate(-45.f, 0, 1, 0);
 
@@ -63,9 +63,8 @@ House::~House()
 
 }
 
-void House::init(GLint matrixUniform)
+void House::init()
 {
-    mMatrixUniform = matrixUniform;
     initializeOpenGLFunctions();
 
     //Vertex Array Object - VAO
@@ -76,8 +75,6 @@ void House::init(GLint matrixUniform)
     glGenBuffers( 1, &mVBO );
     glBindBuffer( GL_ARRAY_BUFFER, mVBO );
     glBufferData( GL_ARRAY_BUFFER, mVertices.size()*sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW );
-
-    //
 
     // 1rst attribute buffer : vertices
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
@@ -95,16 +92,14 @@ void House::init(GLint matrixUniform)
 
     mRotation.setToIdentity();
     glBindVertexArray(0);
-
-
 }
 
-void House::draw()
+void House::draw(GLint shader)
 {
-//    mMatrix.rotate(1.f, 0, 1, 0);
+    modelUniform = shader;
     initializeOpenGLFunctions();
-    glBindVertexArray( mVAO );
-    glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mMatrix.constData());
+    glBindVertexArray(mVAO);
+    glUniformMatrix4fv(modelUniform, 1, GL_TRUE, model.constData());
     glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
 }
 
@@ -119,7 +114,7 @@ void House::open()
         door2 = QVector3D(0.5f, 0.6f, 1.25f); // 10
         houseVertices();
         doorOpen = true;
-        init(mMatrixUniform);
+        init();
     }
 }
 
@@ -134,7 +129,7 @@ void House::close()
         door2 = QVector3D(0, 0.6f, 0.75f); // 10
         houseVertices();
         doorOpen = false;
-        init(mMatrixUniform);
+        init();
     }
 }
 

@@ -23,33 +23,27 @@ Disc::~Disc()
 
 }
 
-void Disc::init(GLint matrixUniform)
+void Disc::init()
 {
-    mMatrixUniform = matrixUniform;
     initializeOpenGLFunctions();
-
 
     //Vertex Array Object - VAO
     glGenVertexArrays( 1, &mVAO );
     glBindVertexArray( mVAO );
-
 
     //Vertex Buffer Object to hold vertices - VBO
     glGenBuffers( 1, &mVBO );
     glBindBuffer( GL_ARRAY_BUFFER, mVBO );
     glBufferData( GL_ARRAY_BUFFER, mVertices.size()*sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW );
 
-
     // 1rst attribute buffer : vertices
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
     glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE,sizeof(Vertex), reinterpret_cast<const void*>(0));
     glEnableVertexAttribArray(0);
 
-
     // 2nd attribute buffer : colors
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  reinterpret_cast<const void*>(3 * sizeof(GLfloat)) );
     glEnableVertexAttribArray(1);
-
 
     //enable the matrixUniform
     // mMatrixUniform = glGetUniformLocation( matrixUniform, "matrix" );
@@ -61,12 +55,13 @@ void Disc::init(GLint matrixUniform)
     glBindVertexArray(0);
 }
 
-void Disc::draw()
+void Disc::draw(GLint shader)
 {
+    modelUniform = shader;
     initializeOpenGLFunctions();
     glBindVertexArray( mVAO );
     // GL_FALSE for QMatrix4x4
-    glUniformMatrix4fv( mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
+    glUniformMatrix4fv( modelUniform, 1, GL_FALSE, model.constData());
     //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
     glDrawElements(GL_TRIANGLE_FAN,
                    mVertices.size(),
@@ -94,7 +89,7 @@ void Disc::move(float dt)
     float degrees = (180 * dt) / M_PI;
     mRotation.rotate(degrees, 0, 0, 1);
 
-    mMatrix = mPosition*mRotation;		// hvis mPosition og mRotation er Matrix4x4
+    model = mPosition*mRotation;		// hvis mPosition og mRotation er Matrix4x4
 }
 
 void Disc::writeFile(std::string filnavn)

@@ -9,8 +9,8 @@ public:
     ParabolaApproximation(bool inPoints = false);
     ~ParabolaApproximation() override;
 
-    void init(GLint matrixUniform) override;
-    void draw() override;
+    void init() override;
+    void draw(GLint shader) override;
     void fit(const std::vector<Vertex> &points);
     void replace(double xMin, double xMax);
 

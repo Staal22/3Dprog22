@@ -5,7 +5,7 @@ Player::Player()
 {
     mVertices.reserve(3 * 8 * pow(4, m_recursions));
     octahedronUnitBall();
-    mMatrix.setToIdentity();
+    model.setToIdentity();
 }
 
 Player::~Player()
@@ -13,9 +13,8 @@ Player::~Player()
 
 }
 
-void Player::init(GLint matrixUniform)
+void Player::init()
 {
-    mMatrixUniform = matrixUniform;
     initializeOpenGLFunctions();
 
     //Vertex Array Object - VAO
@@ -42,17 +41,18 @@ void Player::init(GLint matrixUniform)
     glBindVertexArray(0);
 }
 
-void Player::draw()
+void Player::draw(GLint shader)
 {
+    modelUniform = shader;
     glBindVertexArray( mVAO );
-    glUniformMatrix4fv( mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
+    glUniformMatrix4fv( modelUniform, 1, GL_FALSE, model.constData());
     glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
 }
 
 void Player::move(float x, float y, float z)
 {
     mPosition.translate(x, y, z);
-    mMatrix = mPosition;
+    model = mPosition;
 }
 
 void Player::move(float x, float y, float z, GraphFunction *function)
@@ -72,12 +72,12 @@ void Player::move(float x, float y, float z, GraphFunction *function)
             pos3D.z() < 10)
         distance = 0;
     mPosition.translate(x, distance, z);
-    mMatrix = mRotation * mPosition;
+    model = mRotation * mPosition;
 }
 
 void Player::turn(float y)
 {
-    mMatrix.rotate(y, 0.f, 1.f, 0.f);
+    model.rotate(y, 0.f, 1.f, 0.f);
 }
 
 void Player::octahedronUnitBall()

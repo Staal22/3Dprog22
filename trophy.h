@@ -1,6 +1,7 @@
 #ifndef TROPHY_H
 #define TROPHY_H
 
+#include "qopengltexture.h"
 #include "visualobject.h"
 
 class Trophy : public VisualObject
@@ -9,8 +10,8 @@ public:
     Trophy(float x = 0, float z = 0);
     ~Trophy() override;
 
-    void init(GLint matrixUniform) override;
-    void draw() override;
+    void init() override;
+    void draw(GLint shader) override;
 
     // check if a point is inside the bounding box
     bool contains(QVector3D point) const;

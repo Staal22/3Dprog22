@@ -49,9 +49,8 @@ Tetrahedron::~Tetrahedron()
 
 }
 
-void Tetrahedron::init(GLint matrixUniform)
+void Tetrahedron::init()
 {
-    mMatrixUniform = matrixUniform;
     initializeOpenGLFunctions();
 
     //Vertex Array Object - VAO
@@ -86,11 +85,12 @@ void Tetrahedron::init(GLint matrixUniform)
     glBindVertexArray(0);
 }
 
-void Tetrahedron::draw()
+void Tetrahedron::draw(GLint shader)
 {
+    modelUniform = shader;
     // Un-indexed
     glBindVertexArray(mVAO);
-    glUniformMatrix4fv(mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
+    glUniformMatrix4fv(modelUniform, 1, GL_FALSE, model.constData());
     glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
 
 //    // Indexed
@@ -102,7 +102,7 @@ void Tetrahedron::draw()
 
 void Tetrahedron::rotate()
 {
-    mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
+    model.rotate(2.f, 0.f, 1.f, 0.f);
 }
 
 void Tetrahedron::move(float dt, GraphFunction* function)
@@ -124,7 +124,7 @@ void Tetrahedron::move(float dt, GraphFunction* function)
     if (pos3D.y() > y)
         distance *= -1;
     mPosition.translate(ds.x(), distance, ds.z());
-    mMatrix = mPosition;
+    model = mPosition;
 }
 
 void Tetrahedron::writeFile(std::string filename)

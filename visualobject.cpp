@@ -2,7 +2,7 @@
 
 VisualObject::VisualObject()
 {
-    mMatrix.setToIdentity();
+    model.setToIdentity();
 }
 
 VisualObject::~VisualObject() {

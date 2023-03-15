@@ -4,7 +4,6 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <QMatrix4x4>
 #include <vector>
-#include "qopengltexture.h"
 #include "vertex.h"
 
 class VisualObject : public QOpenGLFunctions_4_1_Core {
@@ -12,8 +11,8 @@ public:
    VisualObject();
    ~VisualObject();
 
-   virtual void init(GLint matrixUniform)=0;
-   virtual void draw()=0;
+   virtual void init()=0;
+   virtual void draw(GLint shader)=0;
    virtual void rotate() { }
    // move for interaktive objekter
    virtual void move(float x, float y, float z) { }
@@ -33,8 +32,8 @@ public:
    std::vector<GLuint> mIndices; 	// Til indeksering
    GLuint mVAO{0};
    GLuint mVBO{0};
-   GLint mMatrixUniform{0};
-   QMatrix4x4 mMatrix;
+   GLint modelUniform{0};
+   QMatrix4x4 model;
 
    // Velger å lagre posisjon, rotasjon og translasjon
    // i hver sin 4x4 matrise

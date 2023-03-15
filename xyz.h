@@ -9,8 +9,8 @@ public:
     XYZ();
     ~XYZ() override;
 
-    void init(GLint matrixUniform) override;
-    void draw() override;
+    void init() override;
+    void draw(GLint shader) override;
     void rotate() override;
 };
 

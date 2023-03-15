@@ -16,7 +16,7 @@
 #include "mainwindow.h"
 #include "logger.h"
 #include "tetrahedron.h"
-//#include "trianglesurface.h"
+#include "trianglesurface.h"
 #include "xyz.h"
 #include "twovariablefunctionspace.h"
 //#include "curve.h"
@@ -44,8 +44,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mMap.insert(std::pair<std::string, VisualObject*> {"xyz", new XYZ()});
     mMap.insert(std::pair<std::string, VisualObject*> {"disc", new class Disc()});
     mMap.insert(std::pair<std::string, VisualObject*> {"tetrahedron", new Tetrahedron()});
-//    mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(40)});
-    mMap.insert(std::pair<std::string, VisualObject*>  {"floor", new TwoVariableFunctionSpace()});
+    mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(40)});
+//    mMap.insert(std::pair<std::string, VisualObject*>  {"floor", new TwoVariableFunctionSpace()});
     mMap.insert(std::pair<std::string, VisualObject*>  {"player", new Player()});
     mMap.insert(std::pair<std::string, VisualObject*>  {"house", new House()});
 
@@ -101,6 +101,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
             trophies.push_back(static_cast<Trophy*>(object));
         }
     }
+
     //    std::string navn{"navn"}; // VisualObject should maybe have own name variable
 //    for (auto& object : mObjects)
 //    {
@@ -190,24 +191,24 @@ void RenderWindow::init()
     projectionMatrixUniform = glGetUniformLocation(textureShader->programId(), "projection");
     viewMatrixUniform = glGetUniformLocation(textureShader->programId(), "view");
 
-//    plainObjects = new ObjectGroup(plainShader);
-//    texturedObjects = new ObjectGroup(textureShader);
-//    groups.push_back(plainObjects);
-//    groups.push_back(texturedObjects);
-
-//    for (auto& object : mObjects)
-//    {
-//        object->init(modelMatrixUniform);
-//        if (object->hasTexture)
-//            texturedObjects->addObject(object);
-//        else
-//            plainObjects->addObject(object);
-//    }
+    plainObjects = new ObjectGroup(plainShader);
+    texturedObjects = new ObjectGroup(textureShader);
+    groups.push_back(plainObjects);
+    groups.push_back(texturedObjects);
 
     for (auto& object : mObjects)
     {
-        object->init(modelMatrixUniform);
+        object->init();
+        if (object->hasTexture)
+            texturedObjects->addObject(object);
+        else
+            plainObjects->addObject(object);
     }
+
+//    for (auto& object : mObjects)
+//    {
+//        object->init();
+//    }
 
     textureShader->bind();
     textureShader->setUniformValue("textureSampler", 0);
@@ -217,16 +218,15 @@ void RenderWindow::init()
 
     mCamera.translate(-15, 6, 15);
     glPointSize(5);
+
+    //Hardcoded stuff
+    static_cast<TriangleSurface*>(mMap["floor"])->subDivide(3);
 }
 
 // Called each frame - doing the rendering!!!
 void RenderWindow::render()
 {
-    textureShader->bind();
-
-    mMap["disc"]->move(0.017f);
-    mMap["tetrahedron"]->move(-0.017f, static_cast<PolyInterpolation*>(mMap["pInterp"]));
-
+    // AHAHAHAHEHOEOO PSYCOPATH DEBUGGING CALL THIS EVERY FRAME I GUESS
     mCamera.init(projectionMatrixUniform, viewMatrixUniform);
 
     mCamera.perspective(90.f, 16.0f/9.0f, 0.1f, 100.0f);
@@ -239,18 +239,22 @@ void RenderWindow::render()
     //clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // Rendering
+//    plainObjects->render(this, modelMatrixUniform);
+//    texturedObjects->render(this, modelMatrixUniform);
+
     //what shader to use OLD CODE
 //    glUseProgram(mShaderProgram->getProgram());
 
+    textureShader->bind();
     mCamera.update();
-
-    // Vertices
     for (auto& object : mObjects)
     {
         textureShader->setUniformValue("hasTexture", object->hasTexture);
-        object->draw();
+        object->draw(modelMatrixUniform);
     }
-//    for (auto& group : groups)
+    textureShader->release();
+    //    for (auto& group : groups)
 //    {
 //        modelMatrixUniform = glGetUniformLocation(group->m_shaderProgram->programId(), "model");
 //        projectionMatrixUniform = glGetUniformLocation(group->m_shaderProgram->programId(), "projection");
@@ -264,7 +268,7 @@ void RenderWindow::render()
 //        object.second->draw();
 //    }
 
-    //Calculate framerate before
+    // Calculate framerate before
     // checkForGLerrors() because that call takes a long time
     // and before swapBuffers(), else it will show the vsync time
     calculateFramerate();
@@ -313,7 +317,9 @@ void RenderWindow::render()
         }
     }
 
-    textureShader->release();
+    // Hardcoded movement
+    mMap["disc"]->move(0.017f);
+    mMap["tetrahedron"]->move(-0.017f, static_cast<PolyInterpolation*>(mMap["pInterp"]));
 }
 
 //This function is called from Qt when window is exposed (shown)
@@ -508,7 +514,7 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
         if (mMap["pInterp"] != nullptr)
         {
             static_cast<PolyInterpolation*>(mMap["pInterp"])->toggleFunction();
-            mMap["pInterp"]->init(modelMatrixUniform);
+            mMap["pInterp"]->init();
         }
     }
     if(event->key() == Qt::Key_2)

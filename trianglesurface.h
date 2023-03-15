@@ -4,18 +4,17 @@
 #include "visualobject.h"
 
 class TriangleSurface : public VisualObject
-{
+{    
 public:
     TriangleSurface(float size = 0);
 //    TriangleSurface(std::string filename);
     ~TriangleSurface() override;
 
     void readFile(std::string filename, bool IndexedVertices);
-    void init(GLint shader) override;
-    void draw() override;
+    void init() override;
+    void draw(GLint shader) override;
     void rotate() override;
-
-    void subDivide();
+    void subDivide(int level);
 
     // check if a point is inside the bounding box
     bool contains(QVector3D point) const;
@@ -28,6 +27,15 @@ protected:
     // custom bounding box
     QVector3D min_;
     QVector3D max_;
+
+private:
+    // Define the four corners of the plane
+    QVector3D v0;
+    QVector3D v1;
+    QVector3D v2;
+    QVector3D v3;
+
+    void triangulate(QVector3D v0, QVector3D v1, QVector3D v2, QVector3D v3, int level);
 
 };
 

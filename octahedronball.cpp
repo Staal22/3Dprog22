@@ -4,7 +4,7 @@ OctahedronBall::OctahedronBall(int n) : m_recursions(n), m_index(0)
 {
     mVertices.reserve(3 * 8 * pow(4, m_recursions));
     octahedronUnitBall();
-    mMatrix.setToIdentity();
+    model.setToIdentity();
 }
 
 //!//! \brief OctahedronBall::~OctahedronBall() virtual destructor
@@ -18,9 +18,8 @@ OctahedronBall::~OctahedronBall()
 //! \brief OctahedronBall::initVertexBufferObjects() calls glGenBuffers(), glBindBuffer() and glBufferdata()
 //! for using later use of glDrawArrays()
 //!
-void OctahedronBall::init(GLint matrixUniform)
+void OctahedronBall::init()
 {
-    mMatrixUniform = matrixUniform;
     initializeOpenGLFunctions();
 
     //Vertex Array Object - VAO
@@ -58,16 +57,17 @@ void OctahedronBall::init(GLint matrixUniform)
 //! - glVertexAttribPointer()
 //! - glDrawArrays() with GL_TRIANGLES
 //!
-void OctahedronBall::draw()
+void OctahedronBall::draw(GLint shader)
 {
+    modelUniform = shader;
     glBindVertexArray( mVAO );
-    glUniformMatrix4fv( mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
+    glUniformMatrix4fv( modelUniform, 1, GL_FALSE, model.constData());
     glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
 }
 
 void OctahedronBall::rotate()
 {
-    mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
+    model.rotate(2.f, 0.f, 1.f, 0.f);
 }
 
 // Parametre inn: xyz koordinatene til et triangle v1, v2, v3 ccw

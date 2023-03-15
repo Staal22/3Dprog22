@@ -8,7 +8,7 @@ XYZ::XYZ()
     mVertices.push_back(Vertex{0,1,0,0,1,0});
     mVertices.push_back(Vertex{0,0,0,0,0,1});
     mVertices.push_back(Vertex{0,0,1,0,0,1});
-    mMatrix.setToIdentity();
+    model.setToIdentity();
 }
 
 XYZ::~XYZ()
@@ -16,9 +16,8 @@ XYZ::~XYZ()
 
 }
 
-void XYZ::init(GLint matrixUniform)
+void XYZ::init()
 {
-    mMatrixUniform = matrixUniform;
     initializeOpenGLFunctions();
 
     //Vertex Array Object - VAO
@@ -44,14 +43,15 @@ void XYZ::init(GLint matrixUniform)
     glBindVertexArray(0);
 }
 
-void XYZ::draw()
+void XYZ::draw(GLint shader)
 {
+    modelUniform = shader;
     glBindVertexArray(mVAO);
-    glUniformMatrix4fv(mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
+    glUniformMatrix4fv(modelUniform, 1, GL_FALSE, model.constData());
     glDrawArrays(GL_LINES, 0, mVertices.size());
 }
 
 void XYZ::rotate()
 {
-    mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
+    model.rotate(2.f, 0.f, 1.f, 0.f);
 }

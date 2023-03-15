@@ -2,13 +2,13 @@
 
 LineSurface::LineSurface()
 {
-    mMatrix.setToIdentity();
+    model.setToIdentity();
 }
 
 LineSurface::LineSurface(std::string filename)
 {
     readFile(filename);
-    mMatrix.setToIdentity();
+    model.setToIdentity();
 }
 
 LineSurface::~LineSurface()
@@ -34,10 +34,8 @@ void LineSurface::readFile(std::string filename)
     }
 }
 
-void LineSurface::init(GLint shader)
+void LineSurface::init()
 {
-    mMatrixUniform = shader;
-
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
@@ -84,20 +82,21 @@ void LineSurface::init(GLint shader)
     glBindVertexArray(0);
 }
 
-void LineSurface::draw()
+void LineSurface::draw(GLint shader)
 {
     if (hide)
     {
         return;
     }
+    modelUniform = shader;
     //what object to draw
     glBindVertexArray(mVAO);
     //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
     //Must be here to update each frame - if static object, it could be set only once
-    glUniformMatrix4fv(mMatrixUniform,          //the location of the matrix in the shader
+    glUniformMatrix4fv(modelUniform,          //the location of the matrix in the shader
                        1,                       //count
                        GL_FALSE,                //transpose the matrix before sending it?
-                       mMatrix.constData());    //the data of the matrix
+                       model.constData());    //the data of the matrix
     //DRAW CALL MOMENT
     glDrawArrays(GL_LINES,
                  0,
@@ -106,7 +105,7 @@ void LineSurface::draw()
 
 void LineSurface::rotate()
 {
-    mMatrix.rotate(2.f, 0.f, 1.f, 0.f);
+    model.rotate(2.f, 0.f, 1.f, 0.f);
 }
 
 

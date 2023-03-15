@@ -10,7 +10,7 @@ ParabolaApproximation::ParabolaApproximation(bool inPoints)
     mVertices.push_back(Vertex{8,4,0,0,1,0});
     mVertices.push_back(Vertex{9,5,0,0,1,0});
     mVertices.push_back(Vertex{10,7,0,0,1,0});
-    mMatrix.setToIdentity();
+    model.setToIdentity();
 }
 
 ParabolaApproximation::~ParabolaApproximation()
@@ -18,10 +18,8 @@ ParabolaApproximation::~ParabolaApproximation()
 
 }
 
-void ParabolaApproximation::init(GLint matrixUniform)
+void ParabolaApproximation::init()
 {
-    mMatrixUniform = matrixUniform;
-
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
@@ -68,16 +66,17 @@ void ParabolaApproximation::init(GLint matrixUniform)
     glBindVertexArray(0);
 }
 
-void ParabolaApproximation::draw()
+void ParabolaApproximation::draw(GLint shader)
 {
+    modelUniform = shader;
     //what object to draw
     glBindVertexArray(mVAO);
     //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
     //Must be here to update each frame - if static object, it could be set only once
-    glUniformMatrix4fv(mMatrixUniform,          //the location of the matrix in the shader
+    glUniformMatrix4fv(modelUniform,          //the location of the matrix in the shader
                        1,                       //count
                        GL_FALSE,                //transpose the matrix before sending it?
-                       mMatrix.constData());    //the data of the matrix
+                       model.constData());    //the data of the matrix
     //DRAW CALL MOMENT
     if (points)
         glDrawArrays(GL_POINTS, 0, mVertices.size());
@@ -123,7 +122,7 @@ void ParabolaApproximation::replace(double xMin, double xMax)
     {
         mVertices.push_back(Vertex{static_cast<float>(x),static_cast<float>(evaluate(x)),0,0,0,1});
     }
-    mMatrix.setToIdentity();
+    model.setToIdentity();
 }
 
 // Evaluate the fitted parabola at a given x

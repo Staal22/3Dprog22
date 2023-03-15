@@ -7,7 +7,7 @@ PolyInterpolation::PolyInterpolation(bool inPoints)
     mVertices.push_back(Vertex{x1[1], y1[1],0,1,0,0});
     mVertices.push_back(Vertex{x1[2], y1[2],0,1,0,0});
     mVertices.push_back(Vertex{x1[3], y1[3],0,1,0,0});
-    mMatrix.setToIdentity();
+    model.setToIdentity();
 
     for (int i = 0; i < 4; i++)
     {
@@ -26,10 +26,8 @@ PolyInterpolation::~PolyInterpolation()
 
 }
 
-void PolyInterpolation::init(GLint matrixUniform)
+void PolyInterpolation::init()
 {
-    mMatrixUniform = matrixUniform;
-
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
@@ -76,16 +74,17 @@ void PolyInterpolation::init(GLint matrixUniform)
     glBindVertexArray(0);
 }
 
-void PolyInterpolation::draw()
+void PolyInterpolation::draw(GLint shader)
 {
+    modelUniform = shader;
     //what object to draw
     glBindVertexArray(mVAO);
     //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
     //Must be here to update each frame - if static object, it could be set only once
-    glUniformMatrix4fv(mMatrixUniform,          //the location of the matrix in the shader
+    glUniformMatrix4fv(modelUniform,          //the location of the matrix in the shader
                        1,                       //count
                        GL_FALSE,                //transpose the matrix before sending it?
-                       mMatrix.constData());    //the data of the matrix
+                       model.constData());    //the data of the matrix
     //DRAW CALL MOMENT
     if (points)
         glDrawArrays(GL_POINTS, 0, mVertices.size());
@@ -102,7 +101,7 @@ void PolyInterpolation::replace(double xMin, double xMax)
     {
         mVertices.push_back(Vertex{static_cast<float>(x),static_cast<float>(evaluate(x)),0,0,1,0});
     }
-    mMatrix.setToIdentity();
+    model.setToIdentity();
 }
 
 double PolyInterpolation::evaluate(double x) const
