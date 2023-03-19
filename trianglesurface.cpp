@@ -1,3 +1,4 @@
+//#include <Open3D/Open3D.h>
 #include "trianglesurface.h"
 #include "qimage.h"
 #include "qopengltexture.h"
@@ -149,53 +150,63 @@ void TriangleSurface::changeTerrain()
     texture->bind(1);
 }
 
+// TODO Make this a class or header
+//Eigen::Vector3d QVector3DToEigen(const QVector3D& v) {
+//    return Eigen::Vector3d(v.x(), v.y(), v.z());
+//}
+//std::vector<Eigen::Vector3d> QVector3DArrayToEigen(const std::vector<QVector3D>& vertices) {
+//    std::vector<Eigen::Vector3d> result;
+//    result.reserve(vertices.size());
+//    for (const auto& v : vertices) {
+//        result.push_back(QVector3DToEigen(v));
+//    }
+//    return result;
+//}
+//Eigen::Vector3i Int3ToEigen(const std::vector<unsigned int>& v) {
+//    return Eigen::Vector3i(v[0], v[1], v[2]);
+//}
+//std::vector<Eigen::Vector3i> Int3ArrayToEigen(const std::vector<unsigned int>& indices) {
+//    std::vector<Eigen::Vector3i> result;
+//    result.reserve(indices.size() / 3);
+//    for (int i = 0; i < indices.size(); i += 3) {
+//        result.push_back(Int3ToEigen(std::vector<unsigned int>{indices[i], indices[i+1], indices[i+2]}));
+//    }
+//    return result;
+//}
+
 void TriangleSurface::subdivide(int subdivisions)
 {
-    // Loop through each subdivision level
-    for (int i = 0; i < subdivisions; i++) {
-        // Store the number of indices before subdividing
-        int numIndicesBefore = mIndices.size();
+//    // create a mesh object with vertices and faces
+//    open3d::geometry::TriangleMesh mesh;
+//    std::vector<QVector3D> vertPos;
 
-        // Loop through each pair of adjacent vertices
-        for (int j = 0; j < numIndicesBefore; j+=3) {
-            // Get the indices of the current triangle's vertices
-            int i0 = mIndices[j];
-            int i1 = mIndices[j+1];
-            int i2 = mIndices[j+2];
+//    for (auto& vertex : mVertices){
+//        vertPos.push_back(vertex.m_xyz);
+//    }
+//    std::vector<Eigen::Vector3d> eigen_vertices = QVector3DArrayToEigen(vertPos);
+//    mesh.vertices_ = eigen_vertices;
 
-            // Get the positions of the current triangle's vertices
-            QVector3D v0 = mVertices[i0].m_xyz;
-            QVector3D v1 = mVertices[i1].m_xyz;
-            QVector3D v2 = mVertices[i2].m_xyz;
+//    std::vector<Eigen::Vector3i> eigen_triangles = Int3ArrayToEigen(mIndices);
+//    mesh.triangles_ = eigen_triangles;
 
-            // Calculate the midpoints of each edge
-            QVector3D v01 = (v0 + v1) / 2.0f;
-            QVector3D v12 = (v1 + v2) / 2.0f;
-            QVector3D v20 = (v2 + v0) / 2.0f;
+//    // apply subdivision to the mesh
+//    std::shared_ptr<open3d::geometry::TriangleMesh> smooth_mesh_ptr = mesh.SubdivideLoop(subdivisions);
+//    open3d::geometry::TriangleMesh smooth_mesh(*smooth_mesh_ptr);
 
-            // Add the new vertices to the vertex buffer
-            mVertices.push_back(Vertex(v01, QVector3D(1.0f, 1.0f, 1.0f)));
-            mVertices.push_back(Vertex(v12, QVector3D(1.0f, 1.0f, 1.0f)));
-            mVertices.push_back(Vertex(v20, QVector3D(1.0f, 1.0f, 1.0f)));
-
-            // Update the indices to form new triangles using the new vertices
-            int i3 = mVertices.size() - 3;
-            int i4 = mVertices.size() - 2;
-            int i5 = mVertices.size() - 1;
-
-            mIndices[j] = i0;
-            mIndices[j+1] = i3;
-            mIndices[j+2] = i5;
-
-            mIndices.push_back(i3);
-            mIndices.push_back(i1);
-            mIndices.push_back(i4);
-
-            mIndices.push_back(i5);
-            mIndices.push_back(i4);
-            mIndices.push_back(i2);
-        }
-    }
+//    // get the new vertices and faces
+//    auto new_vertices = smooth_mesh.vertices_;
+//    auto new_faces = smooth_mesh.triangles_;
+//    mVertices.clear();
+//    for (int i = 0; i < new_vertices.size(); ++i)
+//    {
+//        mVertices.push_back(Vertex(new_vertices[i].x(), new_vertices[i].y(), new_vertices[i].z()));
+//    }
+//    mIndices.clear();
+//    for (int j = 0; j < new_faces.size(); ++j) {
+//        mIndices.push_back(new_faces[j].x());
+//        mIndices.push_back(new_faces[j].y());
+//        mIndices.push_back(new_faces[j].z());
+//    }
     init();
 }
 
