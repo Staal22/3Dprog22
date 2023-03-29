@@ -120,6 +120,7 @@ void Trophy::init()
     glEnableVertexAttribArray(2);
 
     texture->bind(0);
+    computeNormals();
 
     glBindVertexArray(0);
 }
@@ -127,7 +128,6 @@ void Trophy::init()
 void Trophy::draw(GLint shader)
 {
     modelUniform = shader;
-    // Bind the texture to a texture unit
     if (hide)
         return;
     glBindVertexArray(mVAO);
@@ -139,5 +139,54 @@ bool Trophy::contains(QVector3D point) const
 {
     return point.x() >= min_.x() && point.x() <= max_.x() &&
            point.y() >= min_.y() && point.y() <= max_.y() &&
-           point.z() >= min_.z() && point.z() <= max_.z();
+            point.z() >= min_.z() && point.z() <= max_.z();
+}
+
+void Trophy::computeNormals()
+{
+    int numFaces = mIndices.size() / 3;
+    // Step 1: Compute face normals
+    std::vector<QVector3D> faceNormals;
+    for (int i = 0; i < numFaces; ++i) {
+        const Vertex& v1 = mVertices[mIndices[i * 3]];
+        const Vertex& v2 = mVertices[mIndices[i * 3 + 1]];
+        const Vertex& v3 = mVertices[mIndices[i * 3 + 2]];
+        QVector3D edge1 = v2.m_xyz - v1.m_xyz;
+        QVector3D edge2 = v3.m_xyz - v1.m_xyz;
+        QVector3D normal = QVector3D::crossProduct(edge1, edge2);
+        normal.normalize();
+        faceNormals.push_back(normal);
+    }
+
+    // Step 2: Compute vertex normals
+    for (int i = 0; i < mVertices.size(); ++i) {
+        QVector3D normalSum(0, 0, 0);
+        int numFacesShared = 0;
+
+        for (int j = 0; j < numFaces; ++j) {
+            bool sharesVertex = false;
+            for (int k = 0; k < 3; ++k) {
+                if (mIndices[j * 3 + k] == i) {
+                    sharesVertex = true;
+                    break;
+                }
+            }
+            if (!sharesVertex) continue;
+
+            const Vertex& v1 = mVertices[mIndices[j * 3]];
+            const Vertex& v2 = mVertices[mIndices[j * 3 + 1]];
+            const Vertex& v3 = mVertices[mIndices[j * 3 + 2]];
+            QVector3D faceNormal = faceNormals[j];
+            QVector3D edge1 = v2.m_xyz - v1.m_xyz;
+            QVector3D edge2 = v3.m_xyz - v1.m_xyz;
+            float weight = qAcos(QVector3D::dotProduct(edge1.normalized(), edge2.normalized()));
+            normalSum += faceNormal * weight;
+            ++numFacesShared;
+        }
+
+        if (numFacesShared > 0) {
+            mVertices[i].m_normal = normalSum / numFacesShared;
+            mVertices[i].m_normal.normalize();
+        }
+    }
 }

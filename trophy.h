@@ -16,6 +16,8 @@ public:
     // check if a point is inside the bounding box
     bool contains(QVector3D point) const;
 
+    void computeNormals();
+
 private:
     QOpenGLTexture* texture;
 

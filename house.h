@@ -39,7 +39,7 @@ private:
 
     bool doorOpen = false;
 
-    class QOpenGLTexture* texture;
+//    class QOpenGLTexture* texture;
 };
 
 #endif // HOUSE_H

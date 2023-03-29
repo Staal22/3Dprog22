@@ -6,7 +6,7 @@
 class TriangleSurface : public VisualObject
 {    
 public:
-    TriangleSurface(float size = 0);
+    TriangleSurface(float size = 50, int numVertices = 4);
 //    TriangleSurface(std::string filename);
     ~TriangleSurface() override;
 
@@ -15,7 +15,7 @@ public:
     void draw(GLint shader) override;
     void rotate() override;
     void changeTerrain();
-    void subdivide(int subdivisions);
+//    void subdivide(int subdivisions);
 
     // check if a point is inside the bounding box
     bool contains(QVector3D point) const;

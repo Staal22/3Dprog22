@@ -44,7 +44,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mMap.insert(std::pair<std::string, VisualObject*> {"xyz", new XYZ()});
     mMap.insert(std::pair<std::string, VisualObject*> {"disc", new class Disc()});
     mMap.insert(std::pair<std::string, VisualObject*> {"tetrahedron", new Tetrahedron()});
-    mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(40)});
+    mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(60, 600)});
 //    mMap.insert(std::pair<std::string, VisualObject*>  {"floor", new TwoVariableFunctionSpace()});
     mMap.insert(std::pair<std::string, VisualObject*>  {"player", new Player()});
     mMap.insert(std::pair<std::string, VisualObject*>  {"house", new House()});
@@ -185,24 +185,25 @@ void RenderWindow::init()
     textureShader = new QOpenGLShaderProgram();
     textureShader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../3Dprog22/plainshader.vert");
     textureShader->addShaderFromSourceFile(QOpenGLShader::Fragment, "../3Dprog22/textureshader.frag");
+//    textureShader->addShaderFromSourceFile(QOpenGLShader::Geometry, "../3Dprog22/shader.geom");
     textureShader->link();
 
     modelMatrixUniform = glGetUniformLocation(textureShader->programId(), "model");
     projectionMatrixUniform = glGetUniformLocation(textureShader->programId(), "projection");
     viewMatrixUniform = glGetUniformLocation(textureShader->programId(), "view");
 
-    plainObjects = new ObjectGroup(plainShader);
-    texturedObjects = new ObjectGroup(textureShader);
-    groups.push_back(plainObjects);
-    groups.push_back(texturedObjects);
+//    plainObjects = new ObjectGroup(plainShader);
+//    texturedObjects = new ObjectGroup(textureShader);
+//    groups.push_back(plainObjects);
+//    groups.push_back(texturedObjects);
 
     for (auto& object : mObjects)
     {
         object->init();
-        if (object->hasTexture)
-            texturedObjects->addObject(object);
-        else
-            plainObjects->addObject(object);
+//        if (object->hasTexture)
+//            texturedObjects->addObject(object);
+//        else
+//            plainObjects->addObject(object);
     }
 
 //    for (auto& object : mObjects)
@@ -212,7 +213,7 @@ void RenderWindow::init()
 
     textureShader->bind();
     textureShader->setUniformValue("textureSampler", 0);
-//    textureShader->setUniformValue("heightmap", 1);
+    textureShader->setUniformValue("heightmap", 1);
     textureShader->release();
 
     glBindVertexArray(0);
@@ -253,6 +254,8 @@ void RenderWindow::render()
     for (auto& object : mObjects)
     {
         textureShader->setUniformValue("hasTexture", object->hasTexture);
+        textureShader->setUniformValue("hasHeightMap", object->hasHeightMap);
+//        glEnable(GL_PROGRAM_POINT_SIZE);
         object->draw(modelMatrixUniform);
     }
     textureShader->release();

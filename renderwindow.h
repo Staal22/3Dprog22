@@ -50,15 +50,15 @@ public:
 private:
     void init();            //initialize things we need before rendering
 
-    QOpenGLShaderProgram* vertexShader;
-    QOpenGLShaderProgram* plainShader;
+//    QOpenGLShaderProgram* vertexShader;
+//    QOpenGLShaderProgram* plainShader;
     QOpenGLShaderProgram* textureShader;
-    QOpenGLShaderProgram* terrainShader;
+//    QOpenGLShaderProgram* terrainShader;
 
-    std::vector<ObjectGroup*> groups;
-    ObjectGroup* plainObjects;
-    ObjectGroup* texturedObjects;
-    ObjectGroup* terrainObjects;
+//    std::vector<ObjectGroup*> groups;
+//    ObjectGroup* plainObjects;
+//    ObjectGroup* texturedObjects;
+//    ObjectGroup* terrainObjects;
 
     // Containers
     std::vector<VisualObject*> mObjects;

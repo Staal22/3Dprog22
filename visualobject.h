@@ -44,7 +44,7 @@ public:
    QVector3D mVelocity{-1, 0, 0};
 
    bool hasTexture = false;
-
+   bool hasHeightMap = false;
 };
 
 #endif // VISUALOBJECT_H

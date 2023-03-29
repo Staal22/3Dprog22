@@ -11,7 +11,7 @@ uniform sampler2D textureSampler;
 void main()
 {
     if (hasTexture)
-    fragmentColor = texture2D(textureSampler, textureCoord);
+        fragmentColor = texture2D(textureSampler, textureCoord);
     else
         fragmentColor = color;
 }

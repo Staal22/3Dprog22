@@ -1,7 +1,7 @@
 QT          += core gui widgets opengl
 
 TEMPLATE    = app
-CONFIG      += c++17
+CONFIG      += c++17 geometryshader
 
 TARGET      = 3D-programmering
 
@@ -67,6 +67,7 @@ DISTFILES += \
     plainshader.frag \
     plainshader.gsh \
     plainshader.vert \
+    shader.geom \
     textureshader.frag
 
 ## GLEW
@@ -81,6 +82,8 @@ DISTFILES += \
 #INCLUDEPATH += "E:/Misc/eigen-3.4.0"
 ## Open3D
 #INCLUDEPATH += "E:/Misc/open3d-devel-windows-amd64-0.17.0/include"
+
+RESOURCES +=
 
 
 

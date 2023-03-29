@@ -2,36 +2,77 @@
 #include "trianglesurface.h"
 #include "qimage.h"
 #include "qopengltexture.h"
+#include <cstddef>
 
-TriangleSurface::TriangleSurface(float size)
+TriangleSurface::TriangleSurface(float size, int numVertices)
 {
-    float halfSize = size / 2.0f;
+    if (numVertices == 4)
+    {
+        float halfSize = size / 2.0f;
 
-    // Define the four corners of the plane
-    v0 = QVector3D(-halfSize, 0.0f, -halfSize);
-    v1 = QVector3D(halfSize, 0.0f, -halfSize);
-    v2 = QVector3D(halfSize, 0.0f, halfSize);
-    v3 = QVector3D(-halfSize, 0.0f, halfSize);
+        // Define the four corners of the plane
+        v0 = QVector3D(-halfSize, 0.0f, -halfSize);
+        v1 = QVector3D(halfSize, 0.0f, -halfSize);
+        v2 = QVector3D(halfSize, 0.0f, halfSize);
+        v3 = QVector3D(-halfSize, 0.0f, halfSize);
 
-    // Add the vertices to the vertex buffer
-    mVertices.push_back(Vertex(v0, QVector3D(1.0f, 1.0f, 1.0f)));
-    mVertices.push_back(Vertex(v1, QVector3D(1.0f, 1.0f, 1.0f)));
-    mVertices.push_back(Vertex(v2, QVector3D(1.0f, 1.0f, 1.0f)));
-    mVertices.push_back(Vertex(v3, QVector3D(1.0f, 1.0f, 1.0f)));
+        // Add the vertices to the vertex buffer
+        mVertices.push_back(Vertex(v0, QVector3D(1.0f, 1.0f, 1.0f)));
+        mVertices.push_back(Vertex(v1, QVector3D(1.0f, 1.0f, 1.0f)));
+        mVertices.push_back(Vertex(v2, QVector3D(1.0f, 1.0f, 1.0f)));
+        mVertices.push_back(Vertex(v3, QVector3D(1.0f, 1.0f, 1.0f)));
 
-    // Define the indices of the plane
-    mIndices.push_back(0);
-    mIndices.push_back(1);
-    mIndices.push_back(2);
-    mIndices.push_back(0);
-    mIndices.push_back(2);
-    mIndices.push_back(3);
+        // Define the indices of the plane
+        mIndices.push_back(0);
+        mIndices.push_back(1);
+        mIndices.push_back(2);
+        mIndices.push_back(0);
+        mIndices.push_back(2);
+        mIndices.push_back(3);
 
-    // calculate the minimum and maximum points of the bounding box
-    min_ = QVector3D{0,0,0} - QVector3D(size / 2, 0.5f / 2, size / 2);
-    max_ = QVector3D{0,0,0} + QVector3D(size / 2, 0.5f / 2, size / 2);
+        // calculate the minimum and maximum points of the bounding box
+        min_ = QVector3D{0,0,0} - QVector3D(size / 2, 0.5f / 2, size / 2);
+        max_ = QVector3D{0,0,0} + QVector3D(size / 2, 0.5f / 2, size / 2);
+    }
+
+    else
+    {
+        int numVertices = size * size;  // number of vertices in the plane
+        int numIndices = (size - 1) * (size - 1) * 6;  // number of indices in the plane
+
+        // create vector of vertices
+        mVertices.reserve(numVertices);
+        for (int i = 0; i < size; ++i)
+        {
+            for (int j = 0; j < size; ++j)
+            {
+                float x = ((j / (size-1.0f)) - 0.5f) * size;
+                float z = ((i / (size-1.0f)) - 0.5f) * size;
+                float u = j / (float)(size - 1);
+                float v = i / (float)(size - 1);
+                mVertices.push_back(Vertex{QVector3D(x, 0, z), QVector2D(u, v)});  // centered at (0,0,0)
+            }
+        }
+
+        // create vector of indices
+        mIndices.reserve(numIndices);
+        for (int i = 0; i < size-1; ++i) {
+            for (int j = 0; j < size-1; ++j) {
+                int index = i * size + j;
+                mIndices.push_back(index);
+                mIndices.push_back(index + 1);
+                mIndices.push_back(index + size);
+                mIndices.push_back(index + size + 1);
+                mIndices.push_back(index + size);
+                mIndices.push_back(index + 1);
+            }
+        }
+    }
 
     model.setToIdentity();
+    //    model.translate(- size / 2, 0.0f, - size / 2);
+
+    hasHeightMap = true;
 }
 
 TriangleSurface::~TriangleSurface()
@@ -87,6 +128,16 @@ void TriangleSurface::init()
 {
     initializeOpenGLFunctions();
 
+    QImage image;
+    image.load("heightmap.bmp");
+
+    // Create an OpenGL texture object and bind the image to it
+    texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
+    texture->setData(image);
+    texture->setWrapMode(QOpenGLTexture::Repeat);
+    texture->setMinificationFilter(QOpenGLTexture::Nearest);
+    texture->setMagnificationFilter(QOpenGLTexture::Nearest);
+
     //Vertex Array Object - VAO
     glGenVertexArrays( 1, &mVAO );
     glBindVertexArray( mVAO );
@@ -98,20 +149,24 @@ void TriangleSurface::init()
 
     // 1rst attribute buffer : vertices
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE,sizeof(Vertex), reinterpret_cast<const void*>(0));
-    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_xyz)));
 
     // 2nd attribute buffer : colors
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  reinterpret_cast<const void*>(3 * sizeof(GLfloat)) );
-    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_normal)));
 
-    //enable the matrixUniform
-    // mMatrixUniform = glGetUniformLocation( matrixUniform, "matrix" );
+    // 3rd attribute buffer : texture coordinates
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_uv)));
+
     glGenBuffers(1, &mIBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size()*sizeof(GLuint), mIndices.data(), GL_STATIC_DRAW);
 
-    mRotation.setToIdentity();
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+
+    texture->bind(1);
+//    mRotation.setToIdentity();
 
     glBindVertexArray(0);
 }
@@ -174,8 +229,8 @@ void TriangleSurface::changeTerrain()
 //    return result;
 //}
 
-void TriangleSurface::subdivide(int subdivisions)
-{
+//void TriangleSurface::subdivide(int subdivisions)
+//{
 //    // create a mesh object with vertices and faces
 //    open3d::geometry::TriangleMesh mesh;
 //    std::vector<QVector3D> vertPos;
@@ -207,8 +262,8 @@ void TriangleSurface::subdivide(int subdivisions)
 //        mIndices.push_back(new_faces[j].y());
 //        mIndices.push_back(new_faces[j].z());
 //    }
-    init();
-}
+//    init();
+//}
 
 bool TriangleSurface::contains(QVector3D point) const
 {
