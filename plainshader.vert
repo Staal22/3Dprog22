@@ -6,11 +6,13 @@ layout(location = 1) in vec4 normalIn;
 layout(location = 2) in vec2 textureCoordIn;
 
 // Define the output variables
-out vec4 color;
-out vec2 textureCoord;
-out vec4 fragNormal;
+//out vec4 color;
 out vec3 fragPos;
-
+out vec2 textureCoord;
+out VS_OUT
+{
+    vec4 normal;
+} vs_out;
 
 // Define the uniform variables
 uniform mat4 model;
@@ -24,8 +26,7 @@ const float heightScale = -2;
 
 void main()
 {
-    textureCoord = textureCoordIn;
-    fragNormal = normalIn;
+
     if (hasHeightMap)
     {
         // Get the height value from the heightmap texture
@@ -42,12 +43,16 @@ void main()
 
         // Transform the vertex position and normal into view space
         fragPos = vec3(view * worldPos);
-        color = vec4(textureCoordIn.x, textureCoordIn.y, 0.0, 1.0);
+//        color = vec4(textureCoordIn.x, textureCoordIn.y, 0.0, 1.0);
         gl_Position = projection * view * worldPos;
     }
     else
     {
         gl_Position = projection * view * model * positionIn;
-        color = normalIn;
+//        color = normalIn;
     }
+
+    textureCoord = textureCoordIn;
+
+    vs_out.normal = normalIn;
 }

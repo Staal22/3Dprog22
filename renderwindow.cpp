@@ -185,8 +185,13 @@ void RenderWindow::init()
     textureShader = new QOpenGLShaderProgram();
     textureShader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../3Dprog22/plainshader.vert");
     textureShader->addShaderFromSourceFile(QOpenGLShader::Fragment, "../3Dprog22/textureshader.frag");
-//    textureShader->addShaderFromSourceFile(QOpenGLShader::Geometry, "../3Dprog22/shader.geom");
     textureShader->link();
+
+    vertexNormalShader = new QOpenGLShaderProgram();
+    vertexNormalShader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../3Dprog22/plainshader.vert");
+    vertexNormalShader->addShaderFromSourceFile(QOpenGLShader::Fragment, "../3Dprog22/textureshader.frag");
+    vertexNormalShader->addShaderFromSourceFile(QOpenGLShader::Geometry, "../3Dprog22/shader.geom");
+    vertexNormalShader->link();
 
     modelMatrixUniform = glGetUniformLocation(textureShader->programId(), "model");
     projectionMatrixUniform = glGetUniformLocation(textureShader->programId(), "projection");

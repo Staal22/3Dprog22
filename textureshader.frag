@@ -1,7 +1,10 @@
 #version 330 core
 
-in vec4 color;
 in vec2 textureCoord;
+in VS_OUT
+{
+    vec4 normal;
+} ts_in;
 
 out vec4 fragmentColor;
 
@@ -13,5 +16,5 @@ void main()
     if (hasTexture)
         fragmentColor = texture2D(textureSampler, textureCoord);
     else
-        fragmentColor = color;
+        fragmentColor = ts_in.normal;
 }

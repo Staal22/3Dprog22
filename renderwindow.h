@@ -53,6 +53,7 @@ private:
 //    QOpenGLShaderProgram* vertexShader;
 //    QOpenGLShaderProgram* plainShader;
     QOpenGLShaderProgram* textureShader;
+    QOpenGLShaderProgram* vertexNormalShader;
 //    QOpenGLShaderProgram* terrainShader;
 
 //    std::vector<ObjectGroup*> groups;
