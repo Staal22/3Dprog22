@@ -10,7 +10,6 @@ public:
     ~Disc() override;
 
     void init() override;
-    void draw(GLint shader) override;
 //    void construct();
     void move(float dt) override;
     void writeFile(std::string filnavn);

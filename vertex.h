@@ -13,9 +13,9 @@ class Vertex {
    friend std::istream& operator>> (std::istream&, Vertex&);
 
 public:
-   QVector3D m_xyz{};       	// position i 3D
-   QVector3D m_normal{1, 1, 1}; // normal in 3D or rgb colors
-   QVector2D m_uv{};         	// texture coordinates if used
+   QVector3D m_xyz{};       	// position in 3D
+   QVector3D m_normal{0, 1, 0}; // normal in 3D or rgb colors
+   QVector2D m_uv{};         	// texture coordinates (uv)
 
 public:
    Vertex();

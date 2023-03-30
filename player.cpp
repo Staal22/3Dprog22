@@ -6,6 +6,9 @@ Player::Player()
     mVertices.reserve(3 * 8 * pow(4, m_recursions));
     octahedronUnitBall();
     model.setToIdentity();
+
+    drawMethod = GL_TRIANGLES;
+    indexed = false;
 }
 
 Player::~Player()
@@ -39,14 +42,6 @@ void Player::init()
 
     mRotation.setToIdentity();
     glBindVertexArray(0);
-}
-
-void Player::draw(GLint shader)
-{
-    modelUniform = shader;
-    glBindVertexArray( mVAO );
-    glUniformMatrix4fv( modelUniform, 1, GL_FALSE, model.constData());
-    glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
 }
 
 void Player::move(float x, float y, float z)

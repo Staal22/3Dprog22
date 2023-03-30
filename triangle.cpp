@@ -5,6 +5,9 @@ Triangle::Triangle()
     mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f});
     mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f});
     mVertices.push_back(Vertex{0.0f, 0.5f, 0.0f,  0.0f, 0.0f, 1.0f});
+
+    drawMethod = GL_TRIANGLES;
+    indexed = false;
 }
 
 Triangle::~Triangle()
@@ -58,23 +61,6 @@ void Triangle::init()
 
     //release vertex array bind(0) = release lol
     glBindVertexArray(0);
-}
-
-void Triangle::draw(GLint shader)
-{
-    modelUniform = shader;
-    //what object to draw
-    glBindVertexArray(mVAO);
-    //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
-    //Must be here to update each frame - if static object, it could be set only once
-    glUniformMatrix4fv(modelUniform,          //the location of the matrix in the shader
-                       1,                       //count
-                       GL_FALSE,                //transpose the matrix before sending it?
-                       model.constData());    //the data of the matrix
-    //DRAW CALL MOMENT
-    glDrawArrays(GL_TRIANGLES,
-                 0,
-                 mVertices.size());
 }
 
 void Triangle::rotate()

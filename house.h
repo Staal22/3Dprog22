@@ -10,7 +10,6 @@ public:
     ~House() override;
 
     void init() override;
-    void draw(GLint shader) override;
     void open();
     void close();
 

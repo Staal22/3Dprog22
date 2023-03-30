@@ -12,7 +12,7 @@ public:
    ~VisualObject();
 
    virtual void init()=0;
-   virtual void draw(GLint shader)=0;
+   void draw(GLint shader);
    virtual void rotate() { }
    // move for interaktive objekter
    virtual void move(float x, float y, float z) { }
@@ -22,16 +22,21 @@ public:
    // just a test please don't be mad Dag y.y
    virtual void move(float dt, class GraphFunction* function) { }
 
+   void computeVertexNormals();
+
    std::pair<float,float> getPosition2D();
    QVector3D getPosition3D();
 
    bool hide = false;
+   bool indexed = true;
+   int drawMethod = GL_TRIANGLES;
 
 public:
    std::vector<Vertex> mVertices;
    std::vector<GLuint> mIndices; 	// Til indeksering
    GLuint mVAO{0};
    GLuint mVBO{0};
+   GLuint mIBO{0};
    GLint modelUniform{0};
    QMatrix4x4 model;
 
@@ -45,6 +50,7 @@ public:
 
    bool hasTexture = false;
    bool hasHeightMap = false;
+
 };
 
 #endif // VISUALOBJECT_H

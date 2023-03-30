@@ -5,6 +5,10 @@ OctahedronBall::OctahedronBall(int n) : m_recursions(n), m_index(0)
     mVertices.reserve(3 * 8 * pow(4, m_recursions));
     octahedronUnitBall();
     model.setToIdentity();
+
+    computeVertexNormals();
+    drawMethod = GL_TRIANGLES;
+    indexed = false;
 }
 
 //!//! \brief OctahedronBall::~OctahedronBall() virtual destructor
@@ -57,13 +61,6 @@ void OctahedronBall::init()
 //! - glVertexAttribPointer()
 //! - glDrawArrays() with GL_TRIANGLES
 //!
-void OctahedronBall::draw(GLint shader)
-{
-    modelUniform = shader;
-    glBindVertexArray( mVAO );
-    glUniformMatrix4fv( modelUniform, 1, GL_FALSE, model.constData());
-    glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
-}
 
 void OctahedronBall::rotate()
 {

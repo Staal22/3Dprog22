@@ -10,7 +10,6 @@ public:
     ~Tetrahedron() override;
 
     void init() override;
-    void draw(GLint shader) override;
     void rotate() override;
     void move(float dt, GraphFunction* function) override;
     void writeFile(std::string filename);

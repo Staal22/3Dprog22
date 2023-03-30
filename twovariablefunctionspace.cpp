@@ -29,6 +29,9 @@ TwoVariableFunctionSpace::TwoVariableFunctionSpace()
         }
     }
     model.setToIdentity();
+
+    drawMethod = GL_TRIANGLES;
+    indexed = false;
 }
 
 TwoVariableFunctionSpace::~TwoVariableFunctionSpace()
@@ -100,24 +103,6 @@ void TwoVariableFunctionSpace::init()
 
     //release vertex array bind(0) = release lol
     glBindVertexArray(0);
-}
-
-void TwoVariableFunctionSpace::draw(GLint shader)
-{
-    modelUniform = shader;
-    // Should never draw itself as of now, gets drawn by TriangleSurface, use for debugging
-    //what object to draw
-    glBindVertexArray(mVAO);
-    //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
-    //Must be here to update each frame - if static object, it could be set only once
-    glUniformMatrix4fv(modelUniform,          //the location of the matrix in the shader
-                       1,                       //count
-                       GL_FALSE,                //transpose the matrix before sending it?
-                       model.constData());    //the data of the matrix
-    //DRAW CALL MOMENT
-    glDrawArrays(GL_TRIANGLES,
-                 0,
-                 mVertices.size());
 }
 
 void TwoVariableFunctionSpace::rotate()

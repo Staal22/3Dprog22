@@ -58,6 +58,8 @@ House::House()
     QVector3D house = (house1 + house2) / 2;
     min_ = QVector3D{house.x(), house.y(), house.z()} - QVector3D(5.0f / 2.f, 3.f / 2.f, 10.0f / 2.f);
     max_ = QVector3D{house.x(), house.y(), house.z()} + QVector3D(5.0f / 2.f, 3.f / 2.f, 10.0f / 2.f);
+
+    drawMethod = GL_TRIANGLES;
 }
 
 House::~House()
@@ -107,15 +109,6 @@ void House::init()
 //    texture->setMagnificationFilter(QOpenGLTexture::Nearest);
 
 //    texture->bind(1);
-}
-
-void House::draw(GLint shader)
-{
-    modelUniform = shader;
-    initializeOpenGLFunctions();
-    glBindVertexArray(mVAO);
-    glUniformMatrix4fv(modelUniform, 1, GL_TRUE, model.constData());
-    glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
 }
 
 void House::open()

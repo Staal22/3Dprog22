@@ -10,7 +10,6 @@ public:
     ~XYZ() override;
 
     void init() override;
-    void draw(GLint shader) override;
     void rotate() override;
 };
 

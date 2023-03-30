@@ -16,6 +16,8 @@ Disc::Disc()
         mVertices.push_back(Vertex{x,y,z,r,g,b});
     }
     for (GLuint i=0; i<14; i++) mIndices.push_back(i);
+
+    drawMethod = GL_TRIANGLE_FAN;
 }
 
 Disc::~Disc()
@@ -53,21 +55,6 @@ void Disc::init()
 
     mRotation.setToIdentity();
     glBindVertexArray(0);
-}
-
-void Disc::draw(GLint shader)
-{
-    modelUniform = shader;
-    initializeOpenGLFunctions();
-    glBindVertexArray( mVAO );
-    // GL_FALSE for QMatrix4x4
-    glUniformMatrix4fv( modelUniform, 1, GL_FALSE, model.constData());
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
-    glDrawElements(GL_TRIANGLE_FAN,
-                   mVertices.size(),
-                   GL_UNSIGNED_INT,
-                   reinterpret_cast<const void*>(0));
-                   //mVertices.size());
 }
 
 void Disc::move(float dt)

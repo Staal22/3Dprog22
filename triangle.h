@@ -9,7 +9,6 @@ public:
     Triangle();
     ~Triangle() override;
     void init() override;
-    void draw(GLint shader) override;
     void rotate() override;
 };
 

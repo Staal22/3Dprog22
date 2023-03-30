@@ -42,6 +42,10 @@ Tetrahedron::Tetrahedron()
     mVertices.push_back(Vertex{QVector3D(0.0f, size, 0.0f), QVector3D(1,0,1)}); // Top
     mVertices.push_back(Vertex{QVector3D(0.0f, 0.0f, size), QVector3D(1,0,1)}); // Front
     mVertices.push_back(Vertex{QVector3D(size, 0.0f, -size), QVector3D(1,0,1)}); // Right bottom
+
+    computeVertexNormals();
+    drawMethod = GL_TRIANGLES;
+    indexed = false;
 }
 
 Tetrahedron::~Tetrahedron()
@@ -83,21 +87,6 @@ void Tetrahedron::init()
 
     mRotation.setToIdentity();
     glBindVertexArray(0);
-}
-
-void Tetrahedron::draw(GLint shader)
-{
-    modelUniform = shader;
-    // Un-indexed
-    glBindVertexArray(mVAO);
-    glUniformMatrix4fv(modelUniform, 1, GL_FALSE, model.constData());
-    glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
-
-//    // Indexed
-//    initializeOpenGLFunctions();
-//    glBindVertexArray( mVAO );
-//    glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mMatrix.constData());
-//    glDrawElements(GL_TRIANGLE_FAN, mIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
 }
 
 void Tetrahedron::rotate()

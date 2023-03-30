@@ -9,6 +9,9 @@ XYZ::XYZ()
     mVertices.push_back(Vertex{0,0,0,0,0,1});
     mVertices.push_back(Vertex{0,0,1,0,0,1});
     model.setToIdentity();
+
+    drawMethod = GL_LINES;
+    indexed = false;
 }
 
 XYZ::~XYZ()
@@ -41,14 +44,6 @@ void XYZ::init()
     glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
-}
-
-void XYZ::draw(GLint shader)
-{
-    modelUniform = shader;
-    glBindVertexArray(mVAO);
-    glUniformMatrix4fv(modelUniform, 1, GL_FALSE, model.constData());
-    glDrawArrays(GL_LINES, 0, mVertices.size());
 }
 
 void XYZ::rotate()

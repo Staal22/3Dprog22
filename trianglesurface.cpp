@@ -73,6 +73,9 @@ TriangleSurface::TriangleSurface(float size, int numVertices)
     //    model.translate(- size / 2, 0.0f, - size / 2);
 
     hasHeightMap = true;
+
+    computeVertexNormals();
+    drawMethod = GL_TRIANGLES;
 }
 
 TriangleSurface::~TriangleSurface()
@@ -169,19 +172,6 @@ void TriangleSurface::init()
 //    mRotation.setToIdentity();
 
     glBindVertexArray(0);
-}
-
-void TriangleSurface::draw(GLint shader)
-{
-    modelUniform = shader;
-    if (hide)
-    {
-        return;
-    }
-    initializeOpenGLFunctions();
-    glBindVertexArray( mVAO );
-    glUniformMatrix4fv( modelUniform, 1, GL_TRUE, model.constData());
-    glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
 }
 
 void TriangleSurface::rotate()

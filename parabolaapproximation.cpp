@@ -11,6 +11,12 @@ ParabolaApproximation::ParabolaApproximation(bool inPoints)
     mVertices.push_back(Vertex{9,5,0,0,1,0});
     mVertices.push_back(Vertex{10,7,0,0,1,0});
     model.setToIdentity();
+
+    if (points)
+        drawMethod = GL_POINTS;
+    else
+        drawMethod = GL_LINE_LOOP;
+    indexed = false;
 }
 
 ParabolaApproximation::~ParabolaApproximation()
@@ -64,24 +70,6 @@ void ParabolaApproximation::init()
 
     //release vertex array bind(0) = release lol
     glBindVertexArray(0);
-}
-
-void ParabolaApproximation::draw(GLint shader)
-{
-    modelUniform = shader;
-    //what object to draw
-    glBindVertexArray(mVAO);
-    //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
-    //Must be here to update each frame - if static object, it could be set only once
-    glUniformMatrix4fv(modelUniform,          //the location of the matrix in the shader
-                       1,                       //count
-                       GL_FALSE,                //transpose the matrix before sending it?
-                       model.constData());    //the data of the matrix
-    //DRAW CALL MOMENT
-    if (points)
-        glDrawArrays(GL_POINTS, 0, mVertices.size());
-    else
-        glDrawArrays(GL_LINE_LOOP, 0, mVertices.size());
 }
 
 void ParabolaApproximation::fit(const std::vector<Vertex> &points)

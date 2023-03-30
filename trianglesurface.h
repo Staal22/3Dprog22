@@ -12,7 +12,6 @@ public:
 
     void readFile(std::string filename, bool IndexedVertices);
     void init() override;
-    void draw(GLint shader) override;
     void rotate() override;
     void changeTerrain();
 //    void subdivide(int subdivisions);
@@ -25,7 +24,6 @@ public:
 
     class QOpenGLTexture* texture;
 protected:
-    GLuint mIBO{0};                 // for glDrawElements()
     // custom bounding box
     QVector3D min_;
     QVector3D max_;

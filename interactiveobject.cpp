@@ -21,6 +21,8 @@ InteractiveObject::InteractiveObject()
     mIndices.push_back(3);
     mIndices.push_back(2);
     mIndices.push_back(1);
+
+    drawMethod = GL_TRIANGLES;
 }
 
 InteractiveObject::~InteractiveObject()
@@ -59,15 +61,6 @@ void InteractiveObject::init()
 
     //release vertex array bind(0) = release lol
     glBindVertexArray(0);
-}
-
-void InteractiveObject::draw(GLint shader)
-{
-    modelUniform = shader;
-    initializeOpenGLFunctions();
-    glBindVertexArray( mVAO );
-    glUniformMatrix4fv( modelUniform, 1, GL_TRUE, model.constData());
-    glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
 }
 
 void InteractiveObject::move(float x, float y, float z)

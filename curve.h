@@ -12,7 +12,6 @@ public:
     void writeFile(std::string filename);
 //    void readFile(std::string filename);
     void init() override;
-    void draw(GLint shader) override;
     void rotate() override;
 
 private:

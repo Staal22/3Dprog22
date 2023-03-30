@@ -9,7 +9,6 @@ public:
     InteractiveObject();
     ~InteractiveObject() override;
     void init() override;
-    void draw(GLint shader) override;
     void move(float x, float y, float z) override;
 
 private:
