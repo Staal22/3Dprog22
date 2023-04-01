@@ -8,7 +8,6 @@ class Player : public VisualObject
 public:
     Player();
     ~Player() override;
-    void init() override;
     void move(float x, float y, float z) override;
     void move(float x, float y, float z, GraphFunction* function) override;
     void turn(float y);

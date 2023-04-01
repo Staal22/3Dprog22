@@ -11,7 +11,7 @@ public:
     QOpenGLShaderProgram* m_shaderProgram;
 
     void addObject(VisualObject* object);
-    void render(class RenderWindow* window, const GLint& model);
+    void render(class RenderWindow* window);
 
 private:
     QList<VisualObject*> m_objects;

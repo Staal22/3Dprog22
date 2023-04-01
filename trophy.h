@@ -10,14 +10,13 @@ public:
     Trophy(float x = 0, float z = 0);
     ~Trophy() override;
 
-    void init() override;
     // check if a point is inside the bounding box
     bool contains(QVector3D point) const;
 
     void computeNormals();
 
 private:
-    QOpenGLTexture* texture;
+
 
     float radius = 1.0f;
     float height = 2.0f;

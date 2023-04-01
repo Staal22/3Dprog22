@@ -1,10 +1,13 @@
 #version 330 core
 
-in vec4 color;
+in VS_OUT
+{
+    vec4 normal;
+} fs_in;
 
 out vec4 fragmentColor;
 
 void main()
 {
-    fragmentColor = color;
+    fragmentColor = fs_in.normal;
 }

@@ -17,6 +17,9 @@ public:
    void translate(float dx, float dy, float dz);
    void setPos(float x, float y, float z);
 
+   QMatrix4x4 getProjecionMatrix();
+   QMatrix4x4 getViewMatrix();
+
    QVector3D mEye;
    QVector3D left = {-1,0,0};
    QVector3D up = {0,1,0};

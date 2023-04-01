@@ -68,6 +68,7 @@ Trophy::Trophy(float x, float z)
     hasTexture = true;
     drawMethod = GL_TRIANGLES;
     indexed = false;
+    texturepath = "brick_texture.bmp";
 }
 
 Trophy::~Trophy()
@@ -78,52 +79,6 @@ Trophy::~Trophy()
     glDisableVertexAttribArray(2);
 
     texture->release();
-}
-
-void Trophy::init()
-{
-    initializeOpenGLFunctions();
-
-    // Load the image using QImage
-    QImage image;
-    image.load("brick_texture.bmp");
-
-//    // Create an OpenGL texture object and bind the image to it
-    texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
-
-    texture->setData(image);
-    texture->setWrapMode(QOpenGLTexture::Repeat);
-    texture->setMinificationFilter(QOpenGLTexture::Nearest);
-    texture->setMagnificationFilter(QOpenGLTexture::Nearest);
-
-    //Vertex Array Object - VAO
-    glGenVertexArrays(1, &mVAO);
-    glBindVertexArray(mVAO);
-
-    //Vertex Buffer Object to hold vertices - VBO
-    glGenBuffers(1, &mVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-
-    //send vertex data to the GPU
-    glBufferData(GL_ARRAY_BUFFER, mVertices.size()*sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW);
-
-    // 1rst attribute buffer : vertices
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_xyz)));
-
-    // 2nd attribute buffer : colors
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_normal)));
-
-    // 3rd attribute buffer : texture coordinates
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_uv)));
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-
-    texture->bind(0);
-
-    glBindVertexArray(0);
 }
 
 bool Trophy::contains(QVector3D point) const

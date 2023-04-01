@@ -73,9 +73,9 @@ TriangleSurface::TriangleSurface(float size, int numVertices)
     //    model.translate(- size / 2, 0.0f, - size / 2);
 
     hasHeightMap = true;
-
     computeVertexNormals();
     drawMethod = GL_TRIANGLES;
+    texturepath = "heightmap.bmp";
 }
 
 TriangleSurface::~TriangleSurface()
@@ -125,53 +125,6 @@ void TriangleSurface::readFile(std::string filename, bool IndexedVertices)
             inn.close();
         }
     }
-}
-
-void TriangleSurface::init()
-{
-    initializeOpenGLFunctions();
-
-    QImage image;
-    image.load("heightmap.bmp");
-
-    // Create an OpenGL texture object and bind the image to it
-    texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
-    texture->setData(image);
-    texture->setWrapMode(QOpenGLTexture::Repeat);
-    texture->setMinificationFilter(QOpenGLTexture::Nearest);
-    texture->setMagnificationFilter(QOpenGLTexture::Nearest);
-
-    //Vertex Array Object - VAO
-    glGenVertexArrays( 1, &mVAO );
-    glBindVertexArray( mVAO );
-
-    //Vertex Buffer Object to hold vertices - VBO
-    glGenBuffers( 1, &mVBO );
-    glBindBuffer( GL_ARRAY_BUFFER, mVBO );
-    glBufferData( GL_ARRAY_BUFFER, mVertices.size()*sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW );
-
-    // 1rst attribute buffer : vertices
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_xyz)));
-
-    // 2nd attribute buffer : colors
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_normal)));
-
-    // 3rd attribute buffer : texture coordinates
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_uv)));
-
-    glGenBuffers(1, &mIBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size()*sizeof(GLuint), mIndices.data(), GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-
-    texture->bind(1);
-//    mRotation.setToIdentity();
-
-    glBindVertexArray(0);
 }
 
 void TriangleSurface::rotate()

@@ -9,7 +9,6 @@ public:
     ParabolaApproximation(bool inPoints = false);
     ~ParabolaApproximation() override;
 
-    void init() override;
     void fit(const std::vector<Vertex> &points);
     void replace(double xMin, double xMax);
 

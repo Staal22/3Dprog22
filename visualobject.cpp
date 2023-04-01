@@ -1,4 +1,6 @@
 #include "visualobject.h"
+#include "qimage.h"
+#include "qopengltexture.h"
 
 VisualObject::VisualObject()
 {
@@ -8,6 +10,64 @@ VisualObject::VisualObject()
 VisualObject::~VisualObject() {
    glDeleteVertexArrays( 1, &mVAO );
    glDeleteBuffers( 1, &mVBO );
+}
+
+void VisualObject::init()
+{
+    initializeOpenGLFunctions();
+
+    //Vertex Array Object - VAO
+    glGenVertexArrays( 1, &mVAO );
+    glBindVertexArray( mVAO );
+
+    //Vertex Buffer Object to hold vertices - VBO
+    glGenBuffers( 1, &mVBO );
+    glBindBuffer( GL_ARRAY_BUFFER, mVBO );
+
+    if (indexed)
+    {
+        glGenBuffers(1, &mIBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size()*sizeof(GLuint), mIndices.data(), GL_STATIC_DRAW);
+    }
+
+    //send vertex data to the GPU
+    glBufferData( GL_ARRAY_BUFFER, mVertices.size()*sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW );
+
+    // 1rst attribute buffer : vertices
+    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0));
+
+    // 2nd attribute buffer : colors
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(3 * sizeof(GLfloat)));
+
+    if (hasTexture || hasHeightMap)
+    {
+        // 3rd attribute buffer : texture coordinates
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_uv)));
+
+        QImage image;
+        image.load(texturepath);
+        texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
+        texture->setData(image);
+        texture->setWrapMode(QOpenGLTexture::Repeat);
+        texture->setMinificationFilter(QOpenGLTexture::Nearest);
+        texture->setMagnificationFilter(QOpenGLTexture::Nearest);
+        if (!hasHeightMap)
+            texture->bind(0);
+        else
+            texture->bind(1);
+    }
+
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    if (hasTexture || hasHeightMap)
+        glEnableVertexAttribArray(2);
+
+    mPosition.setToIdentity();
+    mRotation.setToIdentity();
+    mScale.setToIdentity();
 }
 
 void VisualObject::draw(GLint shader)
@@ -38,6 +98,11 @@ QVector3D VisualObject::getPosition3D()
 {
     auto col = mPosition.column(3);
     return QVector3D(col.x(), col.y(), col.z());
+}
+
+QMatrix4x4 VisualObject::getModelMatrix()
+{
+    return model;
 }
 
 void VisualObject::computeVertexNormals()

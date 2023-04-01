@@ -11,7 +11,6 @@ public:
     ~TriangleSurface() override;
 
     void readFile(std::string filename, bool IndexedVertices);
-    void init() override;
     void rotate() override;
     void changeTerrain();
 //    void subdivide(int subdivisions);

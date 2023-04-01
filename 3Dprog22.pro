@@ -12,6 +12,7 @@ SOURCES += main.cpp \
     graphfunction.cpp \
     house.cpp \
     interactiveobject.cpp \
+    lightsource.cpp \
     linesurface.cpp \
     logger.cpp \
     mainwindow.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
     graphfunction.h \
     house.h \
     interactiveobject.h \
+    lightsource.h \
     linesurface.h \
     logger.h \
     mainwindow.h \

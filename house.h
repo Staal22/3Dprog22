@@ -9,7 +9,6 @@ public:
     House();
     ~House() override;
 
-    void init() override;
     void open();
     void close();
 

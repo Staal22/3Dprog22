@@ -67,50 +67,6 @@ House::~House()
 
 }
 
-void House::init()
-{
-    initializeOpenGLFunctions();
-
-    //Vertex Array Object - VAO
-    glGenVertexArrays( 1, &mVAO );
-    glBindVertexArray( mVAO );
-
-    //Vertex Buffer Object to hold vertices - VBO
-    glGenBuffers( 1, &mVBO );
-    glBindBuffer( GL_ARRAY_BUFFER, mVBO );
-    glBufferData( GL_ARRAY_BUFFER, mVertices.size()*sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW );
-
-    // 1rst attribute buffer : vertices
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE,sizeof(Vertex), reinterpret_cast<const void*>(0));
-    glEnableVertexAttribArray(0);
-
-    // 2nd attribute buffer : colors
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  reinterpret_cast<const void*>(3 * sizeof(GLfloat)) );
-    glEnableVertexAttribArray(1);
-
-    // Her kommer et tillegg som har med Index Buffer Object og indeksarray å gjøre
-    glGenBuffers(1, &mIBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size()*sizeof(GLuint), mIndices.data(), GL_STATIC_DRAW);
-
-    mRotation.setToIdentity();
-    glBindVertexArray(0);
-
-    // Load the image using QImage
-//    QImage image;
-//    image.load("heightmap.bmp");
-
-//    // Create an OpenGL texture object and bind the image to it
-//    texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
-//    texture->setData(image);
-//    texture->setWrapMode(QOpenGLTexture::Repeat);
-//    texture->setMinificationFilter(QOpenGLTexture::Nearest);
-//    texture->setMagnificationFilter(QOpenGLTexture::Nearest);
-
-//    texture->bind(1);
-}
-
 void House::open()
 {
     if (!doorOpen)

@@ -49,3 +49,13 @@ void Camera::setPos(float x, float y, float z)
     mEye.setY(y);
     mEye.setZ(z);
 }
+
+QMatrix4x4 Camera::getProjecionMatrix()
+{
+    return mPmatrix;
+}
+
+QMatrix4x4 Camera::getViewMatrix()
+{
+    return mVmatrix;
+}

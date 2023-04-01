@@ -9,7 +9,6 @@ public:
     XYZ();
     ~XYZ() override;
 
-    void init() override;
     void rotate() override;
 };
 

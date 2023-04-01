@@ -9,7 +9,6 @@ public:
     Tetrahedron();
     ~Tetrahedron() override;
 
-    void init() override;
     void rotate() override;
     void move(float dt, GraphFunction* function) override;
     void writeFile(std::string filename);

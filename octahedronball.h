@@ -9,7 +9,6 @@ public:
     OctahedronBall(int n);
     ~OctahedronBall() override;
 
-    void init() override;
     void rotate() override;
 
 private:

@@ -9,7 +9,6 @@ public:
     Disc();
     ~Disc() override;
 
-    void init() override;
 //    void construct();
     void move(float dt) override;
     void writeFile(std::string filnavn);

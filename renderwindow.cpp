@@ -45,7 +45,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mMap.insert(std::pair<std::string, VisualObject*> {"disc", new class Disc()});
     mMap.insert(std::pair<std::string, VisualObject*> {"tetrahedron", new Tetrahedron()});
     mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(60, 600)});
-//    mMap.insert(std::pair<std::string, VisualObject*>  {"floor", new TwoVariableFunctionSpace()});
+    //    mMap.insert(std::pair<std::string, VisualObject*>  {"floor", new TwoVariableFunctionSpace()});
     mMap.insert(std::pair<std::string, VisualObject*>  {"player", new Player()});
     mMap.insert(std::pair<std::string, VisualObject*>  {"house", new House()});
 
@@ -59,35 +59,35 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     // Oblig 1 Matte
     //Oppgave 1
-//    TwoVariableFunctionSpace* tvSpace = new TwoVariableFunctionSpace();
-//    tvSpace->writeFile("planeVertices.txt");
+    //    TwoVariableFunctionSpace* tvSpace = new TwoVariableFunctionSpace();
+    //    tvSpace->writeFile("planeVertices.txt");
     //Oppgave 2
-//    Curve* curve = new Curve();
-//    curve->writeFile("curveVertices.txt");
-//    testCurve = new LineSurface("curveVertices.txt");
-//    mObjects.push_back(testCurve);
+    //    Curve* curve = new Curve();
+    //    curve->writeFile("curveVertices.txt");
+    //    testCurve = new LineSurface("curveVertices.txt");
+    //    mObjects.push_back(testCurve);
     //Oppgave 3
-//    qDebug() << tvSpace->numericIntegral();
+    //    qDebug() << tvSpace->numericIntegral();
 
-//    testPlane = new TriangleSurface();
-//    testPlane->readFile("planeVertices.txt", false);
-//    mObjects.push_back(testPlane);
+    //    testPlane = new TriangleSurface();
+    //    testPlane->readFile("planeVertices.txt", false);
+    //    mObjects.push_back(testPlane);
 
     // Oblig 2 Matte
     // Oppgave 1
-//    ParabolaApproximation* points = new ParabolaApproximation(true);
-//    mObjects.push_back(points);
-//    ParabolaApproximation* pApprox = new ParabolaApproximation();
-//    pApprox->fit(points->mVertices);
-//    pApprox->replace(-1, 11);
-//    mObjects.push_back(pApprox);
+    //    ParabolaApproximation* points = new ParabolaApproximation(true);
+    //    mObjects.push_back(points);
+    //    ParabolaApproximation* pApprox = new ParabolaApproximation();
+    //    pApprox->fit(points->mVertices);
+    //    pApprox->replace(-1, 11);
+    //    mObjects.push_back(pApprox);
 
     // Oppgave 2
     mMap.insert(std::pair<std::string, VisualObject*> {"pInterp", new PolyInterpolation});
     static_cast<PolyInterpolation*>(mMap["pInterp"])->replace(-3, 3);
 
-//    gsml::Point2D a{-4, -4}, b{4, -4}, c{4, 4}, d{-4, 4}; // må gjøres ordentlig
-//    mQuadTree.init(a, b, c, d);
+    //    gsml::Point2D a{-4, -4}, b{4, -4}, c{4, 4}, d{-4, 4}; // må gjøres ordentlig
+    //    mQuadTree.init(a, b, c, d);
 
     // do last
     for (auto& pair : mMap)
@@ -103,16 +103,16 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     }
 
     //    std::string navn{"navn"}; // VisualObject should maybe have own name variable
-//    for (auto& object : mObjects)
-//    {
-//        mQuadTree.insert(object->getPosition2D(), navn, object);
-//    }
+    //    for (auto& object : mObjects)
+    //    {
+    //        mQuadTree.insert(object->getPosition2D(), navn, object);
+    //    }
 
     // alternatively
-//    for (auto& pair : mMap)
-//    {
-//        mQuadTree.insert(pair.second->getPosition2D(), pair.first, pair.second);
-//    }
+    //    for (auto& pair : mMap)
+    //    {
+    //        mQuadTree.insert(pair.second->getPosition2D(), pair.first, pair.second);
+    //    }
 }
 
 RenderWindow::~RenderWindow()
@@ -163,30 +163,33 @@ void RenderWindow::init()
     glClearColor(0.4f, 0.4f, 0.4f, 1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
 
     //Compile shaders: OLD CODE
-//    mShaderProgram = new Shader("../3Dprog22/plainshader.vert", "../3Dprog22/plainshader.frag");
+    //    mShaderProgram = new Shader("../3Dprog22/plainshader.vert", "../3Dprog22/plainshader.frag");
 
     // Get the matrixUniform location from the shader
     // This has to match the "matrix" variable name in the vertex shader
     // The uniform is used in the render() function to send the model matrix to the shader
-//    mShaderProgram->use();
-//    mMatrixUniform = glGetUniformLocation(mShaderProgram->getProgram(), "model");
-//    mPmatrixUniform = glGetUniformLocation(mShaderProgram->getProgram(), "projection");
-//    mVmatrixUniform = glGetUniformLocation(mShaderProgram->getProgram(), "view");
+    //    mShaderProgram->use();
+    //    mMatrixUniform = glGetUniformLocation(mShaderProgram->getProgram(), "model");
+    //    mPmatrixUniform = glGetUniformLocation(mShaderProgram->getProgram(), "projection");
+    //    mVmatrixUniform = glGetUniformLocation(mShaderProgram->getProgram(), "view");
 
-//    vertexShader = new QOpenGLShaderProgram();
-//    vertexShader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../3Dprog22/plainshader.vert");
-//    vertexShader->link();
+    //    vertexShader = new QOpenGLShaderProgram();
+    //    vertexShader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../3Dprog22/plainshader.vert");
+    //    vertexShader->link();
+
     // Default plain shader - treats normal as rgb
-//    plainShader = new QOpenGLShaderProgram();
-//    plainShader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../3Dprog22/plainshader.vert");
-//    plainShader->addShaderFromSourceFile(QOpenGLShader::Fragment, "../3Dprog22/plainshader.frag");
-//    plainShader->link();
+    plainShader = new QOpenGLShaderProgram();
+    plainShader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../3Dprog22/plainshader.vert");
+    plainShader->addShaderFromSourceFile(QOpenGLShader::Fragment, "../3Dprog22/plainshader.frag");
+    plainShader->link();
+
     // Texture shader - supports textures
     textureShader = new QOpenGLShaderProgram();
     textureShader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../3Dprog22/plainshader.vert");
     textureShader->addShaderFromSourceFile(QOpenGLShader::Fragment, "../3Dprog22/textureshader.frag");
     textureShader->link();
 
+    // For rendering vertex normals
     vertexNormalShader = new QOpenGLShaderProgram();
     vertexNormalShader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../3Dprog22/plainshader.vert");
     vertexNormalShader->addShaderFromSourceFile(QOpenGLShader::Fragment, "../3Dprog22/textureshader.frag");
@@ -197,29 +200,27 @@ void RenderWindow::init()
     projectionMatrixUniform = glGetUniformLocation(textureShader->programId(), "projection");
     viewMatrixUniform = glGetUniformLocation(textureShader->programId(), "view");
 
-//    plainObjects = new ObjectGroup(plainShader);
-//    texturedObjects = new ObjectGroup(textureShader);
-//    groups.push_back(plainObjects);
-//    groups.push_back(texturedObjects);
+    plainObjects = new ObjectGroup(plainShader);
+    texturedObjects = new ObjectGroup(textureShader);
+    groups.push_back(plainObjects);
+    groups.push_back(texturedObjects);
 
     for (auto& object : mObjects)
     {
         object->init();
-//        if (object->hasTexture)
-//            texturedObjects->addObject(object);
-//        else
-//            plainObjects->addObject(object);
+        if (object->hasTexture)
+            texturedObjects->addObject(object);
+        else
+            plainObjects->addObject(object);
     }
-
-//    for (auto& object : mObjects)
-//    {
-//        object->init();
-//    }
 
     textureShader->bind();
     textureShader->setUniformValue("textureSampler", 0);
     textureShader->setUniformValue("heightmap", 1);
     textureShader->release();
+    plainShader->bind();
+    plainShader->setUniformValue("heightmap", 1);
+    plainShader->release();
 
     glBindVertexArray(0);
 
@@ -227,20 +228,13 @@ void RenderWindow::init()
     glPointSize(5);
 
     //Hardcoded stuff
-//    static_cast<TriangleSurface*>(mMap["floor"])->subdivide(7);
-//    static_cast<TriangleSurface*>(mMap["floor"])->changeTerrain();
+    //    static_cast<TriangleSurface*>(mMap["floor"])->subdivide(7);
+    //    static_cast<TriangleSurface*>(mMap["floor"])->changeTerrain();
 }
 
 // Called each frame - doing the rendering!!!
 void RenderWindow::render()
 {
-    // AHAHAHAHEHOEOO PSYCOPATH DEBUGGING CALL THIS EVERY FRAME I GUESS
-    mCamera.init(projectionMatrixUniform, viewMatrixUniform);
-
-    mCamera.perspective(90.f, 16.0f/9.0f, 0.1f, 100.0f);
-//    mCamera.lookAt(mCamera.mEye, mCamera.mEye + QVector3D::crossProduct(mCamera.left, mCamera.up), mCamera.up);
-    mCamera.lookAt(mCamera.mEye, {0, 0, 0}, mCamera.up);
-
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
@@ -248,35 +242,34 @@ void RenderWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Rendering
-//    plainObjects->render(this, modelMatrixUniform);
-//    texturedObjects->render(this, modelMatrixUniform);
+    //    plainObjects->render(this, modelMatrixUniform);
+    //    texturedObjects->render(this, modelMatrixUniform);
 
     //what shader to use OLD CODE
-//    glUseProgram(mShaderProgram->getProgram());
+    //    glUseProgram(mShaderProgram->getProgram());
 
-    textureShader->bind();
-    mCamera.update();
-    for (auto& object : mObjects)
-    {
-        textureShader->setUniformValue("hasTexture", object->hasTexture);
-        textureShader->setUniformValue("hasHeightMap", object->hasHeightMap);
-//        glEnable(GL_PROGRAM_POINT_SIZE);
-        object->draw(modelMatrixUniform);
-    }
-    textureShader->release();
-    //    for (auto& group : groups)
+//    textureShader->bind();
+//    for (auto& object : mObjects)
 //    {
-//        modelMatrixUniform = glGetUniformLocation(group->m_shaderProgram->programId(), "model");
-//        projectionMatrixUniform = glGetUniformLocation(group->m_shaderProgram->programId(), "projection");
-//        viewMatrixUniform = glGetUniformLocation(group->m_shaderProgram->programId(), "view");
-//        group->render();
+//        textureShader->setUniformValue("hasTexture", object->hasTexture);
+//        textureShader->setUniformValue("hasHeightMap", object->hasHeightMap);
+//        //        glEnable(GL_PROGRAM_POINT_SIZE);
+//        object->draw(modelMatrixUniform);
 //    }
+//    textureShader->release();
+    for (auto& group : groups)
+    {
+        modelMatrixUniform = glGetUniformLocation(group->m_shaderProgram->programId(), "model");
+        projectionMatrixUniform = glGetUniformLocation(group->m_shaderProgram->programId(), "projection");
+        viewMatrixUniform = glGetUniformLocation(group->m_shaderProgram->programId(), "view");
+        group->render(this);
+    }
 
     // Quadtree working test
-//    for (auto& object : mQuadTree.m_objects)
-//    {
-//        object.second->draw();
-//    }
+    //    for (auto& object : mQuadTree.m_objects)
+    //    {
+    //        object.second->draw();
+    //    }
 
     //Calculate framerate before
     // checkForGLerrors() because that call takes a long time
@@ -294,7 +287,7 @@ void RenderWindow::render()
     // shitty collision detection
     Player* player = static_cast<Player*>(mMap["player"]);
     QVector3D playerPosition = player->getPosition3D();
-//    float rayLength = 100.0f; // length of ray to cast downwards
+    //    float rayLength = 100.0f; // length of ray to cast downwards
     House* house = static_cast<House*>(mMap["house"]);
     if (house->doorContains(playerPosition))
     {
@@ -391,8 +384,8 @@ void RenderWindow::checkForGLerrors()
         for (const QOpenGLDebugMessage &message : messages)
         {
             if (!(message.type() == message.OtherType)) // get rid of uninteresting "object ...
-                                                        // will use VIDEO memory as the source for
-                                                        // buffer object operations"
+                // will use VIDEO memory as the source for
+                // buffer object operations"
                 // valid error message:
                 mLogger->logText(message.message().toStdString(), LogType::REALERROR);
         }
@@ -406,17 +399,17 @@ void RenderWindow::checkForGLerrors()
             switch (err) {
             case 1280:
                 mLogger->logText("GL_INVALID_ENUM - Given when an enumeration parameter is not a "
-                                "legal enumeration for that function.");
+                                 "legal enumeration for that function.");
                 break;
             case 1281:
                 mLogger->logText("GL_INVALID_VALUE - Given when a value parameter is not a legal "
-                                "value for that function.");
+                                 "value for that function.");
                 break;
             case 1282:
                 mLogger->logText("GL_INVALID_OPERATION - Given when the set of state for a command "
-                                "is not legal for the parameters given to that command. "
-                                "It is also given for commands where combinations of parameters "
-                                "define what the legal parameters are.");
+                                 "is not legal for the parameters given to that command. "
+                                 "It is also given for commands where combinations of parameters "
+                                 "define what the legal parameters are.");
                 break;
             }
         }
@@ -455,30 +448,30 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
     float moveDistance = 0.1f;
     // Move camera
-//    if(event->key() == Qt::Key_W)
-//    {
-//        mCamera.translate(0,0,-1);
-//    }
-//    if(event->key() == Qt::Key_A)
-//    {
-//        mCamera.translate(-1,0,0);
-//    }
-//    if(event->key() == Qt::Key_S)
-//    {
-//        mCamera.translate(0,0,1);
-//    }
-//    if(event->key() == Qt::Key_D)
-//    {
-//        mCamera.translate(1,0,0);
-//    }
-//    if(event->key() == Qt::Key_E)
-//    {
-//        mCamera.translate(0,1,0);
-//    }
-//    if(event->key() == Qt::Key_Q)
-//    {
-//        mCamera.translate(0,-1,0);
-//    }
+    //    if(event->key() == Qt::Key_W)
+    //    {
+    //        mCamera.translate(0,0,-1);
+    //    }
+    //    if(event->key() == Qt::Key_A)
+    //    {
+    //        mCamera.translate(-1,0,0);
+    //    }
+    //    if(event->key() == Qt::Key_S)
+    //    {
+    //        mCamera.translate(0,0,1);
+    //    }
+    //    if(event->key() == Qt::Key_D)
+    //    {
+    //        mCamera.translate(1,0,0);
+    //    }
+    //    if(event->key() == Qt::Key_E)
+    //    {
+    //        mCamera.translate(0,1,0);
+    //    }
+    //    if(event->key() == Qt::Key_Q)
+    //    {
+    //        mCamera.translate(0,-1,0);
+    //    }
 
     TwoVariableFunctionSpace* floor = static_cast<TwoVariableFunctionSpace*>(mMap["floor"]);
     // Move Player

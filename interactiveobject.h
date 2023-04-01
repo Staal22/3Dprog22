@@ -8,7 +8,6 @@ class InteractiveObject : public VisualObject
 public:
     InteractiveObject();
     ~InteractiveObject() override;
-    void init() override;
     void move(float x, float y, float z) override;
 
 private:

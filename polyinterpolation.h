@@ -9,7 +9,6 @@ public:
     PolyInterpolation(bool inPoints = false);
     ~PolyInterpolation() override;
 
-    void init() override;
     void replace(double xMin, double xMax);
     double evaluate(double x) const override;
     virtual std::pair<double, double> range() const override;

@@ -12,7 +12,6 @@ public:
 
     void writeFile(std::string filename);
 //    void readFile(std::string filename);
-    void init() override;
     void rotate() override;
     virtual std::pair<double, double> range() const override;
     float numericIntegral();

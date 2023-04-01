@@ -8,7 +8,6 @@ class Triangle : public VisualObject
 public:
     Triangle();
     ~Triangle() override;
-    void init() override;
     void rotate() override;
 };
 

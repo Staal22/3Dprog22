@@ -11,7 +11,6 @@ public:
     ~LineSurface();
 
     void readFile(std::string filename);
-    void init() override;
     void rotate() override;
 };
 

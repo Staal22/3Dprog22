@@ -11,7 +11,7 @@ public:
    VisualObject();
    ~VisualObject();
 
-   virtual void init()=0;
+   void init();
    void draw(GLint shader);
    virtual void rotate() { }
    // move for interaktive objekter
@@ -26,6 +26,7 @@ public:
 
    std::pair<float,float> getPosition2D();
    QVector3D getPosition3D();
+   QMatrix4x4 getModelMatrix();
 
    bool hide = false;
    bool indexed = true;
@@ -50,6 +51,10 @@ public:
 
    bool hasTexture = false;
    bool hasHeightMap = false;
+
+   class QOpenGLTexture* texture;
+   QString texturepath;
+
 
 };
 

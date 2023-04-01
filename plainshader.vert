@@ -43,7 +43,7 @@ void main()
 
         // Transform the vertex position and normal into view space
         fragPos = vec3(view * worldPos);
-//        color = vec4(textureCoordIn.x, textureCoordIn.y, 0.0, 1.0);
+//        vs_out.normal = vec4(textureCoordIn.x, textureCoordIn.y, 0.0, 1.0);
         gl_Position = projection * view * worldPos;
     }
     else
@@ -53,6 +53,5 @@ void main()
     }
 
     textureCoord = textureCoordIn;
-
     vs_out.normal = normalIn;
 }
