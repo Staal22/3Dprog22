@@ -17,6 +17,14 @@ public:
     float numericIntegral();
     double evaluate (double x, double z) const override;
 
+    bool intersectsLine(QVector3D start, QVector3D end) const;
+    QVector3D barycentric(QVector2D A, QVector2D B, QVector2D C, QVector2D P);
+
+protected:
+    // custom bounding box
+    QVector3D min_;
+    QVector3D max_;
+
 private:
     float functionNumeric(double x, double z);
     float funcX(float x, float z);
@@ -24,7 +32,7 @@ private:
 
     float min = -20.f;
     float max = 20.0f;
-    float h = 0.05f;
+    float h = 0.2f;
 
 };
 

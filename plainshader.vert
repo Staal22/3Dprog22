@@ -8,6 +8,7 @@ layout(location = 2) in vec2 textureCoordIn;
 // Define the output variables
 //out vec4 color;
 out vec2 textureCoord;
+out vec4 displacedPosition;
 out VS_OUT
 {
     vec4 normal;
@@ -21,12 +22,11 @@ uniform mat4 view;
 uniform sampler2D heightmap;
 uniform bool hasHeightMap;
 
-// Define constants
+// Define constants //TODO: consider changing to uniform
 const float heightScale = -2;
 
 void main()
 {
-
     if (hasHeightMap)
     {
         // Get the height value from the heightmap texture
@@ -43,16 +43,17 @@ void main()
 
         // Transform the vertex position and normal into view space
         vs_out.fragPos = vec3(view * worldPos);
-//        vs_out.normal = vec4(textureCoordIn.x, textureCoordIn.y, 0.0, 1.0);
+        vs_out.normal = vec4(textureCoordIn.x, textureCoordIn.y, 0.0, 1.0);
         gl_Position = projection * view * worldPos;
+        if (height != 0)
+            displacedPosition = vec4(gl_Position.x, height, gl_Position.z, 1);
     }
     else
     {
         gl_Position = projection * view * model * positionIn;
-//        color = normalIn;
+        vs_out.normal = normalIn;
     }
 
     textureCoord = textureCoordIn;
     vs_out.fragPos = vec3(model * positionIn);
-    vs_out.normal = normalIn;
 }

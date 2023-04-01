@@ -19,16 +19,12 @@ void main()
 {
     // Ambient lighting
     vec3 ambient = ambientStrength * lightColor;
-//    vec4 result = vec4(ambient, 1) * fs_in.normal;
-//    fragmentColor = result;
 
     // Diffuse lighting
     vec4 norm = normalize(fs_in.normal);
     vec3 lightDir = normalize(lightPos - fs_in.fragPos);
     float diff = max(dot(norm, vec4(lightDir, 1)), 0.0);
     vec3 diffuse = diff * lightColor;
-//    vec4 result = vec4((ambient + diffuse), 1) * fs_in.normal;
-//    fragmentColor = result;
 
     // Specular lighting
     vec3 viewDir = normalize(viewPos - fs_in.fragPos);

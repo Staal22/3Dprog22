@@ -12,7 +12,6 @@ public:
 
     void readFile(std::string filename, bool IndexedVertices);
     void rotate() override;
-    void changeTerrain();
 //    void subdivide(int subdivisions);
 
     // check if a point is inside the bounding box
@@ -20,6 +19,7 @@ public:
     // check if a line segment intersects the bounding box
     bool intersectsLine(QVector3D start, QVector3D end) const;
     QVector3D surfaceIntersection(const QVector3D& start, const QVector3D& end, const QVector3D& surfaceNormal);
+    QVector3D barycentric(QVector2D A, QVector2D B, QVector2D C, QVector2D P);
 
     class QOpenGLTexture* texture;
 protected:

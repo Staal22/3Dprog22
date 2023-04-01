@@ -44,8 +44,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mMap.insert(std::pair<std::string, VisualObject*> {"xyz", new XYZ()});
     mMap.insert(std::pair<std::string, VisualObject*> {"disc", new class Disc()});
     mMap.insert(std::pair<std::string, VisualObject*> {"tetrahedron", new Tetrahedron()});
-    mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(60, 600)});
-    //    mMap.insert(std::pair<std::string, VisualObject*>  {"floor", new TwoVariableFunctionSpace()});
+//    mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(60, 600)});
+    mMap.insert(std::pair<std::string, VisualObject*>  {"oldFloor", new TwoVariableFunctionSpace()});
     mMap.insert(std::pair<std::string, VisualObject*>  {"player", new Player()});
     mMap.insert(std::pair<std::string, VisualObject*>  {"house", new House()});
 
@@ -196,9 +196,12 @@ void RenderWindow::init()
     vertexNormalShader->addShaderFromSourceFile(QOpenGLShader::Geometry, "../3Dprog22/shader.geom");
     vertexNormalShader->link();
 
-    modelMatrixUniform = glGetUniformLocation(textureShader->programId(), "model");
-    projectionMatrixUniform = glGetUniformLocation(textureShader->programId(), "projection");
-    viewMatrixUniform = glGetUniformLocation(textureShader->programId(), "view");
+    modelMatrixUniform = glGetUniformLocation(plainShader->programId(), "model");
+    projectionMatrixUniform = glGetUniformLocation(plainShader->programId(), "projection");
+    viewMatrixUniform = glGetUniformLocation(plainShader->programId(), "view");
+
+//    GLint location = glGetUniformLocation(shaderProgram, "myValue");
+
 
     plainObjects = new ObjectGroup(plainShader);
     texturedObjects = new ObjectGroup(textureShader);
@@ -226,10 +229,6 @@ void RenderWindow::init()
 
     mCamera.translate(-15, 6, 15);
     glPointSize(5);
-
-    //Hardcoded stuff
-    //    static_cast<TriangleSurface*>(mMap["floor"])->subdivide(7);
-    //    static_cast<TriangleSurface*>(mMap["floor"])->changeTerrain();
 }
 
 // Called each frame - doing the rendering!!!
@@ -271,33 +270,64 @@ void RenderWindow::render()
     // and wait for vsync.
     mContext->swapBuffers(this);
 
-    // shitty collision detection
     Player* player = static_cast<Player*>(mMap["player"]);
-    QVector3D playerPosition = player->getPosition3D();
-    //    float rayLength = 100.0f; // length of ray to cast downwards
+    float rayLength = 100.0f;
+    QVector3D playerPos = player->getPosition3D();
+    QVector3D rayEnd = playerPos - QVector3D(0, rayLength, 0);
     House* house = static_cast<House*>(mMap["house"]);
-    if (house->doorContains(playerPosition))
+//    TriangleSurface* floor = static_cast<TriangleSurface*>(mMap["floor"]);
+    TwoVariableFunctionSpace* floor = static_cast<TwoVariableFunctionSpace*>(mMap["oldFloor"]);
+    if (floor->intersectsLine(playerPos, rayEnd))
+    {
+        for (int i = 0; i < floor->mIndices.size(); i += 3)
+        {
+            QVector2D A(floor->mVertices[floor->mIndices[i  ]].m_xyz.x(), floor->mVertices[floor->mIndices[i  ]].m_xyz.z());
+            QVector2D B(floor->mVertices[floor->mIndices[i+1]].m_xyz.x(), floor->mVertices[floor->mIndices[i+1]].m_xyz.z());
+            QVector2D C(floor->mVertices[floor->mIndices[i+2]].m_xyz.x(), floor->mVertices[floor->mIndices[i+2]].m_xyz.z());
+
+            // Calculate the barycentric coordinates of the player's position
+            QVector3D bc = floor->barycentric(A, B, C, QVector2D(playerPos.x(), playerPos.z()));
+
+            // Check if the player is above this triangle
+            if (bc.x() >= 0 && bc.y() >= 0 && bc.x() + bc.y() <= 1)
+            {
+                QVector3D a = floor->mVertices[floor->mIndices[i  ]].m_xyz;
+                QVector3D b = floor->mVertices[floor->mIndices[i+1]].m_xyz;
+                QVector3D c = floor->mVertices[floor->mIndices[i+2]].m_xyz;
+
+                // Interpolates to find height based on barycentric coordinates,
+                float height = a.y() * bc.x() + b.y() * bc.y() + c.y() * bc.z();
+                height += 0.3f;
+                float distance = playerPos.distanceToPoint(QVector3D(playerPos.x(), height, playerPos.z()));
+                if (playerPos.y() < height)
+                    distance *= -1;
+                mMap["player"]->move(0, -distance, 0);
+            }
+        }
+    }
+    if (house->doorContains(playerPos))
     {
         house->open();
         mCamera.setPos(2.5f, 3, 8);
     }
-    else if (!house->doorContains(playerPosition))
+    else if (!house->doorContains(playerPos))
     {
         house->close();
-        if (!house->contains(playerPosition))
+        if (!house->contains(playerPos))
         {
             mCamera.setPos(-15, 6, 15);
         }
     }
     for (auto& trophy : trophies)
     {
-        if (trophy->contains(playerPosition) && !trophy->hide)
+        if (trophy->contains(playerPos) && !trophy->hide)
         {
             trophy->hide = true;
             player->score++;
             qDebug() << "Score is: " << player->score;
         }
     }
+
 
     // Hardcoded movement
     mMap["disc"]->move(0.017f);

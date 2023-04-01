@@ -1,15 +1,10 @@
-//#include <Open3D/Open3D.h>
 #include "trianglesurface.h"
-#include "qimage.h"
-#include "qopengltexture.h"
-#include <cstddef>
 
 TriangleSurface::TriangleSurface(float size, int numVertices)
 {
+    float halfSize = size / 2.0f;
     if (numVertices == 4)
     {
-        float halfSize = size / 2.0f;
-
         // Define the four corners of the plane
         v0 = QVector3D(-halfSize, 0.0f, -halfSize);
         v1 = QVector3D(halfSize, 0.0f, -halfSize);
@@ -29,10 +24,6 @@ TriangleSurface::TriangleSurface(float size, int numVertices)
         mIndices.push_back(0);
         mIndices.push_back(2);
         mIndices.push_back(3);
-
-        // calculate the minimum and maximum points of the bounding box
-        min_ = QVector3D{0,0,0} - QVector3D(size / 2, 0.5f / 2, size / 2);
-        max_ = QVector3D{0,0,0} + QVector3D(size / 2, 0.5f / 2, size / 2);
     }
 
     else
@@ -76,6 +67,10 @@ TriangleSurface::TriangleSurface(float size, int numVertices)
 //    computeVertexNormals();
     drawMethod = GL_TRIANGLES;
     texturepath = "heightmap.bmp";
+
+    // calculate the minimum and maximum points of the bounding box
+    min_ = QVector3D{0,0,0} - QVector3D(halfSize, 0.1f / 2, halfSize);
+    max_ = QVector3D{0,0,0} + QVector3D(halfSize, 0.1f / 2, halfSize);
 }
 
 TriangleSurface::~TriangleSurface()
@@ -132,82 +127,6 @@ void TriangleSurface::rotate()
     model.rotate(2.f, 0.f, 1.f, 0.f);
 }
 
-void TriangleSurface::changeTerrain()
-{
-    // Load the image using QImage
-    QImage image;
-    image.load("heightmap.bmp");
-
-    // Create an OpenGL texture object and bind the image to it
-    texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
-    texture->setData(image);
-    texture->setWrapMode(QOpenGLTexture::Repeat);
-    texture->setMinificationFilter(QOpenGLTexture::Nearest);
-    texture->setMagnificationFilter(QOpenGLTexture::Nearest);
-
-    texture->bind(1);
-}
-
-// TODO Make this a class or header
-//Eigen::Vector3d QVector3DToEigen(const QVector3D& v) {
-//    return Eigen::Vector3d(v.x(), v.y(), v.z());
-//}
-//std::vector<Eigen::Vector3d> QVector3DArrayToEigen(const std::vector<QVector3D>& vertices) {
-//    std::vector<Eigen::Vector3d> result;
-//    result.reserve(vertices.size());
-//    for (const auto& v : vertices) {
-//        result.push_back(QVector3DToEigen(v));
-//    }
-//    return result;
-//}
-//Eigen::Vector3i Int3ToEigen(const std::vector<unsigned int>& v) {
-//    return Eigen::Vector3i(v[0], v[1], v[2]);
-//}
-//std::vector<Eigen::Vector3i> Int3ArrayToEigen(const std::vector<unsigned int>& indices) {
-//    std::vector<Eigen::Vector3i> result;
-//    result.reserve(indices.size() / 3);
-//    for (int i = 0; i < indices.size(); i += 3) {
-//        result.push_back(Int3ToEigen(std::vector<unsigned int>{indices[i], indices[i+1], indices[i+2]}));
-//    }
-//    return result;
-//}
-
-//void TriangleSurface::subdivide(int subdivisions)
-//{
-//    // create a mesh object with vertices and faces
-//    open3d::geometry::TriangleMesh mesh;
-//    std::vector<QVector3D> vertPos;
-
-//    for (auto& vertex : mVertices){
-//        vertPos.push_back(vertex.m_xyz);
-//    }
-//    std::vector<Eigen::Vector3d> eigen_vertices = QVector3DArrayToEigen(vertPos);
-//    mesh.vertices_ = eigen_vertices;
-
-//    std::vector<Eigen::Vector3i> eigen_triangles = Int3ArrayToEigen(mIndices);
-//    mesh.triangles_ = eigen_triangles;
-
-//    // apply subdivision to the mesh
-//    std::shared_ptr<open3d::geometry::TriangleMesh> smooth_mesh_ptr = mesh.SubdivideLoop(subdivisions);
-//    open3d::geometry::TriangleMesh smooth_mesh(*smooth_mesh_ptr);
-
-//    // get the new vertices and faces
-//    auto new_vertices = smooth_mesh.vertices_;
-//    auto new_faces = smooth_mesh.triangles_;
-//    mVertices.clear();
-//    for (int i = 0; i < new_vertices.size(); ++i)
-//    {
-//        mVertices.push_back(Vertex(new_vertices[i].x(), new_vertices[i].y(), new_vertices[i].z()));
-//    }
-//    mIndices.clear();
-//    for (int j = 0; j < new_faces.size(); ++j) {
-//        mIndices.push_back(new_faces[j].x());
-//        mIndices.push_back(new_faces[j].y());
-//        mIndices.push_back(new_faces[j].z());
-//    }
-//    init();
-//}
-
 bool TriangleSurface::contains(QVector3D point) const
 {
     return point.x() >= min_.x() && point.x() <= max_.x() &&
@@ -252,4 +171,19 @@ QVector3D TriangleSurface::surfaceIntersection(const QVector3D &start, const QVe
     QVector3D intersection = start + t * segmentDir;
 
     return intersection;
+}
+
+QVector3D TriangleSurface::barycentric(QVector2D A, QVector2D B, QVector2D C, QVector2D P)
+{
+    QVector2D v0 = B - A, v1 = C - A, v2 = P - A;
+    float d00 = QVector2D::dotProduct(v0, v0);
+    float d01 = QVector2D::dotProduct(v0, v1);
+    float d11 = QVector2D::dotProduct(v1, v1);
+    float d20 = QVector2D::dotProduct(v2, v0);
+    float d21 = QVector2D::dotProduct(v2, v1);
+    float denom = d00 * d11 - d01 * d01;
+    float v = (d11 * d20 - d01 * d21) / denom;
+    float w = (d00 * d21 - d01 * d20) / denom;
+    float u = 1.0 - v - w;
+    return QVector3D(u, v, w);
 }

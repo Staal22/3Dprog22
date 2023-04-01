@@ -17,29 +17,29 @@ void VisualObject::init()
     initializeOpenGLFunctions();
 
     //Vertex Array Object - VAO
-    glGenVertexArrays( 1, &mVAO );
+    glGenVertexArrays(1, &mVAO);
     glBindVertexArray( mVAO );
 
     //Vertex Buffer Object to hold vertices - VBO
-    glGenBuffers( 1, &mVBO );
-    glBindBuffer( GL_ARRAY_BUFFER, mVBO );
+    glGenBuffers(1, &mVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 
     if (indexed)
     {
         glGenBuffers(1, &mIBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size()*sizeof(GLuint), mIndices.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size() * sizeof(GLuint), mIndices.data(), GL_STATIC_DRAW);
     }
 
     //send vertex data to the GPU
-    glBufferData( GL_ARRAY_BUFFER, mVertices.size()*sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW );
+    glBufferData( GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW );
 
     // 1rst attribute buffer : vertices
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_xyz)));
 
     // 2nd attribute buffer : colors
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(3 * sizeof(GLfloat)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_normal)));
 
     if (hasTexture || hasHeightMap)
     {

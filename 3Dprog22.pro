@@ -72,19 +72,6 @@ DISTFILES += \
     shader.geom \
     textureshader.frag
 
-## GLEW
-#INCLUDEPATH += "E:/Misc/glew-2.1.0/include"
-#LIBS += -L "E:/Misc/glew-2.1.0/lib" - lGLEW
-## GLFW
-#INCLUDEPATH += "E:/Misc/glfw-3.3.8.bin.WIN64/include"
-#LIBS += -L "E:/Misc/glfw-3.3.8.bin.WIN64/lib-mingw-w64" - lglfw3
-## FMT
-#INCLUDEPATH += "E:/Misc/fmt-9.1.0/include"
-## Eigen
-#INCLUDEPATH += "E:/Misc/eigen-3.4.0"
-## Open3D
-#INCLUDEPATH += "E:/Misc/open3d-devel-windows-amd64-0.17.0/include"
-
 RESOURCES +=
 
 
