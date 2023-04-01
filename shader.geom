@@ -6,6 +6,7 @@ layout(line_strip, max_vertices = 2) out;
 in VS_OUT
 {
     vec4 normal;
+    vec3 fragPos;
 } gs_in[];
 
 uniform mat4 model;

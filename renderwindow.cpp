@@ -241,22 +241,9 @@ void RenderWindow::render()
     //clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Rendering
-    //    plainObjects->render(this, modelMatrixUniform);
-    //    texturedObjects->render(this, modelMatrixUniform);
-
     //what shader to use OLD CODE
     //    glUseProgram(mShaderProgram->getProgram());
 
-//    textureShader->bind();
-//    for (auto& object : mObjects)
-//    {
-//        textureShader->setUniformValue("hasTexture", object->hasTexture);
-//        textureShader->setUniformValue("hasHeightMap", object->hasHeightMap);
-//        //        glEnable(GL_PROGRAM_POINT_SIZE);
-//        object->draw(modelMatrixUniform);
-//    }
-//    textureShader->release();
     for (auto& group : groups)
     {
         modelMatrixUniform = glGetUniformLocation(group->m_shaderProgram->programId(), "model");
@@ -309,14 +296,6 @@ void RenderWindow::render()
             trophy->hide = true;
             player->score++;
             qDebug() << "Score is: " << player->score;
-        }
-    }
-
-    if(mRotate)
-    {
-        for (auto& object : mObjects)
-        {
-            object->rotate();
         }
     }
 

@@ -20,12 +20,22 @@ void ObjectGroup::render(RenderWindow* window)
     window->mCamera.update();
     for (VisualObject* object : m_objects)
     {
-        QMatrix4x4 model = object->getModelMatrix();
+        m_shaderProgram->setUniformValue("lightColor", QVector3D(1,1,1));
+        m_shaderProgram->setUniformValue("lightPos", QVector3D(1,1,1));
+        m_shaderProgram->setUniformValue("viewPos", window->mCamera.mEye);
         m_shaderProgram->setUniformValue("hasHeightMap", object->hasHeightMap);
+
+        QMatrix4x4 model = object->getModelMatrix();
         m_shaderProgram->setUniformValue("model", model);
         m_shaderProgram->setUniformValue("projection", projection);
         m_shaderProgram->setUniformValue("view", view);
+
         object->draw(window->modelMatrixUniform);
+        if(window->mRotate)
+        {
+
+            object->rotate();
+        }
     }
     m_shaderProgram->release();
 }

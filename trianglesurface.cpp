@@ -73,7 +73,7 @@ TriangleSurface::TriangleSurface(float size, int numVertices)
     //    model.translate(- size / 2, 0.0f, - size / 2);
 
     hasHeightMap = true;
-    computeVertexNormals();
+//    computeVertexNormals();
     drawMethod = GL_TRIANGLES;
     texturepath = "heightmap.bmp";
 }

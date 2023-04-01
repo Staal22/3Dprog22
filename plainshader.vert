@@ -7,11 +7,11 @@ layout(location = 2) in vec2 textureCoordIn;
 
 // Define the output variables
 //out vec4 color;
-out vec3 fragPos;
 out vec2 textureCoord;
 out VS_OUT
 {
     vec4 normal;
+    vec3 fragPos;
 } vs_out;
 
 // Define the uniform variables
@@ -42,7 +42,7 @@ void main()
 //        normal = mat3(transpose(inverse(model))) * vec3(0, 1, 0);
 
         // Transform the vertex position and normal into view space
-        fragPos = vec3(view * worldPos);
+        vs_out.fragPos = vec3(view * worldPos);
 //        vs_out.normal = vec4(textureCoordIn.x, textureCoordIn.y, 0.0, 1.0);
         gl_Position = projection * view * worldPos;
     }
@@ -53,5 +53,6 @@ void main()
     }
 
     textureCoord = textureCoordIn;
+    vs_out.fragPos = vec3(model * positionIn);
     vs_out.normal = normalIn;
 }
