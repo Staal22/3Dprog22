@@ -24,7 +24,6 @@ SOURCES += main.cpp \
     renderwindow.cpp \
     shader.cpp \
     tetrahedron.cpp \
-    texture.cpp \
     triangle.cpp \
     trianglesurface.cpp \
     trophy.cpp \
@@ -53,7 +52,6 @@ HEADERS += \
     renderwindow.h \
     shader.h \
     tetrahedron.h \
-    texture.h \
     triangle.h \
     trianglesurface.h \
     trophy.h \

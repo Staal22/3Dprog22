@@ -1,8 +1,7 @@
 #include "trophy.h"
-#include "qimage.h"
-#include <cstddef>
+#include "qopengltexture.h"
 
-Trophy::Trophy(float x, float z)
+Trophy::Trophy(float x, float y, float z)
 {
     // Vertex positions and uv
     // Front face
@@ -59,11 +58,11 @@ Trophy::Trophy(float x, float z)
     mVertices.push_back(Vertex{QVector3D(0.5f, -0.5f, 0.5f), QVector2D(1.0f, 1.0f)}); // Top right
     mVertices.push_back(Vertex{QVector3D(-0.5f, -0.5f, 0.5f), QVector2D(0.0f, 1.0f)}); // Top left
 
-    model.translate(x, 0.0f, z);
+    model.translate(x, y, z);
 
     // calculate the minimum and maximum points of the bounding box
-    min_ = QVector3D{x,0,z} - QVector3D(radius / 2, height / 2, radius / 2);
-    max_ = QVector3D{x,0,z} + QVector3D(radius / 2, height / 2, radius / 2);
+    min_ = QVector3D{x,y,z} - QVector3D(0.5f, 1, 0.5f);
+    max_ = QVector3D{x,y,z} + QVector3D(0.5f, 1, 0.5f);
 
     hasTexture = true;
     drawMethod = GL_TRIANGLES;
@@ -73,11 +72,6 @@ Trophy::Trophy(float x, float z)
 
 Trophy::~Trophy()
 {
-    // Disable the vertex attribute arrays
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
-
     texture->release();
 }
 

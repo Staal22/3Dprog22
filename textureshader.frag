@@ -37,5 +37,5 @@ void main()
 
     // Combined - we get Phong shading
     vec3 result = (ambient + diffuse + specular) * vec3(fs_in.normal);
-    fragmentColor = texture2D(textureSampler, textureCoord) * vec4(result, 1.0);
+    fragmentColor = texture2D(textureSampler, textureCoord)/* * vec4(result, 1.0)*/;
 }

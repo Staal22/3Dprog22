@@ -27,12 +27,18 @@ TwoVariableFunctionSpace::TwoVariableFunctionSpace()
             mVertices.push_back(v3);
             mVertices.push_back(v4);
 
+//            mIndices.push_back(lastIndex);
+//            mIndices.push_back(lastIndex + 1);
+//            mIndices.push_back(lastIndex + 2);
+//            mIndices.push_back(lastIndex + 1);
+//            mIndices.push_back(lastIndex + 3);
+//            mIndices.push_back(lastIndex + 2);
             mIndices.push_back(lastIndex);
-            mIndices.push_back(lastIndex + 1);
             mIndices.push_back(lastIndex + 2);
             mIndices.push_back(lastIndex + 1);
+            mIndices.push_back(lastIndex + 1);
+            mIndices.push_back(lastIndex + 2);
             mIndices.push_back(lastIndex + 3);
-            mIndices.push_back(lastIndex + 2);
 
             lastIndex += 4; // Update the last index
         }
@@ -41,12 +47,13 @@ TwoVariableFunctionSpace::TwoVariableFunctionSpace()
     model.setToIdentity();
 
     drawMethod = GL_TRIANGLES;
-    indexed = true;
 
     int halfsize = (max - min) / 2;
     // calculate the minimum and maximum points of the bounding box
     min_ = QVector3D{0,0,0} - QVector3D(halfsize, 0.5f / 2, halfsize);
     max_ = QVector3D{0,0,0} + QVector3D(halfsize, 0.5f / 2, halfsize);
+
+    objectColor = QVector3D(0,0.42f,0);
 }
 
 TwoVariableFunctionSpace::~TwoVariableFunctionSpace()

@@ -6,7 +6,7 @@
 class LightSource : public VisualObject
 {
 public:
-    LightSource();
+    LightSource(float x = 0, float y = 0, float z = 0);
     ~LightSource();
 
     QVector3D lightColor{1.0f, 1.0f, 1.0f};

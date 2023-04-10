@@ -11,6 +11,7 @@
 #include "house.h"
 //#include "octahedronball.h"
 //#include "parabolaapproximation.h"
+#include "lightsource.h"
 #include "player.h"
 #include "polyinterpolation.h"
 #include "mainwindow.h"
@@ -50,12 +51,15 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mMap.insert(std::pair<std::string, VisualObject*>  {"house", new House()});
 
     // Trophies
-    mObjects.push_back(new Trophy(2.5f,4));
-    mObjects.push_back(new Trophy(-7,2));
-    mObjects.push_back(new Trophy(-9,4));
-    mObjects.push_back(new Trophy(-11,6));
-    mObjects.push_back(new Trophy(-11,2));
-    mObjects.push_back(new Trophy(-9,1));
+    mObjects.push_back(new Trophy(2.5f, 0, 4));
+    mObjects.push_back(new Trophy(-7, 0, 2));
+    mObjects.push_back(new Trophy(-9, 0, 4));
+    mObjects.push_back(new Trophy(-11, 0, 6));
+    mObjects.push_back(new Trophy(-11, 0, 2));
+    mObjects.push_back(new Trophy(-9, 0, 1));
+
+    light = new LightSource(7, 3, 15);
+    mObjects.push_back(light);
 
     // Oblig 1 Matte
     //Oppgave 1
@@ -210,7 +214,8 @@ void RenderWindow::init()
 
     for (auto& object : mObjects)
     {
-        object->init();
+        object->computeVertexNormals();
+        object->init(); 
         if (object->hasTexture)
             texturedObjects->addObject(object);
         else
@@ -297,11 +302,12 @@ void RenderWindow::render()
 
                 // Interpolates to find height based on barycentric coordinates,
                 float height = a.y() * bc.x() + b.y() * bc.y() + c.y() * bc.z();
-                height += 0.3f;
+//                height += 0.3f;
                 float distance = playerPos.distanceToPoint(QVector3D(playerPos.x(), height, playerPos.z()));
                 if (playerPos.y() < height)
                     distance *= -1;
                 mMap["player"]->move(0, -distance, 0);
+//                qDebug() << -distance;
             }
         }
     }
@@ -487,22 +493,22 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_W)
     {
         if (mMap["player"] != nullptr)
-            mMap["player"]->move(0.f, 0.f, -moveDistance/*, floor*/);
+            mMap["player"]->move(moveDistance, 0.f,  0.f/*, floor*/);
     }
     if(event->key() == Qt::Key_A)
     {
         if (mMap["player"] != nullptr)
-            mMap["player"]->move(-moveDistance, 0.f, 0.f/*, floor*/);
+            mMap["player"]->move(0.f, 0.f, -moveDistance/*, floor*/);
     }
     if(event->key() == Qt::Key_S)
     {
         if (mMap["player"] != nullptr)
-            mMap["player"]->move(0.f, 0.f, moveDistance/*, floor*/);
+            mMap["player"]->move(-moveDistance, 0.f, 0.f/*, floor*/);
     }
     if(event->key() == Qt::Key_D)
     {
         if (mMap["player"] != nullptr)
-            mMap["player"]->move(moveDistance, 0.0f, 0.f/*, floor*/);
+            mMap["player"]->move(0.f, 0.0f, moveDistance/*, floor*/);
     }
     if(event->key() == Qt::Key_E)
     {

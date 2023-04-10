@@ -24,6 +24,7 @@ PolyInterpolation::PolyInterpolation(bool inPoints)
         drawMethod = GL_POINTS;
     else
         drawMethod = GL_LINE_LOOP;
+
     indexed = false;
 }
 

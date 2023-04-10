@@ -8,6 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include "camera.h"
+#include "lightsource.h"
 #include "objectgroup.h"
 #include "trophy.h"
 #include "visualobject.h"
@@ -46,6 +47,8 @@ public:
     GLint viewMatrixUniform;
 
     Camera mCamera;
+
+    LightSource* light;
 
 private:
     void init();            //initialize things we need before rendering

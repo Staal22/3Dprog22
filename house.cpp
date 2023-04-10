@@ -20,7 +20,7 @@ House::House()
     std::vector<unsigned int> indices =
     {
         0, 1, 2, 2, 3, 0,    // roof
-//        4, 0, 3,
+        4, 0, 3,
         4, 3, 2,
         4, 2, 1,
         4, 1, 0,
@@ -60,6 +60,8 @@ House::House()
     max_ = QVector3D{house.x(), house.y(), house.z()} + QVector3D(5.0f / 2.f, 3.f / 2.f, 10.0f / 2.f);
 
     drawMethod = GL_TRIANGLES;
+
+    objectColor = QVector3D(1,0,0);
 }
 
 House::~House()
@@ -78,6 +80,7 @@ void House::open()
         door2 = QVector3D(0.5f, 0.6f, 1.25f); // 10
         houseVertices();
         doorOpen = true;
+        computeVertexNormals();
         init();
     }
 }
@@ -93,6 +96,7 @@ void House::close()
         door2 = QVector3D(0, 0.6f, 0.75f); // 10
         houseVertices();
         doorOpen = false;
+        computeVertexNormals();
         init();
     }
 }

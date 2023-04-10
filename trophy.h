@@ -1,26 +1,18 @@
 #ifndef TROPHY_H
 #define TROPHY_H
 
-#include "qopengltexture.h"
 #include "visualobject.h"
 
 class Trophy : public VisualObject
 {
 public:
-    Trophy(float x = 0, float z = 0);
+    Trophy(float x = 0, float y = 0, float z = 0);
     ~Trophy() override;
 
     // check if a point is inside the bounding box
     bool contains(QVector3D point) const;
 
-    void computeNormals();
-
 private:
-
-
-    float radius = 1.0f;
-    float height = 2.0f;
-    int numSlices = 20;
 
     // custom bounding box
     QVector3D min_;

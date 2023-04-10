@@ -1,15 +1,21 @@
 #include "visualobject.h"
 #include "qimage.h"
 #include "qopengltexture.h"
+#include <cstddef>
 
 VisualObject::VisualObject()
 {
     model.setToIdentity();
 }
 
-VisualObject::~VisualObject() {
-   glDeleteVertexArrays( 1, &mVAO );
-   glDeleteBuffers( 1, &mVBO );
+VisualObject::~VisualObject()
+{
+    // Disable the vertex attribute arrays
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+    glDeleteVertexArrays(1, &mVAO);
+    glDeleteBuffers(1, &mVBO);
 }
 
 void VisualObject::init()
@@ -38,13 +44,15 @@ void VisualObject::init()
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_xyz)));
 
-    // 2nd attribute buffer : colors
+    // 2nd attribute buffer : normals
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_normal)));
 
     if (hasTexture || hasHeightMap)
     {
         // 3rd attribute buffer : texture coordinates
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, m_uv)));
+
+        QOpenGLTexture* texture;
 
         QImage image;
         image.load(texturepath);
@@ -65,7 +73,7 @@ void VisualObject::init()
     if (hasTexture || hasHeightMap)
         glEnableVertexAttribArray(2);
 
-    mPosition.setToIdentity();
+//    mPosition.setToIdentity();
     mRotation.setToIdentity();
     mScale.setToIdentity();
 }
@@ -90,13 +98,13 @@ void VisualObject::draw(GLint shader)
 
 std::pair<float, float> VisualObject::getPosition2D()
 {
-    auto col = mPosition.column(3);
+    auto col = model.column(3);
     return std::pair<float,float>(col.x(), col.y());
 }
 
 QVector3D VisualObject::getPosition3D()
 {
-    auto col = mPosition.column(3);
+    auto col = model.column(3);
     return QVector3D(col.x(), col.y(), col.z());
 }
 
@@ -107,52 +115,100 @@ QMatrix4x4 VisualObject::getModelMatrix()
 
 void VisualObject::computeVertexNormals()
 {
-    if (!indexed)
-        return;
-    int numFaces = mIndices.size() / 3;
-    // Step 1: Compute face normals
-    std::vector<QVector3D> faceNormals;
-    for (int i = 0; i < numFaces; ++i) {
-        const Vertex& v1 = mVertices[mIndices[i * 3]];
-        const Vertex& v2 = mVertices[mIndices[i * 3 + 1]];
-        const Vertex& v3 = mVertices[mIndices[i * 3 + 2]];
-        QVector3D edge1 = v2.m_xyz - v1.m_xyz;
-        QVector3D edge2 = v3.m_xyz - v1.m_xyz;
-        QVector3D normal = QVector3D::crossProduct(edge1, edge2);
-        normal.normalize();
-        faceNormals.push_back(normal);
-    }
-
-    // Step 2: Compute vertex normals
-    for (int i = 0; i < mVertices.size(); ++i) {
-        QVector3D normalSum(0, 0, 0);
-        int numFacesShared = 0;
-
-        for (int j = 0; j < numFaces; ++j) {
-            bool sharesVertex = false;
-            for (int k = 0; k < 3; ++k) {
-                if (mIndices[j * 3 + k] == i) {
-                    sharesVertex = true;
-                    break;
-                }
-            }
-            if (!sharesVertex) continue;
-
-            const Vertex& v1 = mVertices[mIndices[j * 3]];
-            const Vertex& v2 = mVertices[mIndices[j * 3 + 1]];
-            const Vertex& v3 = mVertices[mIndices[j * 3 + 2]];
-            QVector3D faceNormal = faceNormals[j];
+    if (indexed)
+    {
+        int numFaces = mIndices.size() / 3;
+        // Step 1: Compute face normals
+        std::vector<QVector3D> faceNormals;
+        for (int i = 0; i < numFaces; ++i)
+        {
+            const Vertex& v1 = mVertices[mIndices[i * 3]];
+            const Vertex& v2 = mVertices[mIndices[i * 3 + 1]];
+            const Vertex& v3 = mVertices[mIndices[i * 3 + 2]];
             QVector3D edge1 = v2.m_xyz - v1.m_xyz;
             QVector3D edge2 = v3.m_xyz - v1.m_xyz;
-            float weight = qAcos(QVector3D::dotProduct(edge1.normalized(), edge2.normalized()));
-            normalSum += faceNormal * weight;
-            ++numFacesShared;
+            QVector3D normal = QVector3D::crossProduct(edge1, edge2);
+            normal.normalize();
+            faceNormals.push_back(normal);
         }
 
-        if (numFacesShared > 0) {
-            mVertices[i].m_normal = normalSum / numFacesShared;
-            mVertices[i].m_normal.normalize();
-//            qDebug() << "Normals changed" << mVertices[i].m_normal;
+        // Step 2: Compute vertex normals
+        for (int i = 0; i < mVertices.size(); ++i)
+        {
+            QVector3D normalSum(0, 0, 0);
+            int numFacesShared = 0;
+
+            for (int j = 0; j < numFaces; ++j)
+            {
+                bool sharesVertex = false;
+                for (int k = 0; k < 3; ++k) {
+                    if (mIndices[j * 3 + k] == i)
+                    {
+                        sharesVertex = true;
+                        break;
+                    }
+                }
+                if (!sharesVertex) continue;
+
+                const Vertex& v1 = mVertices[mIndices[j * 3]];
+                const Vertex& v2 = mVertices[mIndices[j * 3 + 1]];
+                const Vertex& v3 = mVertices[mIndices[j * 3 + 2]];
+                QVector3D faceNormal = faceNormals[j];
+                QVector3D edge1 = v2.m_xyz - v1.m_xyz;
+                QVector3D edge2 = v3.m_xyz - v1.m_xyz;
+                float weight = qAcos(QVector3D::dotProduct(edge1.normalized(), edge2.normalized()));
+                normalSum += faceNormal * weight;
+                ++numFacesShared;
+            }
+
+            if (numFacesShared > 0) {
+                mVertices[i].m_normal = normalSum / numFacesShared;
+                mVertices[i].m_normal.normalize();
+    //            qDebug() << "Normals changed" << mVertices[i].m_normal;
+            }
+        }
+    }
+    else
+    {
+        // Step 1: Compute face normals
+        std::vector<QVector3D> faceNormals;
+        for (int i = 0; i < mVertices.size(); i += 3)
+        {
+            const Vertex& v1 = mVertices[i];
+            const Vertex& v2 = mVertices[i + 1];
+            const Vertex& v3 = mVertices[i + 2];
+            QVector3D edge1 = v2.m_xyz - v1.m_xyz;
+            QVector3D edge2 = v3.m_xyz - v1.m_xyz;
+            QVector3D normal = QVector3D::crossProduct(edge1, edge2);
+            normal.normalize();
+            faceNormals.push_back(normal);
+        }
+
+        // Step 2: Compute vertex normals
+        for (int i = 0; i < mVertices.size(); ++i)
+        {
+            QVector3D normalSum(0, 0, 0);
+            int numFacesShared = 0;
+
+            for (int j = 0; j < faceNormals.size(); ++j)
+            {
+                const Vertex& v1 = mVertices[j * 3];
+                const Vertex& v2 = mVertices[j * 3 + 1];
+                const Vertex& v3 = mVertices[j * 3 + 2];
+
+                if (v1.m_xyz == mVertices[i].m_xyz ||
+                    v2.m_xyz == mVertices[i].m_xyz ||
+                    v3.m_xyz == mVertices[i].m_xyz)
+                {
+                    normalSum += faceNormals[j];
+                    ++numFacesShared;
+                }
+            }
+
+            if (numFacesShared > 0) {
+                mVertices[i].m_normal = normalSum / numFacesShared;
+                mVertices[i].m_normal.normalize();
+            }
         }
     }
 }

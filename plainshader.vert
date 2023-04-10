@@ -8,7 +8,7 @@ layout(location = 2) in vec2 textureCoordIn;
 // Define the output variables
 //out vec4 color;
 out vec2 textureCoord;
-out vec4 displacedPosition;
+//out vec4 displacedPosition;
 out VS_OUT
 {
     vec4 normal;
@@ -45,8 +45,8 @@ void main()
         vs_out.fragPos = vec3(view * worldPos);
         vs_out.normal = vec4(textureCoordIn.x, textureCoordIn.y, 0.0, 1.0);
         gl_Position = projection * view * worldPos;
-        if (height != 0)
-            displacedPosition = vec4(gl_Position.x, height, gl_Position.z, 1);
+//        if (height != 0)
+//            displacedPosition = vec4(gl_Position.x, height, gl_Position.z, 1);
     }
     else
     {

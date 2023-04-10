@@ -43,7 +43,7 @@ public:
 
    // Velger å lagre posisjon, rotasjon og translasjon
    // i hver sin 4x4 matrise
-   QMatrix4x4 mPosition{0,0,0};
+//   QMatrix4x4 mPosition;
    QMatrix4x4 mRotation;
    QMatrix4x4 mScale;
    // Legger til rette for simulering
@@ -54,6 +54,8 @@ public:
 
    class QOpenGLTexture* texture;
    QString texturepath;
+
+   QVector3D objectColor{1,1,1};
 
 
 };

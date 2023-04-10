@@ -18,13 +18,13 @@ Player::~Player()
 
 void Player::move(float x, float y, float z)
 {
-    mPosition.translate(x, y, z);
-    model = mPosition;
+    model.translate(x, y, z);
+//    model = mPosition;
 }
 
 void Player::move(float x, float y, float z, GraphFunction *function)
 {
-    QVector4D pos4D = mPosition.column(3);
+    QVector4D pos4D = model.column(3);
     QVector3D pos3D = pos4D.toVector3D();
     float distance = 0.f;
     // movement
@@ -38,8 +38,8 @@ void Player::move(float x, float y, float z, GraphFunction *function)
             pos3D.z() > -10 &&
             pos3D.z() < 10)
         distance = 0;
-    mPosition.translate(x, distance, z);
-    model = mRotation * mPosition;
+    model.translate(x, distance, z);
+    model *= mRotation;
 }
 
 void Player::turn(float y)
@@ -85,10 +85,7 @@ void Player::subDivide(const QVector3D &a, const QVector3D &b, const QVector3D &
 
 void Player::makeTriangle(const QVector3D &v1, const QVector3D &v2, const QVector3D &v3)
 {
-    Vertex v{v1.x(), v1.y(), v1.z(), v1.x(), v1.y(), v1.z()};
-    mVertices.push_back(v);
-    v = Vertex{v2.x(), v2.y(), v2.z(), v2.x(), v2.y(), v2.z()};
-    mVertices.push_back(v);
-    v = Vertex{v3.x(), v3.y(), v3.z(), v3.x(), v3.y(), v3.z()};
-    mVertices.push_back(v);
+    mVertices.push_back(Vertex(v1.x(), v1.y(), v1.z()));
+    mVertices.push_back(Vertex(v2.x(), v2.y(), v2.z()));
+    mVertices.push_back(Vertex(v3.x(), v3.y(), v3.z()));
 }

@@ -29,7 +29,7 @@ void Disc::move(float dt)
 {
     // movement
     QVector3D ds=mVelocity*dt;
-    mPosition.translate(ds.x(), ds.y(), ds.z());	// hvis mPosisjon er Matrix4x4
+    model.translate(ds.x(), ds.y(), ds.z());	// hvis mPosisjon er Matrix4x4
     // normalen kan generelt være en parameter inn
     QVector3D normal = QVector3D{0.0f, 1.0f, 0.0f};
     // bruker kryssprodukt for å finne rotasjonsvektor
@@ -44,7 +44,7 @@ void Disc::move(float dt)
     float degrees = (180 * dt) / M_PI;
     mRotation.rotate(degrees, 0, 0, 1);
 
-    model = mPosition*mRotation;		// hvis mPosition og mRotation er Matrix4x4
+    model *= mRotation;		// hvis mPosition og mRotation er Matrix4x4
 }
 
 void Disc::writeFile(std::string filnavn)

@@ -20,8 +20,9 @@ void ObjectGroup::render(RenderWindow* window)
     window->mCamera.update();
     for (VisualObject* object : m_objects)
     {
-        m_shaderProgram->setUniformValue("lightColor", QVector3D(1,1,1));
-        m_shaderProgram->setUniformValue("lightPos", QVector3D(1,1,1));
+        m_shaderProgram->setUniformValue("objectColor", object->objectColor);
+        m_shaderProgram->setUniformValue("lightColor", window->light->lightColor);
+        m_shaderProgram->setUniformValue("lightPos", window->light->getPosition3D());
         m_shaderProgram->setUniformValue("viewPos", window->mCamera.mEye);
         m_shaderProgram->setUniformValue("hasHeightMap", object->hasHeightMap);
 

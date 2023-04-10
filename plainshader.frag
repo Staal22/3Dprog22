@@ -8,6 +8,7 @@ in VS_OUT
 
 out vec4 fragmentColor;
 
+uniform vec3 objectColor;
 uniform vec3 lightColor;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
@@ -33,6 +34,7 @@ void main()
     vec3 specular = specularStrength * spec * lightColor;
 
     // Combined - we get Phong shading
-    vec3 result = (ambient + diffuse + specular) * vec3(fs_in.normal);
+    vec3 result = (ambient + diffuse + specular) * objectColor;
     fragmentColor = vec4(result, 1.0);
+
 }

@@ -45,6 +45,7 @@ Tetrahedron::Tetrahedron()
 
     computeVertexNormals();
     drawMethod = GL_TRIANGLES;
+    objectColor = QVector3D(1,1,0);
     indexed = false;
 }
 
@@ -60,7 +61,7 @@ void Tetrahedron::rotate()
 
 void Tetrahedron::move(float dt, GraphFunction* function)
 {
-    QVector4D pos4D = mPosition.column(3);
+    QVector4D pos4D = model.column(3);
     QVector3D pos3D = pos4D.toVector3D();
     // movement
     if (pos3D.x() > function->range().second)
@@ -76,8 +77,8 @@ void Tetrahedron::move(float dt, GraphFunction* function)
     float distance = pos3D.distanceToPoint(QVector3D(pos3D.x(), y, pos3D.z()));
     if (pos3D.y() > y)
         distance *= -1;
-    mPosition.translate(ds.x(), distance, ds.z());
-    model = mPosition;
+    model.translate(ds.x(), distance, ds.z());
+//    model = mPosition;
 }
 
 void Tetrahedron::writeFile(std::string filename)
