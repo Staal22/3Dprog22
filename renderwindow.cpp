@@ -311,11 +311,10 @@ void RenderWindow::render()
             }
         }
     }
-    if (house->doorContains(playerPos))
-    {
-        house->open();
+    if (house->contains(playerPos))
         mCamera.setPos(2.5f, 3, 8);
-    }
+    if (house->doorContains(playerPos))
+        house->open();
     else if (!house->doorContains(playerPos))
     {
         house->close();

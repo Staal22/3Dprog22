@@ -9,6 +9,7 @@ Player::Player()
 
     drawMethod = GL_TRIANGLES;
     indexed = false;
+    objectColor = QVector3D(0, 0.24f, 0.66f);
 }
 
 Player::~Player()
