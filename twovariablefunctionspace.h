@@ -32,7 +32,7 @@ private:
 
     float min = -20.f;
     float max = 20.0f;
-    float h = 0.5f;
+    float h = 0.25f;
 
 };
 

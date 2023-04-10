@@ -86,6 +86,7 @@ void VisualObject::draw(GLint shader)
     initializeOpenGLFunctions();
     glBindVertexArray(mVAO);
     glUniformMatrix4fv(modelUniform, 1, GL_FALSE, model.constData());
+
     if (indexed)
     {
         glDrawElements(drawMethod, mIndices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));

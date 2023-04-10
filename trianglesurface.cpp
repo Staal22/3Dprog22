@@ -12,10 +12,10 @@ TriangleSurface::TriangleSurface(float size, int numVertices)
         v3 = QVector3D(-halfSize, 0.0f, halfSize);
 
         // Add the vertices to the vertex buffer
-        mVertices.push_back(Vertex(v0, QVector3D(1.0f, 1.0f, 1.0f)));
-        mVertices.push_back(Vertex(v1, QVector3D(1.0f, 1.0f, 1.0f)));
-        mVertices.push_back(Vertex(v2, QVector3D(1.0f, 1.0f, 1.0f)));
-        mVertices.push_back(Vertex(v3, QVector3D(1.0f, 1.0f, 1.0f)));
+        mVertices.push_back(Vertex(v0, QVector3D(0, 1.0f, 0)));
+        mVertices.push_back(Vertex(v1, QVector3D(0, 1.0f, 0)));
+        mVertices.push_back(Vertex(v2, QVector3D(0, 1.0f, 0)));
+        mVertices.push_back(Vertex(v3, QVector3D(0, 1.0f, 0)));
 
         // Define the indices of the plane
         mIndices.push_back(0);
@@ -41,7 +41,7 @@ TriangleSurface::TriangleSurface(float size, int numVertices)
                 float z = ((i / (size-1.0f)) - 0.5f) * size;
                 float u = j / (float)(size - 1);
                 float v = i / (float)(size - 1);
-                mVertices.push_back(Vertex{QVector3D(x, 0, z), QVector2D(u, v)});  // centered at (0,0,0)
+                mVertices.push_back(Vertex{QVector3D(x, 0, z), QVector3D(0, 1.0f, 0), QVector2D(u, v)});  // centered at (0,0,0)
             }
         }
 
@@ -59,6 +59,8 @@ TriangleSurface::TriangleSurface(float size, int numVertices)
             }
         }
     }
+
+    objectColor = QVector3D(0,0.42f,0);
 
     model.setToIdentity();
     //    model.translate(- size / 2, 0.0f, - size / 2);

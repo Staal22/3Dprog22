@@ -58,7 +58,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mObjects.push_back(new Trophy(-11, 0, 2));
     mObjects.push_back(new Trophy(-9, 0, 1));
 
-    light = new LightSource(7, 3, 15);
+    light = new LightSource(-7, 3, 15);
     mObjects.push_back(light);
 
     // Oblig 1 Matte
