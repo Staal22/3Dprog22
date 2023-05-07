@@ -22,7 +22,7 @@ uniform mat4 view;
 uniform sampler2D heightmap;
 uniform bool hasHeightMap;
 
-// Define constants //TODO: consider changing to uniform
+// Define constants
 const float heightScale = -2;
 
 void main()
