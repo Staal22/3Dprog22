@@ -17,6 +17,7 @@ SOURCES += main.cpp \
     logger.cpp \
     mainwindow.cpp \
     objectgroup.cpp \
+    objectloader.cpp \
     octahedronball.cpp \
     parabolaapproximation.cpp \
     player.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     logger.h \
     mainwindow.h \
     objectgroup.h \
+    objectloader.h \
     octahedronball.h \
     parabolaapproximation.h \
     player.h \

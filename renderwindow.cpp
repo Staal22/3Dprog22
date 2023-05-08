@@ -13,6 +13,7 @@
 //#include "parabolaapproximation.h"
 #include "lightsource.h"
 #include "player.h"
+#include "objectloader.h"
 #include "polyinterpolation.h"
 #include "mainwindow.h"
 #include "logger.h"
@@ -41,6 +42,12 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
+
+    ObjectLoader loader;
+    VisualObject* car = new VisualObject;
+    car->mVertices = loader.loadObjFile("Car.obj");
+    car->indexed = false;
+    mObjects.push_back(car);
 
     mMap.insert(std::pair<std::string, VisualObject*> {"xyz", new XYZ()});
     mMap.insert(std::pair<std::string, VisualObject*> {"disc", new class Disc()});
