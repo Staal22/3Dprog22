@@ -2,7 +2,7 @@
 
 Camera::Camera()
 {
-
+    translate(initPos.x(), initPos.y(), initPos.z());
 }
 
 void Camera::init(GLint pMatrixUniform, GLint vMatrixUniform)
@@ -20,12 +20,9 @@ void Camera::perspective(int fov, double aspect, double nearplane, double farpla
 
 void Camera::lookAt(const QVector3D &eye, const QVector3D &at, const QVector3D &up)
 {
-    //invertering?
     mVmatrix.setToIdentity();
     mVmatrix.lookAt(eye, at, up);
     mVmatrix.inverted();
-
-
 }
 
 void Camera::update()
@@ -48,6 +45,22 @@ void Camera::setPos(float x, float y, float z)
     mEye.setX(x);
     mEye.setY(y);
     mEye.setZ(z);
+}
+
+void Camera::togglePerspective()
+{
+    if(thirdPerson)
+    {
+        translate(-1 * initPos.x(), -1 * initPos.y(), -1 * initPos.z());
+        translate(0, 1, 0);
+        thirdPerson = false;
+    }
+    else
+    {
+        translate(initPos.x(), initPos.y(), initPos.z());
+        translate(0, -1, 0);
+        thirdPerson = true;
+    }
 }
 
 QMatrix4x4 Camera::getProjecionMatrix()

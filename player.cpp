@@ -9,7 +9,9 @@ Player::Player()
 
     drawMethod = GL_TRIANGLES;
     indexed = false;
-    objectColor = QVector3D(0, 0.24f, 0.66f);
+//    objectColor = QVector3D(0, 0.24f, 0.66f);
+    hasTexture = true;
+    texturepath = "../3DProg22/Textures/brick_texture.bmp";
 }
 
 Player::~Player()
@@ -65,6 +67,18 @@ void Player::octahedronUnitBall()
     subDivide(v5, v3, v2, m_recursions);
     subDivide(v5, v4, v3, m_recursions);
     subDivide(v5, v1, v4, m_recursions);
+
+    // Calculate UV coordinates
+    for (auto& vertex : mVertices) {
+        QVector3D position = vertex.m_xyz;
+        QVector3D normalizedPosition = position.normalized();
+
+        float u = 0.5f + atan2f(normalizedPosition.z(), normalizedPosition.x()) / (2.0f * M_PI);
+        float v = 0.5f - asinf(normalizedPosition.y()) / M_PI;
+
+        vertex.m_uv = QVector2D(u,v);
+    }
+
 }
 
 void Player::subDivide(const QVector3D &a, const QVector3D &b, const QVector3D &c, int n)

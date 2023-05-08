@@ -1,4 +1,5 @@
 #include "objectgroup.h"
+#include "player.h"
 #include "renderwindow.h"
 
 void ObjectGroup::addObject(VisualObject *object)
@@ -12,7 +13,17 @@ void ObjectGroup::render(RenderWindow* window)
 
     window->mCamera.perspective(90.f, 16.0f/9.0f, 0.1f, 100.0f);
     //    mCamera.lookAt(mCamera.mEye, mCamera.mEye + QVector3D::crossProduct(mCamera.left, mCamera.up), mCamera.up);
-    window->mCamera.lookAt(window->mCamera.mEye, {0, 0, 0}, window->mCamera.up);
+    Player* player = static_cast<Player*>(window->mMap["player"]);
+    QVector3D playerPos = player->getPosition3D();
+
+    if(window->mCamera.thirdPerson)
+    {
+        window->mCamera.lookAt(window->mCamera.mEye, playerPos, window->mCamera.up);
+    }
+    else
+    {
+        window->mCamera.lookAt(window->mCamera.mEye, QVector3D(playerPos.x() + 3, playerPos.y(), playerPos.z()), window->mCamera.up);
+    }
 
     QMatrix4x4 projection = window->mCamera.getProjecionMatrix();
     QMatrix4x4 view = window->mCamera.getViewMatrix();

@@ -9,10 +9,12 @@ SOURCES += main.cpp \
     camera.cpp \
     curve.cpp \
     disc.cpp \
+    enemy.cpp \
     graphfunction.cpp \
     house.cpp \
     interactiveobject.cpp \
     lightsource.cpp \
+    lightswitch.cpp \
     linesurface.cpp \
     logger.cpp \
     mainwindow.cpp \
@@ -37,10 +39,12 @@ HEADERS += \
     camera.h \
     curve.h \
     disc.h \
+    enemy.h \
     graphfunction.h \
     house.h \
     interactiveobject.h \
     lightsource.h \
+    lightswitch.h \
     linesurface.h \
     logger.h \
     mainwindow.h \

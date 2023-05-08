@@ -1,6 +1,6 @@
-#include "lightsource.h"
+#include "lightswitch.h"
 
-LightSource::LightSource(float x, float y, float z)
+LightSwitch::LightSwitch(float x, float y, float z)
 {
     // Vertex positions and uv
     // Front face
@@ -59,28 +59,26 @@ LightSource::LightSource(float x, float y, float z)
 
     model.translate(x, y, z);
 
+    // calculate the minimum and maximum points of the bounding box
+    min_ = QVector3D{x,y,z} - QVector3D(0.5f, 1, 0.5f);
+    max_ = QVector3D{x,y,z} + QVector3D(0.5f, 1, 0.5f);
+
     indexed = false;
-//    drawMethod = GL_TRIANGLES;
-
-    lightColor = initialColor;
 }
 
-LightSource::~LightSource()
+LightSwitch::~LightSwitch()
 {
 
 }
 
-void LightSource::ToggleOnOff()
+bool LightSwitch::contains(QVector3D point) const
 {
-    if (on)
-    {
-        // Leave some light so the player can tell where the switch is
-        lightColor = QVector3D(0.15f,0.15f,0.15f);
-        on = false;
-    }
-    else
-    {
-        lightColor = initialColor;
-        on = true;
-    }
+    return point.x() >= min_.x() && point.x() <= max_.x() &&
+           point.y() >= min_.y() && point.y() <= max_.y() &&
+           point.z() >= min_.z() && point.z() <= max_.z();
+}
+
+void LightSwitch::ToggleLight()
+{
+    light->ToggleOnOff();
 }

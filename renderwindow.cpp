@@ -11,9 +11,8 @@
 #include "house.h"
 //#include "octahedronball.h"
 //#include "parabolaapproximation.h"
-#include "lightsource.h"
 #include "player.h"
-#include "objectloader.h"
+//#include "objectloader.h"
 #include "polyinterpolation.h"
 #include "mainwindow.h"
 #include "logger.h"
@@ -43,17 +42,11 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
 
-    ObjectLoader loader;
-    VisualObject* car = new VisualObject;
-    car->mVertices = loader.loadObjFile("Car.obj");
-    car->indexed = false;
-    mObjects.push_back(car);
-
     mMap.insert(std::pair<std::string, VisualObject*> {"xyz", new XYZ()});
     mMap.insert(std::pair<std::string, VisualObject*> {"disc", new class Disc()});
     mMap.insert(std::pair<std::string, VisualObject*> {"tetrahedron", new Tetrahedron()});
-//    mMap.insert(std::pair<std::string, VisualObject*> {"floor", new TriangleSurface(60, 600)});
-    mMap.insert(std::pair<std::string, VisualObject*>  {"oldFloor", new TwoVariableFunctionSpace()});
+    mMap.insert(std::pair<std::string, VisualObject*> {"terrain", new TriangleSurface(120, 600)});
+    mMap.insert(std::pair<std::string, VisualObject*>  {"floor", new TwoVariableFunctionSpace()});
     mMap.insert(std::pair<std::string, VisualObject*>  {"player", new Player()});
     mMap.insert(std::pair<std::string, VisualObject*>  {"house", new House()});
 
@@ -65,8 +58,17 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mObjects.push_back(new Trophy(-11, 0, 2));
     mObjects.push_back(new Trophy(-9, 0, 1));
 
+    // Enemies
+    mObjects.push_back(new Enemy(5, 0, 15));
+    mObjects.push_back(new Enemy(-4, 0, -2));
+    mObjects.push_back(new Enemy(-6, 0, 12));
+
     light = new LightSource(-7, 3, 15);
     mObjects.push_back(light);
+
+    lightSwitch = new LightSwitch(-7, 0, 15);
+    lightSwitch->light = light;
+    mObjects.push_back(lightSwitch);
 
     // Oblig 1 Matte
     //Oppgave 1
@@ -111,6 +113,11 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
         {
             trophies.push_back(static_cast<Trophy*>(object));
         }
+        else if (dynamic_cast<Enemy*>(object) != nullptr)
+        {
+            enemies.push_back(static_cast<Enemy*>(object));
+        }
+
     }
 
     //    std::string navn{"navn"}; // VisualObject should maybe have own name variable
@@ -211,9 +218,6 @@ void RenderWindow::init()
     projectionMatrixUniform = glGetUniformLocation(plainShader->programId(), "projection");
     viewMatrixUniform = glGetUniformLocation(plainShader->programId(), "view");
 
-//    GLint location = glGetUniformLocation(shaderProgram, "myValue");
-
-
     plainObjects = new ObjectGroup(plainShader);
     texturedObjects = new ObjectGroup(textureShader);
     groups.push_back(plainObjects);
@@ -238,8 +242,6 @@ void RenderWindow::init()
     plainShader->release();
 
     glBindVertexArray(0);
-
-    mCamera.translate(-15, 6, 15);
     glPointSize(5);
 }
 
@@ -288,7 +290,7 @@ void RenderWindow::render()
     QVector3D rayEnd = playerPos - QVector3D(0, rayLength, 0);
     House* house = static_cast<House*>(mMap["house"]);
 //    TriangleSurface* floor = static_cast<TriangleSurface*>(mMap["floor"]);
-    TwoVariableFunctionSpace* floor = static_cast<TwoVariableFunctionSpace*>(mMap["oldFloor"]);
+    TwoVariableFunctionSpace* floor = static_cast<TwoVariableFunctionSpace*>(mMap["floor"]);
     if (floor->intersectsLine(playerPos, rayEnd))
     {
         for (int i = 0; i < floor->mIndices.size(); i += 3)
@@ -318,17 +320,17 @@ void RenderWindow::render()
             }
         }
     }
-    if (house->contains(playerPos))
-        mCamera.setPos(2.5f, 3, 8);
+//    if (house->contains(playerPos))
+//        mCamera.setPos(2.5f, 3, 8);
     if (house->doorContains(playerPos))
         house->open();
     else if (!house->doorContains(playerPos))
     {
         house->close();
-        if (!house->contains(playerPos))
-        {
-            mCamera.setPos(-15, 6, 15);
-        }
+//        if (!house->contains(playerPos))
+//        {
+//            mCamera.setPos(-15, 6, 15);
+//        }
     }
     for (auto& trophy : trophies)
     {
@@ -336,10 +338,30 @@ void RenderWindow::render()
         {
             trophy->hide = true;
             player->score++;
-            qDebug() << "Score is: " << player->score;
+            qDebug() << "Trophy collected, new score is " << player->score;
         }
     }
-
+    for (auto& enemy : enemies)
+    {
+        if (enemy->contains(playerPos) && !enemy->hide)
+        {
+            player->score--;
+            qDebug() << "Player died from enemy damage, respawning";
+            qDebug() << "Player died, new score is " << player->score;
+            player->move((-1 * playerPos.x() + 0.11f), -1 * playerPos.y(), (-1 * playerPos.z()) + 5.11f);
+            mCamera.setPos(mCamera.initPos.x() + 0.11f, mCamera.initPos.y(), mCamera.initPos.z() + 5.11f);
+        }
+    }
+    if (lightSwitch->contains(playerPos) && inSwitch == false)
+    {
+        inSwitch = true;
+        lightSwitch->ToggleLight();
+        qDebug() << "Light " << light->on;
+    }
+    else if (!lightSwitch->contains(playerPos))
+    {
+        inSwitch = false;
+    }
 
     // Hardcoded movement
     mMap["disc"]->move(0.017f);
@@ -467,70 +489,71 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     {
         mMainWindow->close();       //Shuts down the whole program
     }
-    float moveDistance = 0.1f;
-    // Move camera
-    //    if(event->key() == Qt::Key_W)
-    //    {
-    //        mCamera.translate(0,0,-1);
-    //    }
-    //    if(event->key() == Qt::Key_A)
-    //    {
-    //        mCamera.translate(-1,0,0);
-    //    }
-    //    if(event->key() == Qt::Key_S)
-    //    {
-    //        mCamera.translate(0,0,1);
-    //    }
-    //    if(event->key() == Qt::Key_D)
-    //    {
-    //        mCamera.translate(1,0,0);
-    //    }
-    //    if(event->key() == Qt::Key_E)
-    //    {
-    //        mCamera.translate(0,1,0);
-    //    }
-    //    if(event->key() == Qt::Key_Q)
-    //    {
-    //        mCamera.translate(0,-1,0);
-    //    }
+    float moveDistance = 0.15f;
 
     TwoVariableFunctionSpace* floor = static_cast<TwoVariableFunctionSpace*>(mMap["floor"]);
     // Move Player
     if(event->key() == Qt::Key_W)
     {
         if (mMap["player"] != nullptr)
+        {
             mMap["player"]->move(moveDistance, 0.f,  0.f/*, floor*/);
+            mCamera.translate(moveDistance, 0.f, 0.f);
+        }
     }
     if(event->key() == Qt::Key_A)
     {
         if (mMap["player"] != nullptr)
+        {
             mMap["player"]->move(0.f, 0.f, -moveDistance/*, floor*/);
+            mCamera.translate(0.f, 0.f, -moveDistance);
+        }
     }
     if(event->key() == Qt::Key_S)
     {
         if (mMap["player"] != nullptr)
+        {
             mMap["player"]->move(-moveDistance, 0.f, 0.f/*, floor*/);
+            mCamera.translate(-moveDistance, 0.f, 0.f);
+        }
     }
     if(event->key() == Qt::Key_D)
     {
         if (mMap["player"] != nullptr)
+        {
             mMap["player"]->move(0.f, 0.0f, moveDistance/*, floor*/);
+            mCamera.translate(0.f, 0.f, moveDistance);
+        }
     }
-    if(event->key() == Qt::Key_E)
+    if(event->key() == Qt::Key_Tab)
     {
-        if (mMap["player"] != nullptr)
-            static_cast<Player*>(mMap["player"])->turn(-5);
+        mCamera.togglePerspective();
+        if(mCamera.thirdPerson)
+            mMap["player"]->hide = false;
+        else
+            mMap["player"]->hide = true;
     }
-    if(event->key() == Qt::Key_Q)
-    {
-        if (mMap["player"] != nullptr)
-            static_cast<Player*>(mMap["player"])->turn(5);
-    }
-    if(event->key() == Qt::Key_Space)
-    {
-        if (mMap["player"] != nullptr)
-            (mMap["player"])->move(0, 1, 0);
-    }
+//    if(event->key() == Qt::Key_E)
+//    {
+//        if (mMap["player"] != nullptr)
+//        {
+//            static_cast<Player*>(mMap["player"])->turn(-5);
+//        }
+//    }
+//    if(event->key() == Qt::Key_Q)
+//    {
+//        if (mMap["player"] != nullptr)
+//        {
+//            static_cast<Player*>(mMap["player"])->turn(5);
+//        }
+//    }
+//    if(event->key() == Qt::Key_Space)
+//    {
+//        if (mMap["player"] != nullptr)
+//        {
+//            (mMap["player"])->move(0, 1, 0);
+//        }
+//    }
 
     //Toggle objects
     if(event->key() == Qt::Key_1)

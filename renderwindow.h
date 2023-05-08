@@ -8,8 +8,10 @@
 #include <vector>
 #include <unordered_map>
 #include "camera.h"
+#include "enemy.h"
 #include "lightsource.h"
 #include "objectgroup.h"
+#include "lightswitch.h"
 #include "trophy.h"
 #include "visualobject.h"
 #include "quadtree.h"
@@ -47,8 +49,15 @@ public:
     GLint viewMatrixUniform;
 
     Camera mCamera;
-
     LightSource* light;
+    LightSwitch* lightSwitch;
+
+    // Containers
+    std::vector<VisualObject*> mObjects;
+    std::unordered_map<std::string, VisualObject*> mMap;
+    gsml::QuadTree<std::string, VisualObject*> mQuadTree;
+    std::vector<Trophy*> trophies;
+    std::vector<Enemy*> enemies;
 
 private:
     void init();            //initialize things we need before rendering
@@ -63,12 +72,6 @@ private:
     ObjectGroup* plainObjects;
     ObjectGroup* texturedObjects;
 //    ObjectGroup* terrainObjects;
-
-    // Containers
-    std::vector<VisualObject*> mObjects;
-    std::unordered_map<std::string, VisualObject*> mMap;
-    gsml::QuadTree<std::string, VisualObject*> mQuadTree;
-    std::vector<Trophy*> trophies;
 
     QOpenGLContext *mContext{nullptr};  //Our OpenGL context
     bool mInitialized{false};
@@ -93,6 +96,8 @@ private:
 
     ///Starts QOpenGLDebugLogger if possible
     void startOpenGLDebugger();
+
+    bool inSwitch = false;
 
 protected:
   

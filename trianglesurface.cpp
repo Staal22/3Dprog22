@@ -2,14 +2,16 @@
 
 TriangleSurface::TriangleSurface(float size, int numVertices)
 {
+    float y = -3;
+
     float halfSize = size / 2.0f;
     if (numVertices == 4)
     {
         // Define the four corners of the plane
-        v0 = QVector3D(-halfSize, 0.0f, -halfSize);
-        v1 = QVector3D(halfSize, 0.0f, -halfSize);
-        v2 = QVector3D(halfSize, 0.0f, halfSize);
-        v3 = QVector3D(-halfSize, 0.0f, halfSize);
+        v0 = QVector3D(-halfSize, y, -halfSize);
+        v1 = QVector3D(halfSize, y, -halfSize);
+        v2 = QVector3D(halfSize, y, halfSize);
+        v3 = QVector3D(-halfSize, y, halfSize);
 
         // Add the vertices to the vertex buffer
         mVertices.push_back(Vertex(v0, QVector3D(0, 1.0f, 0)));
@@ -41,7 +43,7 @@ TriangleSurface::TriangleSurface(float size, int numVertices)
                 float z = ((i / (size-1.0f)) - 0.5f) * size;
                 float u = j / (float)(size - 1);
                 float v = i / (float)(size - 1);
-                mVertices.push_back(Vertex{QVector3D(x, 0, z), QVector3D(0, 1.0f, 0), QVector2D(u, v)});  // centered at (0,0,0)
+                mVertices.push_back(Vertex{QVector3D(x, y, z), QVector3D(0, 1.0f, 0), QVector2D(u, v)});  // centered at (0,0,0)
             }
         }
 
@@ -66,9 +68,8 @@ TriangleSurface::TriangleSurface(float size, int numVertices)
     //    model.translate(- size / 2, 0.0f, - size / 2);
 
     hasHeightMap = true;
-//    computeVertexNormals();
     drawMethod = GL_TRIANGLES;
-    texturepath = "heightmap.bmp";
+    texturepath = "../3DProg22/Textures/heightmap.bmp";
 
     // calculate the minimum and maximum points of the bounding box
     min_ = QVector3D{0,0,0} - QVector3D(halfSize, 0.1f / 2, halfSize);

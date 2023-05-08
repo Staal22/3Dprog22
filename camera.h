@@ -16,6 +16,7 @@ public:
    void update();
    void translate(float dx, float dy, float dz);
    void setPos(float x, float y, float z);
+   void togglePerspective();
 
    QMatrix4x4 getProjecionMatrix();
    QMatrix4x4 getViewMatrix();
@@ -23,6 +24,10 @@ public:
    QVector3D mEye;
    QVector3D left = {-1,0,0};
    QVector3D up = {0,1,0};
+   QVector3D initPos{-5, 4, 5};
+
+   bool thirdPerson = true;
+
 
 private:
    GLint  mPmatrixUniform;        //OpenGL reference to the Uniform in the shader program

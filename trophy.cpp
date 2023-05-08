@@ -64,10 +64,10 @@ Trophy::Trophy(float x, float y, float z)
     min_ = QVector3D{x,y,z} - QVector3D(0.5f, 1, 0.5f);
     max_ = QVector3D{x,y,z} + QVector3D(0.5f, 1, 0.5f);
 
-    hasTexture = true;
-    drawMethod = GL_TRIANGLES;
+//    drawMethod = GL_TRIANGLES;
     indexed = false;
-    texturepath = "brick_texture.bmp";
+    hasTexture = true;
+    texturepath = "../3DProg22/Textures/brick_texture.bmp";
 }
 
 Trophy::~Trophy()

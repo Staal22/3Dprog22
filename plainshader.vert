@@ -23,7 +23,7 @@ uniform sampler2D heightmap;
 uniform bool hasHeightMap;
 
 // Define constants
-const float heightScale = -2;
+const float heightScale = -5;
 
 void main()
 {

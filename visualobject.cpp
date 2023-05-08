@@ -16,6 +16,8 @@ VisualObject::~VisualObject()
     glDisableVertexAttribArray(2);
     glDeleteVertexArrays(1, &mVAO);
     glDeleteBuffers(1, &mVBO);
+    if (hasTexture)
+        texture->release();
 }
 
 void VisualObject::init()
